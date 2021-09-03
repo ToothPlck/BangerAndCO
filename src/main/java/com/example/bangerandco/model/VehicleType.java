@@ -10,6 +10,7 @@ public class VehicleType {
     private long vehicleTypeId;
     private String vehicleType;
     private String description;
+    private String typeImagePath;
 
     @OneToMany(mappedBy = "vehicleType", cascade = {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE})
     List<Vehicle> vehicles;
@@ -17,10 +18,11 @@ public class VehicleType {
     public VehicleType() {
     }
 
-    public VehicleType(long vehicleTypeId, String vehicleType, String description, List<Vehicle> vehicles) {
+    public VehicleType(long vehicleTypeId, String vehicleType, String description, String typeImagePath, List<Vehicle> vehicles) {
         this.vehicleTypeId = vehicleTypeId;
         this.vehicleType = vehicleType;
         this.description = description;
+        this.typeImagePath = typeImagePath;
         this.vehicles = vehicles;
     }
 
@@ -46,6 +48,14 @@ public class VehicleType {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTypeImagePath() {
+        return typeImagePath;
+    }
+
+    public void setTypeImagePath(String typeImagePath) {
+        this.typeImagePath = typeImagePath;
     }
 
     public List<Vehicle> getVehicles() {

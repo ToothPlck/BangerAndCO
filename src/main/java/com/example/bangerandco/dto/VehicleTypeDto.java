@@ -8,16 +8,18 @@ public class VehicleTypeDto {
     private long vehicleTypeId;
     private String vehicleType;
     private String description;
+    private String typeImagePath;
 
     List<Vehicle> vehicles;
 
     public VehicleTypeDto() {
     }
 
-    public VehicleTypeDto(long vehicleTypeId, String vehicleType, String description, List<Vehicle> vehicles) {
+    public VehicleTypeDto(long vehicleTypeId, String vehicleType, String description, String typeImagePath, List<Vehicle> vehicles) {
         this.vehicleTypeId = vehicleTypeId;
         this.vehicleType = vehicleType;
         this.description = description;
+        this.typeImagePath = typeImagePath;
         this.vehicles = vehicles;
     }
 
@@ -43,6 +45,14 @@ public class VehicleTypeDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTypeImagePath() {
+        return typeImagePath;
+    }
+
+    public void setTypeImagePath(String typeImagePath) {
+        this.typeImagePath = typeImagePath;
     }
 
     public List<Vehicle> getVehicles() {

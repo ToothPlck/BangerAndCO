@@ -18,6 +18,8 @@ public class GuestController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private VehicleTypeService vehicleTypeService;
 
     @GetMapping("login")
     public String login(Model model) {
@@ -52,5 +54,12 @@ public class GuestController {
         model.addAttribute("error", "");
         model.addAttribute("success", "Registration Successful!");
         return "login";
+    }
+
+    //small town cars, small family hatchbacks, large family saloon, large family estate, medium vans
+    @GetMapping("category")
+    public String category(Model model){
+        model.addAttribute("categories", vehicleTypeService.getAll());
+        return "guest_category";
     }
 }

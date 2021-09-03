@@ -21,12 +21,15 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<form:form method="post" modelAttribute="vehicleTypeForm">
+<form:form method="post" enctype="multipart/form-data" modelAttribute="vehicleTypeForm">
     <label>Description</label>
     <form:input path="description" type="text"/>
     <br>
     <label>Type</label>
     <form:input path="vehicleType" type="text"/>
+    <br>
+    <label>Image</label>
+    <input type="file" name="vehicleTypeImage">
     <br>
     <button type="submit">Submit</button>
     <label>error : ${error}</label>

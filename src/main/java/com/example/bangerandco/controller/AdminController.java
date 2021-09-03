@@ -103,9 +103,9 @@ public class AdminController {
     }
 
     @PostMapping("vehicleType/add")
-    public String addVehicleType(Model model, Authentication authentication, VehicleTypeDto vehicleTypeDto) throws Exception {
+    public String addVehicleType(Model model, Authentication authentication, VehicleTypeDto vehicleTypeDto, @RequestParam("vehicleTypeImage") MultipartFile vehicleTypeImage) throws Exception {
         try {
-            vehicleTypeService.save(vehicleTypeDto);
+            vehicleTypeService.save(vehicleTypeDto, vehicleTypeImage);
         } catch (Exception exception) {
             model.addAttribute("vehicleTypeForm", new VehicleTypeDto());
             model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
