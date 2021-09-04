@@ -62,6 +62,43 @@ public class AdminController {
         return "admin_register_user";
     }
 
+    @GetMapping("users/view/active")
+    public String viewUsers(Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("users", userService.getActiveUsers());
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_users";
+    }
+
+    @GetMapping("users/view/pending")
+    public String viewUnverifiedUsers(Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("users", userService.getUnverifiedUsers());
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_users";
+    }
+
+    @GetMapping("users/view/blacklisted")
+    public String viewBlacklistedUsers(Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("users", userService.getBlacklistedUsers());
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_users";
+    }
+
+    @GetMapping("users/view/{userId}")
+    public String viewUser(@PathVariable(value = "userId") Long userId, Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("user", userService.findById(userId));
+        model.addAttribute("rentals", rentalService.findNumberOfRentalsByUserId(userId));
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_user";
+    }
+
     @GetMapping("equipment/add")
     public String addEquipment(Model model,
                                Authentication authentication) {
@@ -151,7 +188,7 @@ public class AdminController {
     }
 
     @GetMapping("/view")
-    public String view(){
+    public String view() {
         return "test";
     }
 }

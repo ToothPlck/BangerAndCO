@@ -13,7 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -108,6 +110,78 @@ public class UserServiceImplementation implements UserService {
                 throw new Exception(exception.getMessage());
             }
         }
+    }
+
+    @Override
+    public List<UserDto> getActiveUsers() {
+        List<UserDto> userDtoList = new ArrayList<>();
+
+        for (User user : userRepo.findActiveUsers()) {
+            UserDto userDto = new UserDto();
+
+            userDto.setUserId(user.getUserId());
+            userDto.setFirstName(user.getFirstName());
+            userDto.setLastName(user.getLastName());
+            userDto.setEmail(user.getEmail());
+
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
+    }
+
+    @Override
+    public List<UserDto> getUnverifiedUsers() {
+        List<UserDto> userDtoList = new ArrayList<>();
+
+        for (User user : userRepo.findUnverifiedUsers()) {
+            UserDto userDto = new UserDto();
+
+            userDto.setUserId(user.getUserId());
+            userDto.setFirstName(user.getFirstName());
+            userDto.setLastName(user.getLastName());
+            userDto.setEmail(user.getEmail());
+
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
+    }
+
+    @Override
+    public List<UserDto> getBlacklistedUsers() {
+        List<UserDto> userDtoList = new ArrayList<>();
+
+        for (User user : userRepo.findBlacklistedUsers()) {
+            UserDto userDto = new UserDto();
+
+            userDto.setUserId(user.getUserId());
+            userDto.setFirstName(user.getFirstName());
+            userDto.setLastName(user.getLastName());
+            userDto.setEmail(user.getEmail());
+
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
+    }
+
+    @Override
+    public UserDto findById(Long userId) {
+        UserDto userDto = new UserDto();
+        User user = userRepo.getById(userId);
+
+        userDto.setUserId(user.getUserId());
+        userDto.setUserImagePath(user.getUserImagePath());
+        userDto.setContact(user.getContact());
+        userDto.setCreatedDate(user.getCreatedDate().toString());
+        userDto.setDateOfBirth(user.getDateOfBirth().toString());
+        userDto.setDriversLicenseNumber(user.getDriversLicenseNumber());
+        userDto.setEmail(user.getEmail());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setReturningCustomer(user.isReturningCustomer());
+        userDto.setLastName(user.getLastName());
+        userDto.setLicenseImagePath(userDto.getLicenseImagePath());
+        userDto.setAlternateImagePath(user.getAlternateImagePath());
+
+        return userDto;
     }
 
 //    @Override
