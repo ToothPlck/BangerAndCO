@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class VehicleServiceImplementation implements VehicleService {
@@ -61,5 +63,24 @@ public class VehicleServiceImplementation implements VehicleService {
                 throw new Exception(exception);
             }
         }
+    }
+
+    @Override
+    public List<VehicleDto> category_all() {
+        List<VehicleDto> vehicleDtoList = new ArrayList<>();
+
+        for (Vehicle vehicle : vehicleRepo.findAll()) {
+            VehicleDto vehicleDto = new VehicleDto();
+
+            vehicleDto.setVehicleId(vehicle.getVehicleId());
+            vehicleDto.setEngineType(vehicle.getEngineType());
+            vehicleDto.setModel(vehicle.getModel());
+            vehicleDto.setRentPerDay(vehicle.getRentPerDay());
+            vehicleDto.setTransmissionType(vehicle.getTransmissionType());
+            vehicleDto.setVehicleImagePath(vehicle.getVehicleImagePath());
+
+            vehicleDtoList.add(vehicleDto);
+        }
+        return vehicleDtoList;
     }
 }

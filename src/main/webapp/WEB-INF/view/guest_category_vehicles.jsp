@@ -33,13 +33,14 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="${pageContext.request.contextPath}/login">Login</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/login">Login</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="${pageContext.request.contextPath}/register">Register</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/category">Vehicles</a>
+                        <a class="nav-link active" aria-current="page"
+                           href="${pageContext.request.contextPath}/category">Vehicles</a>
                     </li>
                 </ul>
             </div>
@@ -47,45 +48,31 @@
     </nav>
     <nav class="navbar navbar-light" style="background-color: #282838;">
         <div class="container">
-            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Welcome To
-                Banger&CO!!!</label>
+            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Our Fleets</label>
         </div>
     </nav>
 </div>
 <div>
-    <div style="height: 100%;
-      overflow: hidden;
-      width: 100%;">
-        <img src="${pageContext.request.contextPath}/photos/login_background_2.jpg" alt=""
-             style="height: 85%; width: 100%"/>
-    </div>
-    <div class="container" style="position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-15%, -40%);">
-        <form:form id="form" method="post" action="${contextPath}/login">
-            <div class="col-lg-4 col-md-4 col-sm-4 container justify-content-center">
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input class="form-control" autofocus="autofocus" name="email" type="text"/>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input name="password" type="password" class="form-control"/>
-                </div>
-                <div class="mb-3">
-                    <button type="submit" class="form-control"
-                            style="color: floralwhite; border-color: #414141; background-color: #414141">LOGIN
-                    </button>
-                    <div class="text-center">
-                        <div class="form-text" style="color: black">
-                            Not registered with us?
+    <div class="container-md">
+        <form:form id="form" method="get" modelAttribute="categories">
+            <div class="row my-5 align-items-center justify-content-center">
+                <c:forEach items="${categories}" var="category">
+                    <div onclick="loginPrompt()" class="card text-white bg-dark mb-3"
+                         style="width: 18rem; min-height: 400px; margin: 25px; cursor: pointer">
+                        <img src="${pageContext.request.contextPath}/images/${category.vehicleImagePath}"
+                             class="card-img-top" alt="" style="margin-top: 10px;">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">${category.model}</h5>
                         </div>
-                        <div class="form-text" style="color: black">
-                            Click here <a style="color: #282838" href="${pageContext.request.contextPath}/register">Register</a>
+                        <div class="card-header">
+                                ${category.rentPerDay}$/h
                         </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Engine :${category.engineType}</li>
+                            <li class="list-group-item">Transmission : ${category.transmissionType}</li>
+                        </ul>
                     </div>
-                </div>
+                </c:forEach>
             </div>
         </form:form>
     </div>

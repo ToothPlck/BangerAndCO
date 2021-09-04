@@ -20,6 +20,8 @@ public class GuestController {
     private UserService userService;
     @Autowired
     private VehicleTypeService vehicleTypeService;
+    @Autowired
+    private VehicleService vehicleService;
 
     @GetMapping("login")
     public String login(Model model) {
@@ -61,5 +63,11 @@ public class GuestController {
     public String category(Model model){
         model.addAttribute("categories", vehicleTypeService.getAll());
         return "guest_category";
+    }
+
+    @GetMapping("category/all")
+    public String categoryAll(Model model){
+        model.addAttribute("categories", vehicleService.category_all());
+        return "guest_category_vehicles";
     }
 }
