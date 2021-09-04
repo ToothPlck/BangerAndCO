@@ -83,4 +83,23 @@ public class VehicleServiceImplementation implements VehicleService {
         }
         return vehicleDtoList;
     }
+
+    @Override
+    public List<VehicleDto> category_type(Long typeId) {
+        List<VehicleDto> vehicleDtoList = new ArrayList<>();
+
+        for (Vehicle vehicle : vehicleRepo.findByType(typeId)) {
+            VehicleDto vehicleDto = new VehicleDto();
+
+            vehicleDto.setVehicleId(vehicle.getVehicleId());
+            vehicleDto.setEngineType(vehicle.getEngineType());
+            vehicleDto.setModel(vehicle.getModel());
+            vehicleDto.setRentPerDay(vehicle.getRentPerDay());
+            vehicleDto.setTransmissionType(vehicle.getTransmissionType());
+            vehicleDto.setVehicleImagePath(vehicle.getVehicleImagePath());
+
+            vehicleDtoList.add(vehicleDto);
+        }
+        return vehicleDtoList;
+    }
 }

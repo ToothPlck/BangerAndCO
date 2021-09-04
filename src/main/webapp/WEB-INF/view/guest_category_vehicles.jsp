@@ -64,11 +64,9 @@
                         <div class="card-body">
                             <h5 class="card-title text-center">${category.model}</h5>
                         </div>
-                        <div class="card-header">
-                                ${category.rentPerDay}$/h
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Engine :${category.engineType}</li>
+                        <ul class="list-group list-group-flush" style="margin-bottom: 10px;">
+                            <li class="list-group-item">Rent : ${category.rentPerDay}$/h</li>
+                            <li class="list-group-item">Engine : ${category.engineType}</li>
                             <li class="list-group-item">Transmission : ${category.transmissionType}</li>
                         </ul>
                     </div>
@@ -79,3 +77,19 @@
 </div>
 </body>
 </html>
+<script>
+    function loginPrompt() {
+        Swal.fire({
+            title: "Login",
+            icon: "info",
+            text: "Please login to continue!",
+            showCancelButton: true,
+            confirmButtonText: 'Login',
+            cancelButtonText: 'Maybe later...',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/login';
+            }
+        })
+    }
+</script>

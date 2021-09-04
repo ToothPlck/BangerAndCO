@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -68,6 +65,12 @@ public class GuestController {
     @GetMapping("category/all")
     public String categoryAll(Model model){
         model.addAttribute("categories", vehicleService.category_all());
+        return "guest_category_vehicles";
+    }
+
+    @GetMapping("category/{typeId}")
+    public String categoryByType(@PathVariable(value = "typeId") Long typeId, Model model){
+        model.addAttribute("categories", vehicleService.category_type(typeId));
         return "guest_category_vehicles";
     }
 }

@@ -10,4 +10,6 @@ public interface VehicleService {
     void save(VehicleDto vehicleDto, MultipartFile vehicleImage) throws Exception;
 
     List<VehicleDto> category_all();
+
+    List<VehicleDto> category_type(Long typeId);
 }
