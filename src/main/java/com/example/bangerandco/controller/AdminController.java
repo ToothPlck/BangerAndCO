@@ -92,14 +92,64 @@ public class AdminController {
         return "admin_view_users";
     }
 
-    @GetMapping("users/view/{userId}")
-    public String viewUser(@PathVariable(value = "userId") Long userId, Model model, Authentication authentication) {
+    @GetMapping("users/verify/{userId}")
+    public String verifyUser(@PathVariable(value = "userId") long userId, Model model, Authentication authentication) {
+        try {
+            userService.verifyUser(userId);
+        } catch (Exception exception) {
+            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("users", userService.getUnverifiedUsers());
+            model.addAttribute("type", "Pending Users");
+            model.addAttribute("error", exception.getMessage());
+            model.addAttribute("success", "");
+            return "admin_view_users";
+        }
         model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
-        model.addAttribute("user", userService.findById(userId));
-        model.addAttribute("rentals", rentalService.findNumberOfRentalsByUserId(userId));
+        model.addAttribute("users", userService.getUnverifiedUsers());
+        model.addAttribute("type", "Pending Users");
         model.addAttribute("error", "");
-        model.addAttribute("success", "");
-        return "admin_view_user";
+        model.addAttribute("success", "User Verified successfully");
+        return "admin_view_users";
+    }
+
+    @GetMapping("users/blacklist/{userId}")
+    public String blacklistUser(@PathVariable(value = "userId") long userId, Model model, Authentication authentication) {
+        try {
+            userService.blacklistUser(userId);
+        } catch (Exception exception) {
+            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("users", userService.getActiveUsers());
+            model.addAttribute("type", "Active Users");
+            model.addAttribute("error", exception.getMessage());
+            model.addAttribute("success", "");
+            return "admin_view_users";
+        }
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("users", userService.getActiveUsers());
+        model.addAttribute("type", "Active Users");
+        model.addAttribute("error", "");
+        model.addAttribute("success", "User Blacklisted successfully");
+        return "admin_view_users";
+    }
+
+    @GetMapping("users/whitelist/{userId}")
+    public String whitelistUser(@PathVariable(value = "userId") long userId, Model model, Authentication authentication) {
+        try {
+            userService.whitelistUser(userId);
+        } catch (Exception exception) {
+            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("users", userService.getBlacklistedUsers());
+            model.addAttribute("type", "Blacklisted Users");
+            model.addAttribute("error", exception.getMessage());
+            model.addAttribute("success", "");
+            return "admin_view_users";
+        }
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("users", userService.getBlacklistedUsers());
+        model.addAttribute("type", "Blacklisted Users");
+        model.addAttribute("error", "");
+        model.addAttribute("success", "User Whitelisted successfully");
+        return "admin_view_users";
     }
 
     @GetMapping("equipment/add")
@@ -131,6 +181,66 @@ public class AdminController {
         model.addAttribute("error", "");
         model.addAttribute("success", "Equipment added successfully!");
         return "admin_add_equipment";
+    }
+
+    @GetMapping("equipment/view/all")
+    public String viewAllEquipments(Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("equipments", equipmentService.getAll());
+        model.addAttribute("type", "All Equipments");
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_equipments";
+    }
+
+    @GetMapping("equipment/view/{type}")
+    public String viewEquipmentsByType(@PathVariable(value = "type") String type, Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("equipments", equipmentService.getByType(type));
+        model.addAttribute("type", type);
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_equipments";
+    }
+
+    @PostMapping("equipment/update/{equipmentId}")
+    public String updateEquipment(@PathVariable("equipmentId") long equipmentId, @RequestParam("equipmentImage") MultipartFile equipmentImage, EquipmentDto equipmentDto, Model model, Authentication authentication) {
+        try {
+            equipmentService.updateEquipment(equipmentId, equipmentImage, equipmentDto);
+        } catch (Exception exception) {
+            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("equipments", equipmentService.getAll());
+            model.addAttribute("type", "All Equipments");
+            model.addAttribute("error", exception.getMessage());
+            model.addAttribute("success", "");
+            return "admin_view_equipments";
+        }
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("equipments", equipmentService.getAll());
+        model.addAttribute("type", "All Equipments");
+        model.addAttribute("error", "");
+        model.addAttribute("success", "Equipment updated successfully");
+        return "admin_view_equipments";
+    }
+
+    @PostMapping("equipment/delete/{equipmentId}")
+    public String deleteEquipment(@PathVariable(value = "equipmentId") long equipmentId, Model model, Authentication authentication) {
+        try {
+            equipmentService.deleteEquipment(equipmentId);
+        } catch (Exception exception) {
+            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("equipments", equipmentService.getAll());
+            model.addAttribute("type", "All Equipments");
+            model.addAttribute("error", exception.getMessage());
+            model.addAttribute("success", "");
+            return "admin_view_equipments";
+        }
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("equipments", equipmentService.getAll());
+        model.addAttribute("type", "All Equipments");
+        model.addAttribute("error", "");
+        model.addAttribute("success", "Equipment deleted successfully");
+        return "admin_view_equipments";
     }
 
     @GetMapping("vehicleType/add")

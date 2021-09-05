@@ -23,7 +23,7 @@
 <body>
 <form:form method="post" enctype="multipart/form-data" modelAttribute="equipmentForm">
     <label>Rent per day</label>
-    <form:input path="equipmentRentPerDay" type="text"/>
+    <form:input path="equipmentRentPerHour" type="text"/>
     <br>
     <label>Name</label>
     <form:input path="equipmentName" type="text"/>
@@ -39,9 +39,9 @@
     <br>
     <label>type</label>
     <form:select path="equipmentType">
-        <form:option value="baby thing">Baby thing</form:option>
-        <form:option value="drink thing">Drink thing</form:option>
-        <form:option value="other">Other</form:option>
+        <form:option value="Satnav">Satnav</form:option>
+        <form:option value="Baby seat">Baby seat</form:option>
+        <form:option value="Wine chiller">Wine chiller</form:option>
     </form:select>
     <br>
     <label>Equipment Image</label>

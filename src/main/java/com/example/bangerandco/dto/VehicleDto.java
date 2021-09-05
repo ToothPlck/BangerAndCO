@@ -11,7 +11,7 @@ public class VehicleDto {
     private String licensePlateNumber;
     private String engineType;
     private String transmissionType;
-    private String rentPerDay;
+    private String rentPerHour;
     private String vehicleImagePath;
     private boolean isAvailable;
 
@@ -21,13 +21,13 @@ public class VehicleDto {
     public VehicleDto() {
     }
 
-    public VehicleDto(long vehicleId, String model, String licensePlateNumber, String engineType, String transmissionType, String rentPerDay, String vehicleImagePath, boolean isAvailable, VehicleType vehicleType, List<Rental> rentals) {
+    public VehicleDto(long vehicleId, String model, String licensePlateNumber, String engineType, String transmissionType, String rentPerHour, String vehicleImagePath, boolean isAvailable, VehicleType vehicleType, List<Rental> rentals) {
         this.vehicleId = vehicleId;
         this.model = model;
         this.licensePlateNumber = licensePlateNumber;
         this.engineType = engineType;
         this.transmissionType = transmissionType;
-        this.rentPerDay = rentPerDay;
+        this.rentPerHour = rentPerHour;
         this.vehicleImagePath = vehicleImagePath;
         this.isAvailable = isAvailable;
         this.vehicleType = vehicleType;
@@ -74,12 +74,12 @@ public class VehicleDto {
         this.transmissionType = transmissionType;
     }
 
-    public String getRentPerDay() {
-        return rentPerDay;
+    public String getRentPerHour() {
+        return rentPerHour;
     }
 
-    public void setRentPerDay(String rentPerDay) {
-        this.rentPerDay = rentPerDay;
+    public void setRentPerHour(String rentPerHour) {
+        this.rentPerHour = rentPerHour;
     }
 
     public String getVehicleImagePath() {

@@ -33,14 +33,20 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="${pageContext.request.contextPath}/login">Login</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/login">Login</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        <a class="nav-link dropdown-toggle active" aria-current="page" href="#" id="navbarDropdown"
+                           role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             Users
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/register">Register</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/admin/users/view/active">Active</a></li>
                             <li><a class="dropdown-item"
@@ -65,21 +71,21 @@
             </div>
         </div>
     </nav>
-    <%--    <nav class="navbar navbar-light" style="background-color: #282838;">--%>
-    <%--        <div class="container">--%>
-    <%--            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Welcome To--%>
-    <%--                Banger&CO!!!</label>--%>
-    <%--        </div>--%>
-    <%--    </nav>--%>
+    <nav class="navbar navbar-light" style="background-color: #282838;">
+        <div class="container">
+            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Our Loyal
+                Customers</label>
+        </div>
+    </nav>
 </div>
 <div>
-    <div class="container-sm">
+    <div class="container-sm mt-5">
         <form:form id="form" modelAttribute="users" method="get">
             <div class="col-lg-10 col-md-10 col-sm-10 container justify-content-center">
                 <div class="text-center">
                     <p class="display-6">${type}</p>
                 </div>
-                <div class="table-responsive rounded-3">
+                <div class="table-responsive rounded-3 mt-3">
                     <table class="table table-dark table-hover">
                         <thead>
                         <tr>
@@ -106,8 +112,14 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title text-center"
-                                                id="exampleModalLabel">${user.firstName} ${user.lastName}</h5>
+                                            <figure>
+                                                <blockquote class="blockquote">
+                                                    <p>${user.firstName} ${user.lastName}</p>
+                                                </blockquote>
+                                                <figcaption class="blockquote-footer">
+                                                    <cite>${user.bangerScore} Banger Score</cite>
+                                                </figcaption>
+                                            </figure>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                         </div>
@@ -115,7 +127,7 @@
                                             <div class="mb-3">
                                                 <img class="rounded-circle mx-auto d-block"
                                                      src="${pageContext.request.contextPath}/images/${user.userImagePath}"
-                                                     alt="" width="100" height="100">
+                                                     alt="" width="200" height="200">
                                             </div>
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" id="userid"
@@ -164,7 +176,7 @@
                                                 <br>
                                                 <img class="rounded-3 mx-auto d-block"
                                                      src="${pageContext.request.contextPath}/images/${user.licenseImagePath}"
-                                                     alt="" width="400" height="400">
+                                                     alt="" width="450" height="450">
                                             </div>
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" placeholder="alternate"
@@ -173,20 +185,20 @@
                                                 <br>
                                                 <img class="rounded-3 mx-auto d-block"
                                                      src="${pageContext.request.contextPath}/images/${user.alternateImagePath}"
-                                                     alt="" width="400" height="400">
-                                            </div>
-                                            <div>
-
+                                                     alt="" width="450" height="450">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" style="display: none" class="btn btn-outline-success"
+                                                    onclick="verifyFunction('${user.userId}')"
                                                     id="${user.userId} verify">Verify
                                             </button>
                                             <button type="button" style="display: none" class="btn btn-outline-danger"
+                                                    onclick="blacklistFunction('${user.userId}')"
                                                     id="${user.userId} blacklist">Blacklist
                                             </button>
                                             <button type="button" style="display: none" class="btn btn-outline-warning"
+                                                    onclick="whitelistFunction('${user.userId}')"
                                                     id="${user.userId} whitelist">Whitelist
                                             </button>
                                             <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
@@ -209,6 +221,69 @@
                                                     if (blacklisted === "true") {
                                                         document.getElementById("${user.userId} whitelist").style.display = "block";
                                                     }
+                                                }
+
+                                                function verifyFunction(userId) {
+                                                    Swal.fire({
+                                                        icon: 'question',
+                                                        title: 'Confirm',
+                                                        text: 'Please confirm the verification of the user!',
+                                                        showCancelButton: true,
+                                                        confirmButtonText: `Confirm!`,
+                                                        cancelButtonText: 'Cancel!',
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            window.location.href = '/admin/users/verify/' + userId;
+                                                            Swal.fire({
+                                                                title: 'Verifying...',
+                                                                html: 'Hold on a few seconds while we verify the user!',
+                                                                timer: 10000,
+                                                                timerProgressBar: false,
+                                                            });
+                                                        }
+                                                    })
+                                                }
+
+                                                function blacklistFunction(userId) {
+                                                    Swal.fire({
+                                                        icon: 'question',
+                                                        title: 'Confirm',
+                                                        text: 'Please confirm blacklisting of the user!',
+                                                        showCancelButton: true,
+                                                        confirmButtonText: `Confirm!`,
+                                                        cancelButtonText: 'Cancel!',
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            window.location.href = '/admin/users/blacklist/' + userId;
+                                                            Swal.fire({
+                                                                title: 'Blacklisting...',
+                                                                html: 'Hold on a few seconds while we blacklist the user!',
+                                                                timer: 10000,
+                                                                timerProgressBar: false,
+                                                            });
+                                                        }
+                                                    })
+                                                }
+
+                                                function whitelistFunction(userId) {
+                                                    Swal.fire({
+                                                        icon: 'question',
+                                                        title: 'Confirm',
+                                                        text: 'Please confirm whitelisting of the user!',
+                                                        showCancelButton: true,
+                                                        confirmButtonText: `Confirm!`,
+                                                        cancelButtonText: 'Cancel!',
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            window.location.href = '/admin/users/whitelist/' + userId;
+                                                            Swal.fire({
+                                                                title: 'Whitelisting...',
+                                                                html: 'Hold on a few seconds while we whitelist the user!',
+                                                                timer: 10000,
+                                                                timerProgressBar: false,
+                                                            });
+                                                        }
+                                                    })
                                                 }
                                             </script>
                                         </div>

@@ -21,4 +21,10 @@ public interface UserService {
     List<UserDto> getBlacklistedUsers();
 
     UserDto findById(Long userId);
+
+    void verifyUser(long userId) throws Exception;
+
+    void blacklistUser(long userId) throws Exception;
+
+    void whitelistUser(long userId) throws Exception;
 }

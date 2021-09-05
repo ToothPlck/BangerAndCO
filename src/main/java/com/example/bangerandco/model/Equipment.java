@@ -11,7 +11,7 @@ public class Equipment {
     private String equipmentName;
     private String equipmentIdentifier;
     private String equipmentType;
-    private String equipmentRentPerDay;
+    private String equipmentRentPerHour;
     private boolean isAvailable;
     private String equipmentImagePath;
 
@@ -26,12 +26,12 @@ public class Equipment {
     public Equipment() {
     }
 
-    public Equipment(long equipmentId, String equipmentName, String equipmentIdentifier, String equipmentType, String equipmentRentPerDay, boolean isAvailable, String equipmentImagePath, List<Rental> rentals) {
+    public Equipment(long equipmentId, String equipmentName, String equipmentIdentifier, String equipmentType, String equipmentRentPerHour, boolean isAvailable, String equipmentImagePath, List<Rental> rentals) {
         this.equipmentId = equipmentId;
         this.equipmentName = equipmentName;
         this.equipmentIdentifier = equipmentIdentifier;
         this.equipmentType = equipmentType;
-        this.equipmentRentPerDay = equipmentRentPerDay;
+        this.equipmentRentPerHour = equipmentRentPerHour;
         this.isAvailable = isAvailable;
         this.equipmentImagePath = equipmentImagePath;
         this.rentals = rentals;
@@ -69,12 +69,12 @@ public class Equipment {
         this.equipmentType = equipmentType;
     }
 
-    public String getEquipmentRentPerDay() {
-        return equipmentRentPerDay;
+    public String getEquipmentRentPerHour() {
+        return equipmentRentPerHour;
     }
 
-    public void setEquipmentRentPerDay(String equipmentRentPerDay) {
-        this.equipmentRentPerDay = equipmentRentPerDay;
+    public void setEquipmentRentPerHour(String equipmentRentPerHour) {
+        this.equipmentRentPerHour = equipmentRentPerHour;
     }
 
     public boolean isAvailable() {

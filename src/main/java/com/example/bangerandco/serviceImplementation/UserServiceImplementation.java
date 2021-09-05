@@ -66,6 +66,7 @@ public class UserServiceImplementation implements UserService {
                 user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
                 user.setRole("user");
                 user.setUpdatedDate(java.sql.Date.valueOf(currentDate()));
+                user.setBangerScore(0);
 
                 User registeredUser = userRepo.save(user);
 
@@ -132,8 +133,9 @@ public class UserServiceImplementation implements UserService {
                 userDto.setReturningCustomer(user.isReturningCustomer());
                 userDto.setVerified(user.isVerified());
                 userDto.setLastName(user.getLastName());
-                userDto.setLicenseImagePath(userDto.getLicenseImagePath());
+                userDto.setLicenseImagePath(user.getLicenseImagePath());
                 userDto.setAlternateImagePath(user.getAlternateImagePath());
+                userDto.setBangerScore(user.getBangerScore());
 
                 userDtoList.add(userDto);
             }
@@ -161,8 +163,9 @@ public class UserServiceImplementation implements UserService {
                 userDto.setReturningCustomer(user.isReturningCustomer());
                 userDto.setVerified(user.isVerified());
                 userDto.setLastName(user.getLastName());
-                userDto.setLicenseImagePath(userDto.getLicenseImagePath());
+                userDto.setLicenseImagePath(user.getLicenseImagePath());
                 userDto.setAlternateImagePath(user.getAlternateImagePath());
+                userDto.setBangerScore(user.getBangerScore());
 
                 userDtoList.add(userDto);
             }
@@ -190,8 +193,9 @@ public class UserServiceImplementation implements UserService {
                 userDto.setReturningCustomer(user.isReturningCustomer());
                 userDto.setVerified(user.isVerified());
                 userDto.setLastName(user.getLastName());
-                userDto.setLicenseImagePath(userDto.getLicenseImagePath());
+                userDto.setLicenseImagePath(user.getLicenseImagePath());
                 userDto.setAlternateImagePath(user.getAlternateImagePath());
+                userDto.setBangerScore(user.getBangerScore());
 
                 userDtoList.add(userDto);
             }
@@ -216,10 +220,44 @@ public class UserServiceImplementation implements UserService {
         userDto.setReturningCustomer(user.isReturningCustomer());
         userDto.setVerified(user.isVerified());
         userDto.setLastName(user.getLastName());
-        userDto.setLicenseImagePath(userDto.getLicenseImagePath());
+        userDto.setLicenseImagePath(user.getLicenseImagePath());
         userDto.setAlternateImagePath(user.getAlternateImagePath());
+        userDto.setBangerScore(user.getBangerScore());
 
         return userDto;
+    }
+
+    @Override
+    public void verifyUser(long userId) throws Exception {
+        try {
+            User user = userRepo.getById(userId);
+            user.setVerified(true);
+            userRepo.save(user);
+        } catch (Exception exception) {
+            throw new Exception("An exception occurred while verifying the user!");
+        }
+    }
+
+    @Override
+    public void blacklistUser(long userId) throws Exception {
+        try {
+            User user = userRepo.getById(userId);
+            user.setBlacklisted(true);
+            userRepo.save(user);
+        } catch (Exception exception) {
+            throw new Exception("An exception occurred while blacklisting the user");
+        }
+    }
+
+    @Override
+    public void whitelistUser(long userId) throws Exception {
+        try {
+            User user = userRepo.getById(userId);
+            user.setBlacklisted(false);
+            userRepo.save(user);
+        } catch (Exception exception) {
+            throw new Exception("An exception occurred while whitelisting the user");
+        }
     }
 
 //    @Override

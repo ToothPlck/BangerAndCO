@@ -27,12 +27,13 @@ public class UserDto {
     private String createdDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String updatedDate;
+    private long bangerScore;
     List<Rental> rentals;
 
     public UserDto() {
     }
 
-    public UserDto(long userId, String firstName, String lastName, String driversLicenseNumber, String email, String contact, String password, String userImagePath, String licenseImagePath, String alternateImagePath, String role, boolean isBlacklisted, boolean isReturningCustomer, boolean isVerified, String dateOfBirth, String createdDate, String updatedDate, List<Rental> rentals) {
+    public UserDto(long userId, String firstName, String lastName, String driversLicenseNumber, String email, String contact, String password, String userImagePath, String licenseImagePath, String alternateImagePath, String role, boolean isBlacklisted, boolean isReturningCustomer, boolean isVerified, String dateOfBirth, String createdDate, String updatedDate, long bangerScore, List<Rental> rentals) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,6 +51,7 @@ public class UserDto {
         this.dateOfBirth = dateOfBirth;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
+        this.bangerScore = bangerScore;
         this.rentals = rentals;
     }
 
@@ -187,6 +189,14 @@ public class UserDto {
 
     public void setUpdatedDate(String updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public long getBangerScore() {
+        return bangerScore;
+    }
+
+    public void setBangerScore(long bangerScore) {
+        this.bangerScore = bangerScore;
     }
 
     public List<Rental> getRentals() {

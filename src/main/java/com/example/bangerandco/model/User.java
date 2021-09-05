@@ -25,6 +25,7 @@ public class User {
     private Date dateOfBirth;
     private Date createdDate;
     private Date updatedDate;
+    private long bangerScore;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.REMOVE})
     List<Rental> rentals;
@@ -32,7 +33,7 @@ public class User {
     public User() {
     }
 
-    public User(long userId, String firstName, String lastName, String driversLicenseNumber, String email, String contact, String password, String userImagePath, String licenseImagePath, String alternateImagePath, String role, boolean isBlacklisted, boolean isReturningCustomer, boolean isVerified, Date dateOfBirth, Date createdDate, Date updatedDate, List<Rental> rentals) {
+    public User(long userId, String firstName, String lastName, String driversLicenseNumber, String email, String contact, String password, String userImagePath, String licenseImagePath, String alternateImagePath, String role, boolean isBlacklisted, boolean isReturningCustomer, boolean isVerified, Date dateOfBirth, Date createdDate, Date updatedDate, long bangerScore, List<Rental> rentals) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,6 +51,7 @@ public class User {
         this.dateOfBirth = dateOfBirth;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
+        this.bangerScore = bangerScore;
         this.rentals = rentals;
     }
 
@@ -187,6 +189,14 @@ public class User {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public long getBangerScore() {
+        return bangerScore;
+    }
+
+    public void setBangerScore(long bangerScore) {
+        this.bangerScore = bangerScore;
     }
 
     public List<Rental> getRentals() {

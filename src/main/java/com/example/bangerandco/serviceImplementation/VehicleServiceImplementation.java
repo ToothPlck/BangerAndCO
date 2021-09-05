@@ -35,7 +35,7 @@ public class VehicleServiceImplementation implements VehicleService {
                 vehicle.setAvailable(vehicleDto.isAvailable());
                 vehicle.setLicensePlateNumber(vehicleDto.getLicensePlateNumber());
                 vehicle.setModel(vehicleDto.getModel());
-                vehicle.setRentPerDay(vehicleDto.getRentPerDay());
+                vehicle.setRentPerHour(vehicleDto.getRentPerHour());
                 vehicle.setTransmissionType(vehicleDto.getTransmissionType());
 
                 vehicle.setVehicleType(vehicleDto.getVehicleType());
@@ -75,7 +75,7 @@ public class VehicleServiceImplementation implements VehicleService {
             vehicleDto.setVehicleId(vehicle.getVehicleId());
             vehicleDto.setEngineType(vehicle.getEngineType());
             vehicleDto.setModel(vehicle.getModel());
-            vehicleDto.setRentPerDay(vehicle.getRentPerDay());
+            vehicleDto.setRentPerHour(vehicle.getRentPerHour());
             vehicleDto.setTransmissionType(vehicle.getTransmissionType());
             vehicleDto.setVehicleImagePath(vehicle.getVehicleImagePath());
 
@@ -94,7 +94,7 @@ public class VehicleServiceImplementation implements VehicleService {
             vehicleDto.setVehicleId(vehicle.getVehicleId());
             vehicleDto.setEngineType(vehicle.getEngineType());
             vehicleDto.setModel(vehicle.getModel());
-            vehicleDto.setRentPerDay(vehicle.getRentPerDay());
+            vehicleDto.setRentPerHour(vehicle.getRentPerHour());
             vehicleDto.setTransmissionType(vehicle.getTransmissionType());
             vehicleDto.setVehicleImagePath(vehicle.getVehicleImagePath());
 

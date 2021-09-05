@@ -38,7 +38,7 @@
     <form:input path="model" type="text"/>
     <br>
     <label>Rent per day</label>
-    <form:input path="rentPerDay" type="text"/>
+    <form:input path="rentPerHour" type="text"/>
     <br>
     <label>Transmission type</label>
     <form:input path="transmissionType" type="text"/>

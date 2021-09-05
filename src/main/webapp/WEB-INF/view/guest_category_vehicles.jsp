@@ -60,12 +60,12 @@
                     <div onclick="loginPrompt()" class="card text-white bg-dark mb-3"
                          style="width: 18rem; min-height: 400px; margin: 25px; cursor: pointer">
                         <img src="${pageContext.request.contextPath}/images/${category.vehicleImagePath}"
-                             class="card-img-top" alt="" style="margin-top: 10px;">
+                             class="card-img-top" alt="" style="margin-top: 10px;" width="200" height="200">
                         <div class="card-body">
                             <h5 class="card-title text-center">${category.model}</h5>
                         </div>
                         <ul class="list-group list-group-flush" style="margin-bottom: 10px;">
-                            <li class="list-group-item">Rent : ${category.rentPerDay}$/h</li>
+                            <li class="list-group-item">Rent : ${category.rentPerHour}$/h</li>
                             <li class="list-group-item">Engine : ${category.engineType}</li>
                             <li class="list-group-item">Transmission : ${category.transmissionType}</li>
                         </ul>

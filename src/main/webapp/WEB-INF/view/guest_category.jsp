@@ -60,7 +60,7 @@
                 <div onclick="viewCategory('all')" class="card text-white bg-dark mb-3"
                      style="width: 18rem; min-height: 400px; margin: 25px; cursor: pointer">
                     <img src="${pageContext.request.contextPath}/photos/login_background.jpg"
-                         class="card-img-top" alt="" style="margin-top: 10px;">
+                         class="card-img-top" alt="" style="margin-top: 10px;" width="200" height="200">
                     <div class="card-body">
                         <h5 class="card-title text-center">All</h5>
                         <p class="card-text text-center">View all vehicles</p>
@@ -70,7 +70,7 @@
                     <div onclick="viewCategory('${category.vehicleTypeId}')" class="card text-white bg-dark mb-3"
                          style="width: 18rem; min-height: 400px; margin: 25px; cursor: pointer">
                         <img src="${pageContext.request.contextPath}/images/${category.typeImagePath}"
-                             class="card-img-top" alt="" style="margin-top: 10px;">
+                             class="card-img-top" alt="" style="margin-top: 10px;" width="200" height="200">
                         <div class="card-body">
                             <h5 class="card-title text-center">${category.vehicleType}</h5>
                             <p class="card-text text-center">${category.description}</p>

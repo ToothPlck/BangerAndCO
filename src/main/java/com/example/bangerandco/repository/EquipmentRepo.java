@@ -4,8 +4,12 @@ import com.example.bangerandco.model.Equipment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface EquipmentRepo extends JpaRepository<Equipment, Long> {
 
-    Equipment findByEquipmentIdentifier(String equipmentIdentifier);
+    List<Equipment> findByEquipmentIdentifier(String equipmentIdentifier);
+
+    List<Equipment> findByEquipmentType(String type);
 }

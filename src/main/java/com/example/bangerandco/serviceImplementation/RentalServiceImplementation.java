@@ -15,8 +15,4 @@ public class RentalServiceImplementation implements RentalService {
     @Autowired
     private RentalRepo rentalRepo;
 
-    @Override
-    public int findNumberOfRentalsByUserId(Long userId) {
-        return rentalRepo.findAllByUserUserId(userId).size();
-    }
 }
