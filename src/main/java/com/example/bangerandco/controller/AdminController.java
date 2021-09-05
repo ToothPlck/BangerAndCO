@@ -206,6 +206,7 @@ public class AdminController {
     @PostMapping("equipment/update/{equipmentId}")
     public String updateEquipment(@PathVariable("equipmentId") long equipmentId, @RequestParam("equipmentImage") MultipartFile equipmentImage, EquipmentDto equipmentDto, Model model, Authentication authentication) {
         try {
+            System.out.println("we here");
             equipmentService.updateEquipment(equipmentId, equipmentImage, equipmentDto);
         } catch (Exception exception) {
             model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));

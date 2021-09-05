@@ -103,11 +103,13 @@
                                 <td>${user.firstName}</td>
                                 <td>${user.lastName}</td>
                                 <td>${user.email}</td>
-                                <td><a type="button" class="btn btn-outline-light" data-bs-toggle="modal"
-                                       data-bs-target="#exampleModal">View</a>
+                                <td><a type="button" id="view${user.userId}" class="btn btn-outline-light"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#modal${user.userId}">View</a>
                                 </td>
                             </tr>
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            <div class="modal fade" id="modal${user.userId}" tabindex="-1"
+                                 aria-labelledby="exampleModalLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -130,49 +132,49 @@
                                                      alt="" width="200" height="200">
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="userid"
+                                                <input type="text" class="form-control" id="userid${user.userId}"
                                                        value="${user.userId}" disabled>
-                                                <label for="userid">Id</label>
+                                                <label for="userid${user.userId}">Id</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="firstname"
+                                                <input type="text" class="form-control" id="firstname${user.userId}"
                                                        value="${user.firstName}" disabled>
-                                                <label for="firstname">Firstname</label>
+                                                <label for="firstname${user.userId}">Firstname</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="lastname"
+                                                <input type="text" class="form-control" id="lastname${user.userId}"
                                                        value="${user.lastName}" disabled>
-                                                <label for="lastname">Lastname</label>
+                                                <label for="lastname${user.userId}">Lastname</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="email"
+                                                <input type="text" class="form-control" id="email${user.userId}"
                                                        value="${user.email}" disabled>
-                                                <label for="email">Email</label>
+                                                <label for="email${user.userId}">Email</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="contact"
+                                                <input type="text" class="form-control" id="contact${user.userId}"
                                                        value="${user.contact}" disabled>
-                                                <label for="contact">Contact</label>
+                                                <label for="contact${user.userId}">Contact</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="licenseNumber"
+                                                <input type="text" class="form-control" id="licenseNumber${user.userId}"
                                                        value="${user.driversLicenseNumber}" disabled>
-                                                <label for="licenseNumber">License Number</label>
+                                                <label for="licenseNumber${user.userId}">License Number</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="dob"
+                                                <input type="text" class="form-control" id="dob${user.userId}"
                                                        value="${user.dateOfBirth}" disabled>
-                                                <label for="dob">Date of Birth</label>
+                                                <label for="dob${user.userId}">Date of Birth</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="joined"
+                                                <input type="text" class="form-control" id="joined${user.userId}"
                                                        value="${user.createdDate}" disabled>
-                                                <label for="joined">Joined at</label>
+                                                <label for="joined${user.userId}">Joined at</label>
                                             </div>
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" placeholder="License"
-                                                       id="licenseImage" disabled/>
-                                                <label for="licenseImage">License : </label>
+                                                       id="licenseImage${user.userId}" disabled/>
+                                                <label for="licenseImage${user.userId}">License : </label>
                                                 <br>
                                                 <img class="rounded-3 mx-auto d-block"
                                                      src="${pageContext.request.contextPath}/images/${user.licenseImagePath}"
@@ -180,8 +182,8 @@
                                             </div>
                                             <div class="form-floating mb-3">
                                                 <input type="text" class="form-control" placeholder="alternate"
-                                                       id="altImage" disabled/>
-                                                <label for="altImage">Alternate image : </label>
+                                                       id="altImage${user.userId}" disabled/>
+                                                <label for="altImage${user.userId}">Alternate image : </label>
                                                 <br>
                                                 <img class="rounded-3 mx-auto d-block"
                                                      src="${pageContext.request.contextPath}/images/${user.alternateImagePath}"
@@ -204,12 +206,16 @@
                                             <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
                                                 Close
                                             </button>
-                                            <p id="verified" style="display: none">${user.verified}</p>
-                                            <p id="blacklisted" style="display: none">${user.blacklisted}</p>
+                                            <p id="verified${user.userId}" style="display: none">${user.verified}</p>
+                                            <p id="blacklisted${user.userId}"
+                                               style="display: none">${user.blacklisted}</p>
+
                                             <script>
-                                                window.onload = function () {
-                                                    const verified = document.getElementById("verified").innerHTML;
-                                                    const blacklisted = document.getElementById("blacklisted").innerHTML;
+
+                                                document.getElementById("view${user.userId}").onclick = function () {
+
+                                                    const verified = document.getElementById("verified${user.userId}").innerHTML;
+                                                    const blacklisted = document.getElementById("blacklisted${user.userId}").innerHTML;
 
                                                     if (verified === "false" && blacklisted === "false") {
                                                         document.getElementById("${user.userId} verify").style.display = "block";

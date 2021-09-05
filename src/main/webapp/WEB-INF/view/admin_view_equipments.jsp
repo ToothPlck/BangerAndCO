@@ -105,7 +105,7 @@
 </div>
 <div>
     <div class="container-sm mt-5">
-        <form:form id="form" method="post" modelAttribute="type" enctype="multipart/form-data">
+        <form:form id="form" method="get" modelAttribute="type">
             <div class="row my-5 align-items-center justify-content-center">
                 <c:forEach items="${equipments}" var="equipment">
                     <div onclick="viewEquipment('${equipment.equipmentId}')" class="card text-white bg-dark mb-3"
@@ -129,48 +129,54 @@
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                          aria-hidden="true">
                         <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <figure>
-                                        <blockquote class="blockquote">
-                                            <p>${equipment.equipmentName}</p>
-                                        </blockquote>
-                                        <figcaption class="blockquote-footer">
-                                            <cite>${equipment.equipmentIdentifier}</cite>
-                                        </figcaption>
-                                    </figure>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                            <form:form id="form" method="post" action="/admin/equipment/update/${equipment.equipmentId}"
+                                       modelAttribute="type" enctype="multipart/form-data">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <figure>
+                                            <blockquote class="blockquote">
+                                                <p>${equipment.equipmentName}</p>
+                                            </blockquote>
+                                            <figcaption class="blockquote-footer">
+                                                <cite>${equipment.equipmentIdentifier}</cite>
+                                            </figcaption>
+                                        </figure>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <img class="border-1 mx-auto d-block"
+                                                 src="${pageContext.request.contextPath}/images/${equipment.equipmentImagePath}"
+                                                 alt="" width="200" height="200">
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="equipmentName"
+                                                   value="${equipment.equipmentName}">
+                                            <label for="equipmentName">Equipment name</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="equipmentIdentifier"
+                                                   value="${equipment.equipmentIdentifier}">
+                                            <label for="equipmentIdentifier">Equipment identifier</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="equipmentRent"
+                                                   value="${equipment.equipmentRentPerHour}">
+                                            <label for="equipmentRent">Rent per hour</label>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-outline-warning"
+                                            <%--                                                onclick="whitelistFunction('${equipment.equipmentId}')"--%>
+                                                id="${equipment.equipmentId} update">Update
+                                        </button>
+                                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <img class="border-1 mx-auto d-block"
-                                             src="${pageContext.request.contextPath}/images/${equipment.equipmentImagePath}"
-                                             alt="" width="200" height="200">
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="equipmentName" value="${equipment.equipmentName}">
-                                        <label for="equipmentName">Equipment name</label>
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="equipmentIdentifier" value="${equipment.equipmentIdentifier}">
-                                        <label for="equipmentIdentifier">Equipment identifier</label>
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="equipmentRent" value="${equipment.equipmentRentPerHour}">
-                                        <label for="equipmentRent">Rent per hour</label>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" style="display: none" class="btn btn-outline-warning"
-                                            onclick="whitelistFunction('${equipment.equipmentId}')"
-                                            id="${equipment.equipmentId} update">Update
-                                    </button>
-                                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
+                            </form:form>
                         </div>
                     </div>
                 </c:forEach>
