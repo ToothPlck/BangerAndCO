@@ -117,14 +117,26 @@ public class UserServiceImplementation implements UserService {
         List<UserDto> userDtoList = new ArrayList<>();
 
         for (User user : userRepo.findActiveUsers()) {
-            UserDto userDto = new UserDto();
+            if (user.getRole().equals("user")) {
+                UserDto userDto = new UserDto();
 
-            userDto.setUserId(user.getUserId());
-            userDto.setFirstName(user.getFirstName());
-            userDto.setLastName(user.getLastName());
-            userDto.setEmail(user.getEmail());
+                userDto.setUserId(user.getUserId());
+                userDto.setUserImagePath(user.getUserImagePath());
+                userDto.setContact(user.getContact());
+                userDto.setCreatedDate(user.getCreatedDate().toString());
+                userDto.setDateOfBirth(user.getDateOfBirth().toString());
+                userDto.setDriversLicenseNumber(user.getDriversLicenseNumber());
+                userDto.setEmail(user.getEmail());
+                userDto.setFirstName(user.getFirstName());
+                userDto.setBlacklisted(user.isBlacklisted());
+                userDto.setReturningCustomer(user.isReturningCustomer());
+                userDto.setVerified(user.isVerified());
+                userDto.setLastName(user.getLastName());
+                userDto.setLicenseImagePath(userDto.getLicenseImagePath());
+                userDto.setAlternateImagePath(user.getAlternateImagePath());
 
-            userDtoList.add(userDto);
+                userDtoList.add(userDto);
+            }
         }
         return userDtoList;
     }
@@ -134,14 +146,26 @@ public class UserServiceImplementation implements UserService {
         List<UserDto> userDtoList = new ArrayList<>();
 
         for (User user : userRepo.findUnverifiedUsers()) {
-            UserDto userDto = new UserDto();
+            if (user.getRole().equals("user")) {
+                UserDto userDto = new UserDto();
 
-            userDto.setUserId(user.getUserId());
-            userDto.setFirstName(user.getFirstName());
-            userDto.setLastName(user.getLastName());
-            userDto.setEmail(user.getEmail());
+                userDto.setUserId(user.getUserId());
+                userDto.setUserImagePath(user.getUserImagePath());
+                userDto.setContact(user.getContact());
+                userDto.setCreatedDate(user.getCreatedDate().toString());
+                userDto.setDateOfBirth(user.getDateOfBirth().toString());
+                userDto.setDriversLicenseNumber(user.getDriversLicenseNumber());
+                userDto.setEmail(user.getEmail());
+                userDto.setFirstName(user.getFirstName());
+                userDto.setBlacklisted(user.isBlacklisted());
+                userDto.setReturningCustomer(user.isReturningCustomer());
+                userDto.setVerified(user.isVerified());
+                userDto.setLastName(user.getLastName());
+                userDto.setLicenseImagePath(userDto.getLicenseImagePath());
+                userDto.setAlternateImagePath(user.getAlternateImagePath());
 
-            userDtoList.add(userDto);
+                userDtoList.add(userDto);
+            }
         }
         return userDtoList;
     }
@@ -151,14 +175,26 @@ public class UserServiceImplementation implements UserService {
         List<UserDto> userDtoList = new ArrayList<>();
 
         for (User user : userRepo.findBlacklistedUsers()) {
-            UserDto userDto = new UserDto();
+            if (user.getRole().equals("user")) {
+                UserDto userDto = new UserDto();
 
-            userDto.setUserId(user.getUserId());
-            userDto.setFirstName(user.getFirstName());
-            userDto.setLastName(user.getLastName());
-            userDto.setEmail(user.getEmail());
+                userDto.setUserId(user.getUserId());
+                userDto.setUserImagePath(user.getUserImagePath());
+                userDto.setContact(user.getContact());
+                userDto.setCreatedDate(user.getCreatedDate().toString());
+                userDto.setDateOfBirth(user.getDateOfBirth().toString());
+                userDto.setDriversLicenseNumber(user.getDriversLicenseNumber());
+                userDto.setEmail(user.getEmail());
+                userDto.setFirstName(user.getFirstName());
+                userDto.setBlacklisted(user.isBlacklisted());
+                userDto.setReturningCustomer(user.isReturningCustomer());
+                userDto.setVerified(user.isVerified());
+                userDto.setLastName(user.getLastName());
+                userDto.setLicenseImagePath(userDto.getLicenseImagePath());
+                userDto.setAlternateImagePath(user.getAlternateImagePath());
 
-            userDtoList.add(userDto);
+                userDtoList.add(userDto);
+            }
         }
         return userDtoList;
     }
@@ -176,7 +212,9 @@ public class UserServiceImplementation implements UserService {
         userDto.setDriversLicenseNumber(user.getDriversLicenseNumber());
         userDto.setEmail(user.getEmail());
         userDto.setFirstName(user.getFirstName());
+        userDto.setBlacklisted(user.isBlacklisted());
         userDto.setReturningCustomer(user.isReturningCustomer());
+        userDto.setVerified(user.isVerified());
         userDto.setLastName(user.getLastName());
         userDto.setLicenseImagePath(userDto.getLicenseImagePath());
         userDto.setAlternateImagePath(user.getAlternateImagePath());

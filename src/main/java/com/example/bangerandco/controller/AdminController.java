@@ -66,6 +66,7 @@ public class AdminController {
     public String viewUsers(Model model, Authentication authentication) {
         model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
         model.addAttribute("users", userService.getActiveUsers());
+        model.addAttribute("type", "Active Users");
         model.addAttribute("error", "");
         model.addAttribute("success", "");
         return "admin_view_users";
@@ -75,6 +76,7 @@ public class AdminController {
     public String viewUnverifiedUsers(Model model, Authentication authentication) {
         model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
         model.addAttribute("users", userService.getUnverifiedUsers());
+        model.addAttribute("type", "Pending Users");
         model.addAttribute("error", "");
         model.addAttribute("success", "");
         return "admin_view_users";
@@ -84,6 +86,7 @@ public class AdminController {
     public String viewBlacklistedUsers(Model model, Authentication authentication) {
         model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
         model.addAttribute("users", userService.getBlacklistedUsers());
+        model.addAttribute("type", "Blacklisted Users");
         model.addAttribute("error", "");
         model.addAttribute("success", "");
         return "admin_view_users";
