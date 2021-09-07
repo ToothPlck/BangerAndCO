@@ -203,10 +203,18 @@ public class AdminController {
         return "admin_view_equipments";
     }
 
+    @GetMapping("equipment/update/{equipmentId}")
+    public String updateEquipment(@PathVariable("equipmentId") long equipmentId, Model model, Authentication authentication){
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("equipment", equipmentService.updatable(equipmentId));
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_update_equipment";
+    }
+
     @PostMapping("equipment/update/{equipmentId}")
     public String updateEquipment(@PathVariable("equipmentId") long equipmentId, @RequestParam("equipmentImage") MultipartFile equipmentImage, EquipmentDto equipmentDto, Model model, Authentication authentication) {
         try {
-            System.out.println("we here");
             equipmentService.updateEquipment(equipmentId, equipmentImage, equipmentDto);
         } catch (Exception exception) {
             model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));

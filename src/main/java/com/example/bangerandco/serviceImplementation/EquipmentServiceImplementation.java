@@ -103,6 +103,22 @@ public class EquipmentServiceImplementation implements EquipmentService {
     }
 
     @Override
+    public EquipmentDto updatable(long equipmentId) {
+        EquipmentDto equipmentDto = new EquipmentDto();
+        Equipment equipment = equipmentRepo.getById(equipmentId);
+
+        equipmentDto.setEquipmentId(equipment.getEquipmentId());
+        equipmentDto.setEquipmentIdentifier(equipment.getEquipmentIdentifier());
+        equipmentDto.setEquipmentImagePath(equipment.getEquipmentImagePath());
+        equipmentDto.setEquipmentType(equipment.getEquipmentType());
+        equipmentDto.setEquipmentRentPerHour(equipment.getEquipmentRentPerHour());
+        equipmentDto.setAvailable(equipment.isAvailable());
+        equipmentDto.setEquipmentName(equipment.getEquipmentName());
+
+        return equipmentDto;
+    }
+
+    @Override
     public void updateEquipment(long equipmentId, MultipartFile equipmentImage, EquipmentDto equipmentDto) throws Exception {
         try {
             List<Equipment> equipmentsWithIdentifier = equipmentRepo.findByEquipmentIdentifier(equipmentDto.getEquipmentIdentifier());
