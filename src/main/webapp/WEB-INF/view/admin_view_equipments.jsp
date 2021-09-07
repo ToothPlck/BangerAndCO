@@ -169,7 +169,7 @@
                                     <button type="submit" class="btn btn-outline-warning" onclick="updateEquipment('${equipment.equipmentId}')"
                                             id="${equipment.equipmentId}">Update
                                     </button>
-                                    <button type="submit" class="btn btn-outline-dark" data-bs-dismiss="modal">
+                                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
                                         Close
                                     </button>
                                 </div>
@@ -188,49 +188,3 @@
         document.getElementById('form').action = '/admin/equipment/update/' + equipmentId;
     }
 </script>
-<%--///
-/
-/
-/
-/
-/
-/
-/
-/
-//
-/
-/
-/
-/
-/
-////
-/
-/
-// g f srg dr hhbf vodhj fvjd fvojd bfvojd fvjdfovj dofhv djf vdfvd f
-
-  f d
-   bd
-    fb
-    d f b
-    d
-    f bd f
-     dfb d
-     f bd fb dfbdf d
-     fb d
-      fbd fb
-       dfb dfbd
-       fb d
-       d
-        fn df
-        n df nd
-         fn dfn d
-         f nd fn
-         d f
-          s h
-          s rhs rh
-           sr
-            srh
-             sh
-              srh
-               srh
-               srh --%>

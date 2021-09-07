@@ -152,7 +152,6 @@ public class EquipmentServiceImplementation implements EquipmentService {
 
             equipmentRepo.save(equipment);
         } catch (Exception exception) {
-            System.out.println(exception + "\n\n\n\n\n");
             throw new Exception("exception" + exception);
         }
     }

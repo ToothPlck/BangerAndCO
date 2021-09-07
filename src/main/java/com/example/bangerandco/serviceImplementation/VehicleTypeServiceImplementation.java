@@ -68,4 +68,59 @@ public class VehicleTypeServiceImplementation implements VehicleTypeService {
         }
         return vehicleTypeDtoList;
     }
+
+    @Override
+    public VehicleTypeDto updatable(long vehicleTypeId) {
+        VehicleTypeDto vehicleTypeDto = new VehicleTypeDto();
+        VehicleType vehicleType = vehicleTypeRepo.getById(vehicleTypeId);
+
+        vehicleTypeDto.setVehicleType(vehicleType.getVehicleType());
+        vehicleTypeDto.setVehicleTypeId(vehicleType.getVehicleTypeId());
+        vehicleTypeDto.setTypeImagePath(vehicleType.getTypeImagePath());
+        vehicleTypeDto.setDescription(vehicleType.getDescription());
+
+        return vehicleTypeDto;
+    }
+
+    @Override
+    public void updateVehicleType(long vehicleTypeId, MultipartFile vehicleTypeImage, VehicleTypeDto vehicleTypeDto) throws Exception {
+        try {
+            List<VehicleType> vehicleTypesWithTypeName = vehicleTypeRepo.findVehicleTypeByTypeName(vehicleTypeDto.getVehicleType());
+            if (vehicleTypesWithTypeName.size() != 0) {
+                for (VehicleType vehicleTypeWithTypeName : vehicleTypesWithTypeName) {
+                    if (vehicleTypeId != vehicleTypeWithTypeName.getVehicleTypeId()) {
+                        throw new Exception("The entered vehicle type :" + vehicleTypeDto.getVehicleType() + " already exists!");
+                    }
+                }
+            }
+
+            VehicleType vehicleType = vehicleTypeRepo.getById(vehicleTypeId);
+            vehicleType.setVehicleType(vehicleTypeDto.getVehicleType());
+            vehicleType.setDescription(vehicleTypeDto.getDescription());
+
+            if (!vehicleTypeImage.isEmpty()) {
+                String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                String vehicleTypeImageNameFormat = "type" + vehicleType.getVehicleTypeId() + ".jpg";
+
+                Path deletePath = Paths.get(imagesFolder + vehicleType.getTypeImagePath());
+                Files.delete(deletePath);
+
+                byte[] vehicleTypeByte = vehicleTypeImage.getBytes();
+                Path vehicleTypePath = Paths.get(imagesFolder + vehicleTypeImageNameFormat);
+                Files.write(vehicleTypePath, vehicleTypeByte);
+
+                vehicleType.setTypeImagePath(vehicleTypeImageNameFormat);
+            }
+
+            vehicleTypeRepo.save(vehicleType);
+
+        } catch (Exception exception) {
+            throw new Exception("An error occurred while updating the vehicle type! Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteVehicleType(long vehicleTypeId) {
+        //////////////////////////
+    }
 }
