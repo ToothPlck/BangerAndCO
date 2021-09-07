@@ -102,4 +102,32 @@ public class VehicleServiceImplementation implements VehicleService {
         }
         return vehicleDtoList;
     }
+
+    @Override
+    public VehicleDto updatable(long vehicleId) {
+        VehicleDto vehicleDto = new VehicleDto();
+        Vehicle vehicle = vehicleRepo.getById(vehicleId);
+
+        vehicleDto.setVehicleId(vehicle.getVehicleId());
+        vehicleDto.setEngineType(vehicle.getEngineType());
+        vehicleDto.setModel(vehicle.getModel());
+        vehicleDto.setRentPerHour(vehicle.getRentPerHour());
+        vehicleDto.setTransmissionType(vehicle.getTransmissionType());
+        vehicleDto.setVehicleImagePath(vehicle.getVehicleImagePath());
+        vehicleDto.setVehicleType(vehicle.getVehicleType());
+        vehicleDto.setAvailable(vehicle.isAvailable());
+        vehicleDto.setLicensePlateNumber(vehicle.getLicensePlateNumber());
+
+        return vehicleDto;
+    }
+
+    @Override
+    public void updateVehicle(long vehicleId, MultipartFile vehicleImage, VehicleDto vehicleDto) {
+
+    }
+
+    @Override
+    public void deleteVehicle(long vehicleId) {
+
+    }
 }

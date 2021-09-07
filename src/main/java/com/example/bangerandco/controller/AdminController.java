@@ -363,6 +363,69 @@ public class AdminController {
         return "admin_add_vehicle";
     }
 
+    @GetMapping("vehicle/view/all")
+    public String viewAllVehicles(Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("vehicles", vehicleService.category_all());
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_vehicles";
+    }
+
+    @GetMapping("vehicle/view/{type}")
+    public String viewVehiclesByType(@PathVariable(value = "type") long typeId, Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("vehicles", vehicleService.category_type(typeId));
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_vehicles";
+    }
+
+    @GetMapping("vehicle/update/{vehicleId}")
+    public String updateVehicle(@PathVariable("vehicleId") long vehicleId, Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("vehicles", vehicleService.updatable(vehicleId));
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_update_vehicles";
+    }
+
+    @PostMapping("vehicle/update/{vehicleId}")
+    public String updateVehicle(@PathVariable("vehicleId") long vehicleId, @RequestParam("vehicleImage") MultipartFile vehicleImage, VehicleDto vehicleDto, Model model, Authentication authentication) {
+        try {
+            vehicleService.updateVehicle(vehicleId, vehicleImage, vehicleDto);
+        } catch (Exception exception) {
+            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("vehicles", vehicleService.category_all());
+            model.addAttribute("error", exception.getMessage());
+            model.addAttribute("success", "");
+            return "admin_view_vehicles";
+        }
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("vehicles", vehicleService.category_all());
+        model.addAttribute("error", "");
+        model.addAttribute("success", "Vehicle updated successfully");
+        return "admin_view_vehicles";
+    }
+
+    @PostMapping("vehicle/delete/{vehicleId}")
+    public String deleteVehicle(@PathVariable(value = "vehicleId") long vehicleId, Model model, Authentication authentication) {
+        try {
+            vehicleService.deleteVehicle(vehicleId);
+        } catch (Exception exception) {
+            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("vehicles", vehicleService.category_all());
+            model.addAttribute("error", exception.getMessage());
+            model.addAttribute("success", "");
+            return "admin_view_vehicles";
+        }
+        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("vehicles", vehicleService.category_all());
+        model.addAttribute("error", "");
+        model.addAttribute("success", "Vehicle deleted successfully");
+        return "admin_view_vehicles";
+    }
+
     @GetMapping("/view")
     public String view() {
         return "test";

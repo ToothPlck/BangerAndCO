@@ -12,4 +12,10 @@ public interface VehicleService {
     List<VehicleDto> category_all();
 
     List<VehicleDto> category_type(Long typeId);
+
+    VehicleDto updatable(long vehicleId);
+
+    void updateVehicle(long vehicleId, MultipartFile vehicleImage, VehicleDto vehicleDto);
+
+    void deleteVehicle(long vehicleId);
 }
