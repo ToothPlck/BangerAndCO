@@ -122,12 +122,49 @@ public class VehicleServiceImplementation implements VehicleService {
     }
 
     @Override
-    public void updateVehicle(long vehicleId, MultipartFile vehicleImage, VehicleDto vehicleDto) {
+    public void updateVehicle(long vehicleId, MultipartFile vehicleImage, VehicleDto vehicleDto) throws Exception {
+        try {
+            List<Vehicle> vehiclesWithLicense = vehicleRepo.findVehiclesByLicensePlateNumber(vehicleDto.getLicensePlateNumber());
+            if (vehiclesWithLicense.size() != 0) {
+                for (Vehicle vehicleWithLicense : vehiclesWithLicense) {
+                    if (vehicleId != vehicleWithLicense.getVehicleId()) {
+                        throw new Exception("The vehicle with the license number already exists in the database!");
+                    }
+                }
+            }
+            Vehicle vehicle = vehicleRepo.getById(vehicleId);
 
+            vehicle.setEngineType(vehicleDto.getEngineType());
+            vehicle.setAvailable(vehicleDto.isAvailable());
+            vehicle.setLicensePlateNumber(vehicleDto.getLicensePlateNumber());
+            vehicle.setModel(vehicleDto.getModel());
+            vehicle.setRentPerHour(vehicleDto.getRentPerHour());
+            vehicle.setTransmissionType(vehicleDto.getTransmissionType());
+
+            vehicle.setVehicleType(vehicleDto.getVehicleType());
+
+            if (!vehicleImage.isEmpty()) {
+                String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                String vehicleImageNameFormat = "veh" + vehicle.getVehicleId() + ".jpg";
+
+                Path deletePath = Paths.get(imagesFolder + vehicle.getVehicleImagePath());
+                Files.delete(deletePath);
+
+                byte[] vehiclesBytes = vehicleImage.getBytes();
+                Path vehiclePath = Paths.get(imagesFolder + vehicleImageNameFormat);
+                Files.write(vehiclePath, vehiclesBytes);
+
+                vehicle.setVehicleImagePath(vehicleImageNameFormat);
+            }
+
+            vehicleRepo.save(vehicle);
+        } catch (Exception exception) {
+            throw new Exception("exception" + exception);
+        }
     }
 
     @Override
     public void deleteVehicle(long vehicleId) {
-
+        /////////////////////////////////////
     }
 }

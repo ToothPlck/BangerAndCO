@@ -15,7 +15,7 @@ public interface VehicleService {
 
     VehicleDto updatable(long vehicleId);
 
-    void updateVehicle(long vehicleId, MultipartFile vehicleImage, VehicleDto vehicleDto);
+    void updateVehicle(long vehicleId, MultipartFile vehicleImage, VehicleDto vehicleDto) throws Exception;
 
     void deleteVehicle(long vehicleId);
 }
