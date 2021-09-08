@@ -138,7 +138,7 @@
                             <form:option value="true">Yes</form:option>
                             <form:option value="false">No</form:option>
                         </form:select>
-                        <label for="available">Rent per hour</label>
+                        <label for="available">Availability</label>
                     </div>
                     <div class="form-floating mb-3">
                         <form:select path="equipmentType" id="type" class="form-select">
@@ -147,7 +147,7 @@
                             <form:option value="Baby seat">Baby seat</form:option>
                             <form:option value="Wine chiller">Wine chiller</form:option>
                         </form:select>
-                        <label for="type">Rent per hour</label>
+                        <label for="type">Equipment category</label>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="image">Equipment image</label>

@@ -78,6 +78,7 @@ public class VehicleServiceImplementation implements VehicleService {
             vehicleDto.setRentPerHour(vehicle.getRentPerHour());
             vehicleDto.setTransmissionType(vehicle.getTransmissionType());
             vehicleDto.setVehicleImagePath(vehicle.getVehicleImagePath());
+            vehicleDto.setVehicleType(vehicle.getVehicleType());
 
             vehicleDtoList.add(vehicleDto);
         }
@@ -97,6 +98,7 @@ public class VehicleServiceImplementation implements VehicleService {
             vehicleDto.setRentPerHour(vehicle.getRentPerHour());
             vehicleDto.setTransmissionType(vehicle.getTransmissionType());
             vehicleDto.setVehicleImagePath(vehicle.getVehicleImagePath());
+            vehicleDto.setVehicleType(vehicle.getVehicleType());
 
             vehicleDtoList.add(vehicleDto);
         }

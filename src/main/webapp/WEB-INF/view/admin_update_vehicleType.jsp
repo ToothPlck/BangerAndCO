@@ -15,6 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
             integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -122,80 +123,46 @@
     </nav>
     <nav class="navbar navbar-light" style="background-color: #282838;">
         <div class="container">
-            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Vehicle
-                Categories</label>
+            <label style="font-size: 25px; font-weight: bold; margin: 15px auto;"><a
+                    style="text-decoration: none; color: white;"
+                    href="${pageContext.request.contextPath}/admin/vehicleType/view/all">
+                <i class="bi bi-arrow-bar-left"></i> Update Vehicle Category
+            </a></label>
         </div>
     </nav>
 </div>
 <div>
     <div class="container-sm mt-5">
-        <form:form id="form" method="get" modelAttribute="vehicleTypes">
-            <div class="row my-5 align-items-center justify-content-center">
-                <c:forEach items="${vehicleTypes}" var="vehicleType">
-                    <div class="card text-white bg-dark mb-3"
-                         style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer" data-bs-toggle="modal"
-                         data-bs-target="#modal${vehicleType.vehicleTypeId}">
-                        <img src="/images/${vehicleType.typeImagePath}" class="card-img-top mt-3 rounded-3" alt=""
-                             width="200" height="200">
-                        <div class="card-body">
-                            <h5 class="card-title text-center">${vehicleType.vehicleType}</h5>
+        <form:form modelAttribute="vehicleType" method="post" enctype="multipart/form-data">
+            <div class="row container justify-content-center">
+                <div class="col-5">
+                    <img src="/images/${vehicleType.typeImagePath}" class="rounded m-auto" alt="..." width="450"
+                         height="450">
+                </div>
+                <div class="col-5">
+                    <div class="form-floating mb-3 mt-5">
+                        <form:input path="vehicleType" type="text" class="form-control" id="vehicleType"/>
+                        <label for="vehicleType">Vehicle Type</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <form:textarea path="description" type="text" style="height: 100px" class="form-control"
+                                       id="vehicleTypeDescription"/>
+                        <label for="vehicleTypeDescription">Vehicle Type Description</label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="image">Vehicle Type image</label>
+                        <input name="vehicleTypeImage" type="file" class="form-control" id="image"/>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-outline-secondary m-auto d-block">Update</button>
+                        <div class="form-text">
+                            Updating will cause the vehicles under this category to update!
                         </div>
                     </div>
-                    <div class="modal fade" id="modal${vehicleType.vehicleTypeId}" tabindex="-1"
-                         aria-labelledby="exampleModalLabel"
-                         aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <figure>
-                                        <blockquote class="blockquote">
-                                            <p>${vehicleType.vehicleType}</p>
-                                        </blockquote>
-                                        <figcaption class="blockquote-footer">
-                                            <cite>${vehicleType.vehicles.size()} vehicles</cite>
-                                        </figcaption>
-                                    </figure>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <img class="border-1 mx-auto d-block"
-                                             src="${pageContext.request.contextPath}/images/${vehicleType.typeImagePath}"
-                                             alt="" width="200" height="200">
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="vehicleType"
-                                               value="${vehicleType.vehicleType}">
-                                        <label for="vehicleType">Vehicle Type Name</label>
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="vehicleTypeDescription"
-                                               value="${vehicleType.description}">
-                                        <label for="vehicleTypeDescription">Vehicle Type Description</label>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-outline-warning"
-                                            onclick="updateVehicleType('${vehicleType.vehicleTypeId}')"
-                                            id="${vehicleType.vehicleTypeId}">Update
-                                    </button>
-                                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </c:forEach>
+                </div>
             </div>
         </form:form>
     </div>
 </div>
 </body>
 </html>
-<script>
-    function updateVehicleType(vehicleTypeId) {
-        document.getElementById('form').action = 'admin/vehicleType/update/' + vehicleTypeId;
-    }
-</script>

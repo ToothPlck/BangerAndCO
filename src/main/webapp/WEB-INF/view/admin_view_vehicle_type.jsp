@@ -56,7 +56,30 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" aria-current="page" href="#" id="equipmentsDropdown"
+                        <a class="nav-link dropdown-toggle active" aria-current="page" href="#"
+                           id="vehicleTypesDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Vehicle Categories
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="vehicleTypesDropdown">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/vehicleType/add">Add</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/vehicleType/view/all">All</a></li>
+                            <c:forEach items="${vehicleTypes}" var="vehicleType">
+                                <li><a class="dropdown-item"
+                                       href="${pageContext.request.contextPath}/admin/vehicleType/view/${vehicleType.vehicleType}">${vehicleType.vehicleType}</a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="equipmentsDropdown"
                            role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             Equipments
@@ -99,34 +122,26 @@
     </nav>
     <nav class="navbar navbar-light" style="background-color: #282838;">
         <div class="container">
-            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Equipments</label>
+            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Vehicle
+                Categories</label>
         </div>
     </nav>
 </div>
 <div>
     <div class="container-sm mt-5">
-        <form:form id="form" method="get" modelAttribute="type">
+        <form:form id="form" method="get" modelAttribute="vehicleTypes">
             <div class="row my-5 align-items-center justify-content-center">
-                <c:forEach items="${equipments}" var="equipment">
+                <c:forEach items="${vehicleTypes}" var="vehicleType">
                     <div class="card text-white bg-dark mb-3"
-                         style="width: 18rem; min-height: 400px; margin: 25px; cursor: pointer" data-bs-toggle="modal"
-                         data-bs-target="#modal${equipment.equipmentId}">
-                        <img src="/images/${equipment.equipmentImagePath}" class="card-img-top mt-3 rounded-3" alt=""
+                         style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer" data-bs-toggle="modal"
+                         data-bs-target="#modal${vehicleType.vehicleTypeId}">
+                        <img src="/images/${vehicleType.typeImagePath}" class="card-img-top mt-3 rounded-3" alt=""
                              width="200" height="200">
                         <div class="card-body">
-                            <h5 class="card-title text-center">${equipment.equipmentName}</h5>
+                            <h5 class="card-title text-center">${vehicleType.vehicleType}</h5>
                         </div>
-                        <ul class="list-group list-group-flush rounded-3" style="margin-bottom: 10px;">
-                            <li class="list-group-item list-group-item-dark">Rent
-                                : ${equipment.equipmentRentPerHour}$/h
-                            </li>
-                            <li class="list-group-item list-group-item-dark">Identifier
-                                : ${equipment.equipmentIdentifier}</li>
-                            <li class="list-group-item list-group-item-dark">Category : ${equipment.equipmentType}</li>
-                            <li class="list-group-item list-group-item-dark">Availability : ${equipment.available}</li>
-                        </ul>
                     </div>
-                    <div class="modal fade" id="modal${equipment.equipmentId}" tabindex="-1"
+                    <div class="modal fade" id="modal${vehicleType.vehicleTypeId}" tabindex="-1"
                          aria-labelledby="exampleModalLabel"
                          aria-hidden="true">
                         <div class="modal-dialog">
@@ -134,10 +149,10 @@
                                 <div class="modal-header">
                                     <figure>
                                         <blockquote class="blockquote">
-                                            <p>${equipment.equipmentName}</p>
+                                            <p>${vehicleType.vehicleType}</p>
                                         </blockquote>
                                         <figcaption class="blockquote-footer">
-                                            <cite>${equipment.equipmentIdentifier}</cite>
+                                            <cite>${vehicleType.vehicles.size()} vehicles</cite>
                                         </figcaption>
                                     </figure>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -146,28 +161,24 @@
                                 <div class="modal-body">
                                     <div class="mb-3">
                                         <img class="border-1 mx-auto d-block"
-                                             src="${pageContext.request.contextPath}/images/${equipment.equipmentImagePath}"
+                                             src="${pageContext.request.contextPath}/images/${vehicleType.typeImagePath}"
                                              alt="" width="200" height="200">
                                     </div>
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="equipmentName"
-                                               value="${equipment.equipmentName}" disabled>
-                                        <label for="equipmentName">Equipment name</label>
+                                        <input type="text" class="form-control" id="vehicleType"
+                                               value="${vehicleType.vehicleType}" disabled>
+                                        <label for="vehicleType">Vehicle Type</label>
                                     </div>
                                     <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="equipmentIdentifier"
-                                               value="${equipment.equipmentIdentifier}" disabled>
-                                        <label for="equipmentIdentifier">Equipment identifier</label>
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="equipmentRent"
-                                               value="${equipment.equipmentRentPerHour}" disabled>
-                                        <label for="equipmentRent">Rent per hour</label>
+                                        <input type="text" class="form-control" id="vehicleTypeDescription"
+                                               value="${vehicleType.description}" disabled>
+                                        <label for="vehicleTypeDescription">Description</label>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-outline-warning" onclick="updateEquipment('${equipment.equipmentId}')"
-                                            id="${equipment.equipmentId}">Update
+                                    <button type="submit" class="btn btn-outline-warning"
+                                            onclick="updateVehicleType('${vehicleType.vehicleTypeId}')"
+                                            id="${vehicleType.vehicleTypeId}">Update
                                     </button>
                                     <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
                                         Close
@@ -184,7 +195,7 @@
 </body>
 </html>
 <script>
-    function updateEquipment(equipmentId){
-        document.getElementById('form').action = '/admin/equipment/update/' + equipmentId;
+    function updateVehicleType(vehicleTypeId) {
+        document.getElementById('form').action = '/admin/vehicleType/update/' + vehicleTypeId;
     }
 </script>
