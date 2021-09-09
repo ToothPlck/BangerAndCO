@@ -1,14 +1,12 @@
 package com.example.bangerandco.service;
 
+import com.example.bangerandco.dto.RentalDto;
 import com.example.bangerandco.dto.UserDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface UserService {
-//    void registerUser(UserDto userDto, MultipartFile imageFile) throws Exception;
-
-//    UserDto userInfo(String name);
 
     UserDto getUserName(String email);
 
@@ -27,4 +25,6 @@ public interface UserService {
     void blacklistUser(long userId) throws Exception;
 
     void whitelistUser(long userId) throws Exception;
+
+    UserDto getUserDetails(String username);
 }

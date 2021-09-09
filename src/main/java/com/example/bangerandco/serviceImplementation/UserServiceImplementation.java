@@ -1,5 +1,6 @@
 package com.example.bangerandco.serviceImplementation;
 
+import com.example.bangerandco.dto.RentalDto;
 import com.example.bangerandco.dto.UserDto;
 import com.example.bangerandco.model.User;
 import com.example.bangerandco.repository.UserRepo;
@@ -258,6 +259,29 @@ public class UserServiceImplementation implements UserService {
         } catch (Exception exception) {
             throw new Exception("An exception occurred while whitelisting the user");
         }
+    }
+
+    @Override
+    public UserDto getUserDetails(String email) {
+        UserDto userDto = new UserDto();
+        User user = userRepo.findUserByEmail(email);
+
+        userDto.setUserId(user.getUserId());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+        userDto.setBangerScore(user.getBangerScore());
+        userDto.setEmail(user.getEmail());
+        userDto.setAlternateImagePath(user.getAlternateImagePath());
+        userDto.setLicenseImagePath(user.getLicenseImagePath());
+        userDto.setUserImagePath(user.getUserImagePath());
+        userDto.setContact(user.getContact());
+        userDto.setCreatedDate(user.getCreatedDate().toString());
+        userDto.setUpdatedDate(user.getUpdatedDate().toString());
+        userDto.setDateOfBirth(user.getDateOfBirth().toString());
+        userDto.setDriversLicenseNumber(user.getDriversLicenseNumber());
+        userDto.setPassword(null);
+
+        return userDto;
     }
 
 //    @Override
