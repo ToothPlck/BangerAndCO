@@ -15,6 +15,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
             integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
             crossorigin="anonymous"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet"
+          type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -290,10 +294,19 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Please select the pickup and return date and
+                            times</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div>
+                    <div class="modal-body">
+                        <label style="color: #414141;" class="form-label">Intake Date</label>
+                        <input id="pickupDate" type="text" autocomplete="off" class="form-control"/>
+                        <label style="color: #414141;" class="form-label">Intake Date</label>
+                        <input id="dropOffDate" type="text" autocomplete="off" class="form-control"/>
+                    </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">View Available</button>
                         <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
                             Close
                         </button>
@@ -305,3 +318,45 @@
 </div>
 </body>
 </html>
+<script>
+
+    $(function () {
+        const pickUpDate = $("#pickupDate")
+        const dropOffDate = $("#dropOffDate");
+        pickUpDate.datepicker({
+            defaultDate: "+1w",
+            minDate: 2,
+            changeMonth: true,
+            numberOfMonths: 1,
+            onClose: function (selectedDate) {
+                const startingDate = new Date();
+                const endingDate = new Date(selectedDate);
+                const total = Math.abs(endingDate - startingDate) / 1000;
+                const difference = Math.floor(total / (60 * 60 * 24));
+                let range = difference + 12;
+                dropOffDate.datepicker("option", "minDate", selectedDate);
+                dropOffDate.datepicker("option", "maxDate", range);
+            }
+        });
+        dropOffDate.datepicker({
+            defaultDate: "+1w",
+            minDate: "+14D",
+            changeMonth: true,
+            numberOfMonths: 1,
+            onClose: function (selectedDate) {
+                const startingDate = new Date();
+                const endingDate = new Date(selectedDate);
+                const total = Math.abs(endingDate - startingDate) / 1000;
+                const difference = Math.floor(total / (60 * 60 * 24));
+                console.log(difference)
+                let overflow = difference - 12;
+                console.log(overflow);
+                pickUpDate.datepicker("option", "minDate", overflow);
+                pickUpDate.datepicker("option", "maxDate", selectedDate);
+            }
+        });
+    });
+    // $(function () {
+    //     $("#datepicker").datepicker({dateFormat: "yy-mm-dd", minDate: +1, maxDate: "+60M"}).val()
+    // });
+</script>
