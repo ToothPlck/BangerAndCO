@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/user/")
@@ -32,5 +33,19 @@ public class UserController {
         model.addAttribute("error", "");
         model.addAttribute("success", "");
         return "user_home";
+    }
+
+    @GetMapping("search/available")
+    public String searchAvailable(Model model,
+                                  Authentication authentication,
+                                  @RequestParam("pickDate")String pickDate,
+                                  @RequestParam("pickTime")String pickTime,
+                                  @RequestParam("dropDate")String dropDate,
+                                  @RequestParam("dropTime")String dropTime){
+        System.out.println("\n" + pickDate + "\n" + pickTime + "\n" + dropDate + "\n" + dropTime + "\n");
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "user_view_available";
     }
 }

@@ -286,49 +286,58 @@
         </form:form>
     </div>
 
-    <p style="display: none" id="returning">${loggedUser.returningCustomer}</p>
+        <p style="display: none" id="returning">${loggedUser.returningCustomer}</p>
     <div>
-        <div class="modal fade" id="rentalModal" tabindex="-1"
-             aria-labelledby="rentalModal"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header bg-dark text-white">
-                        <h5 class="modal-title" id="exampleModalLabel">View availability</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body bg-dark">
-                        <div class="form-floating mb-3">
-                            <input id="pickupDate" type="text" autocomplete="off" class="form-control"/>
-                            <label for="pickupDate" class="form-label">Pick-up date</label>
+        <form id="availabilityForm" action="${pageContext.request.contextPath}/user/search/available" method="get">
+            <div class="modal fade" id="rentalModal" tabindex="-1"
+                 aria-labelledby="rentalModal"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-dark text-white">
+                            <h5 class="modal-title" id="exampleModalLabel">View availability</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                         </div>
-                        <div class="form-floating mb-3">
-                            <input id="dropOffDate" type="text" autocomplete="off" class="form-control"/>
-                            <label for="dropOffDate" class="form-label">Drop-off date</label>
+                        <div class="modal-body bg-dark">
+                            <div class="form-floating mb-3">
+                                <input name="pickDate" id="pickupDate" type="text" autocomplete="off"
+                                       class="form-control"/>
+                                <label for="pickupDate" class="form-label">Pick-up date</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input name="dropDate" id="dropOffDate" type="text" autocomplete="off"
+                                       class="form-control"/>
+                                <label for="dropOffDate" class="form-label">Drop-off date</label>
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="form-floating mb-3">
+                                    <input name="pickTime" id="pickupTime" type="time" autocomplete="off"
+                                           class="form-control" style="width: 220px; margin-right: 25px;"/>
+                                    <label for="pickupTime" class="form-label">Pick-up time</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input name="dropTime" id="dropOffTime" type="time" autocomplete="off"
+                                           class="form-control" style="width: 220px"/>
+                                    <label for="dropOffTime" class="form-label">drop-off time</label>
+                                </div>
+                            </div>
                         </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Pick-up time</span>
-                            <input id="pickupTime" type="time" autocomplete="off" class="form-control"/>
-                            <span class="input-group-text">Drop-off time</span>
-                            <input id="dropOffTime" type="time" autocomplete="off" class="form-control"/>
+                        <div class="modal-footer bg-dark text-white">
+                            <button type="submit" class="btn btn-primary">View Availability</button>
+                            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+                                Close
+                            </button>
                         </div>
-                    </div>
-                    <div class="modal-footer bg-dark text-white">
-                        <button type="button" class="btn btn-primary">View Availability</button>
-                        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
-                            Close
-                        </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 </body>
 </html>
 <script>
-
     $(function () {
         const pickUpDate = $("#pickupDate")
         const dropOffDate = $("#dropOffDate");
@@ -367,4 +376,30 @@
             }
         });
     });
+
+    const availabilityForm = document.getElementById('availabilityForm');
+
+
+    availabilityForm.addEventListener('submit', function (event){
+        const returning = document.getElementById("returning").innerHTML;
+
+
+        const startD = $("pickupDate");
+        const startT = $("pickupTime");
+        const endD = $("dropOffDate");
+        const endT = $("dropOffTime");
+
+        if(returning === "false"){
+            event.preventDefault();
+
+            const startDate = new Date();
+            document.getElementById("pickupDate").innerHTML = startDate.getTime();
+            console.log(startDate);
+
+            const dropOffDate = $("#dropOffDate");
+            console.log(dropOffDate);
+        }
+    });
+
+
 </script>
