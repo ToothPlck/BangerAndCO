@@ -286,7 +286,7 @@
         </form:form>
     </div>
 
-        <p style="display: none" id="returning">${loggedUser.returningCustomer}</p>
+    <p style="display: none" id="returning">${loggedUser.returningCustomer}</p>
     <div>
         <form id="availabilityForm" action="${pageContext.request.contextPath}/user/search/available" method="get">
             <div class="modal fade" id="rentalModal" tabindex="-1"
@@ -380,26 +380,85 @@
     const availabilityForm = document.getElementById('availabilityForm');
 
 
-    availabilityForm.addEventListener('submit', function (event){
+    availabilityForm.addEventListener('submit', function (event) {
         const returning = document.getElementById("returning").innerHTML;
 
 
-        const startD = $("pickupDate");
-        const startT = $("pickupTime");
-        const endD = $("dropOffDate");
-        const endT = $("dropOffTime");
+        const startDate = $("#pickupDate").val();
+        const startTime = $("#pickupTime").val();
+        const endDate = $("#dropOffDate").val();
+        const endTime = $("#dropOffTime").val();
 
-        if(returning === "false"){
+        if (startDate === "") {
             event.preventDefault();
-
-            const startDate = new Date();
-            document.getElementById("pickupDate").innerHTML = startDate.getTime();
-            console.log(startDate);
-
-            const dropOffDate = $("#dropOffDate");
-            console.log(dropOffDate);
+            Swal.fire({
+                title: "No Pick-Up?",
+                text: "Please enter a pick-up date to check available vehicles!",
+                icon: "error",
+            });
+        } else if (startTime === "") {
+            event.preventDefault();
+            Swal.fire({
+                title: "8? 12? 4? When?",
+                text: "Please enter a pick-up time to check available vehicles!",
+                icon: "error",
+            });
+        } else if (endDate === "") {
+            event.preventDefault();
+            Swal.fire({
+                title: "We may need that back",
+                text: "Please enter a drop-off date to check available vehicles!",
+                icon: "error",
+            });
+        } else if (endTime === "") {
+            event.preventDefault();
+            Swal.fire({
+                title: "We ain't got all day yk",
+                text: "Please enter a drop-off to check available vehicles!",
+                icon: "error",
+            });
+        } else if (startTime.substring(0,2) < 8) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Top of the Mornin to ya Lad",
+                text: "Rental pick-up time can be between 8.00am and 6.00pm only!",
+                icon: "error",
+            });
+        } else if (startTime.substring(0,2) > 18) {
+            event.preventDefault();
+            Swal.fire({
+                title: "We got a night owl here",
+                text: "Rental pick-up time can be between 8.00am and 6.00pm only!",
+                icon: "error",
+            });
+        } else if (startDate === endDate &&
+            ((endTime.substring(0, 2) - startTime.substring(0, 2)) === 5) &&
+            (endTime.substring(3, 5) - startTime.substring(3, 5) < 0)) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Just another hour to go",
+                text: "Minimum rent period is five hours!",
+                icon: "error",
+            });
+        } else if (startDate === endDate && (endTime.substring(0, 2) - startTime.substring(0, 2)) < 5) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Too short",
+                text: "Minimum rent period is five hours!",
+                icon: "error",
+            });
+        } else if (returning === false && endTime.substring(0,2) > 18) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Maybe next time",
+                text: "Late returns after 6.00pm are allowed only for returning customers!",
+                icon: "error",
+            });
         }
-    });
-
+        else {
+            event.preventDefault();
+        }
+    })
+    ;
 
 </script>
