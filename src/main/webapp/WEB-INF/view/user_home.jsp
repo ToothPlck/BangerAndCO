@@ -286,28 +286,37 @@
         </form:form>
     </div>
 
-
+    <p style="display: none" id="returning">${loggedUser.returningCustomer}</p>
     <div>
         <div class="modal fade" id="rentalModal" tabindex="-1"
              aria-labelledby="rentalModal"
              aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Please select the pickup and return date and
-                            times</h5>
+                    <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title" id="exampleModalLabel">View availability</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <label style="color: #414141;" class="form-label">Intake Date</label>
-                        <input id="pickupDate" type="text" autocomplete="off" class="form-control"/>
-                        <label style="color: #414141;" class="form-label">Intake Date</label>
-                        <input id="dropOffDate" type="text" autocomplete="off" class="form-control"/>
+                    <div class="modal-body bg-dark">
+                        <div class="form-floating mb-3">
+                            <input id="pickupDate" type="text" autocomplete="off" class="form-control"/>
+                            <label for="pickupDate" class="form-label">Pick-up date</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input id="dropOffDate" type="text" autocomplete="off" class="form-control"/>
+                            <label for="dropOffDate" class="form-label">Drop-off date</label>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">Pick-up time</span>
+                            <input id="pickupTime" type="time" autocomplete="off" class="form-control"/>
+                            <span class="input-group-text">Drop-off time</span>
+                            <input id="dropOffTime" type="time" autocomplete="off" class="form-control"/>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">View Available</button>
-                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
+                    <div class="modal-footer bg-dark text-white">
+                        <button type="button" class="btn btn-primary">View Availability</button>
+                        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
                             Close
                         </button>
                     </div>
@@ -326,6 +335,7 @@
         pickUpDate.datepicker({
             defaultDate: "+1w",
             minDate: 2,
+            dateFormat: "yy-mm-dd",
             changeMonth: true,
             numberOfMonths: 1,
             onClose: function (selectedDate) {
@@ -340,6 +350,7 @@
         });
         dropOffDate.datepicker({
             defaultDate: "+1w",
+            dateFormat: "yy-mm-dd",
             minDate: "+14D",
             changeMonth: true,
             numberOfMonths: 1,
@@ -356,7 +367,4 @@
             }
         });
     });
-    // $(function () {
-    //     $("#datepicker").datepicker({dateFormat: "yy-mm-dd", minDate: +1, maxDate: "+60M"}).val()
-    // });
 </script>
