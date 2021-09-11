@@ -299,7 +299,14 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="accountModalLabel">View account</h5>
+                            <figure>
+                                <blockquote class="blockquote">
+                                    <p>${loggedUser.firstName} ${loggedUser.lastName}</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    <cite>${loggedUser.bangerScore} Banger Score</cite>
+                                </figcaption>
+                            </figure>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
@@ -387,14 +394,7 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header bg-dark text-white">
-                            <figure>
-                                <blockquote class="blockquote">
-                                    <p>${loggedUser.firstName} ${loggedUser.lastName}</p>
-                                </blockquote>
-                                <figcaption class="blockquote-footer">
-                                    <cite>${loggedUser.bangerScore} Banger Score</cite>
-                                </figcaption>
-                            </figure>
+                            <h5 class="modal-title" id="availabilityFormTitle">Place booking</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
@@ -438,7 +438,7 @@
 </html>
 <script>
     $(function () {
-        const pickUpDate = $("#pickupDate")
+        const pickUpDate = $("#pickupDate");
         const dropOffDate = $("#dropOffDate");
         pickUpDate.datepicker({
             defaultDate: "+1w",

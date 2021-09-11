@@ -301,7 +301,7 @@ public class UserServiceImplementation implements UserService {
         user.setContact(userDto.getContact());
         user.setEmail(userDto.getEmail());
 
-        if (!userDto.getPassword().equals("")) {
+        if (!userDto.getPassword().equals("") && userDto.getPassword() != null) {
             user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         }
 
