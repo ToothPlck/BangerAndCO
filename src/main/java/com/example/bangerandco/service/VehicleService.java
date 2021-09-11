@@ -18,4 +18,6 @@ public interface VehicleService {
     void updateVehicle(long vehicleId, MultipartFile vehicleImage, VehicleDto vehicleDto) throws Exception;
 
     void deleteVehicle(long vehicleId);
+
+    List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime);
 }

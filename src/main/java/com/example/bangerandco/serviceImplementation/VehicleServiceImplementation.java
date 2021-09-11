@@ -1,7 +1,10 @@
 package com.example.bangerandco.serviceImplementation;
 
+import com.example.bangerandco.dto.RentalDto;
 import com.example.bangerandco.dto.VehicleDto;
+import com.example.bangerandco.model.Rental;
 import com.example.bangerandco.model.Vehicle;
+import com.example.bangerandco.repository.RentalRepo;
 import com.example.bangerandco.repository.VehicleRepo;
 import com.example.bangerandco.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +25,8 @@ public class VehicleServiceImplementation implements VehicleService {
 
     @Autowired
     private VehicleRepo vehicleRepo;
+    @Autowired
+    private RentalRepo rentalRepo;
 
     @Override
     public void save(VehicleDto vehicleDto, MultipartFile vehicleImage) throws Exception {
@@ -168,5 +176,53 @@ public class VehicleServiceImplementation implements VehicleService {
     @Override
     public void deleteVehicle(long vehicleId) {
         /////////////////////////////////////
+    }
+
+    @Override
+    public List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime) {
+        List<VehicleDto> vehicleDtoList = new ArrayList<>();
+        List<Vehicle> vehicles = vehicleRepo.findAll();
+
+        List<Rental> rentalsDuringPeriod = rentalRepo.findAll();
+        if (rentalsDuringPeriod.size() != 0) {
+            for (Rental rentalDuringPeriod : rentalsDuringPeriod) {
+                if (LocalDate.parse(pickDate).isAfter(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    vehicles.remove(rentalDuringPeriod.getVehicle());
+                } else if (LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isBefore(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    vehicles.remove(rentalDuringPeriod.getVehicle());
+                }
+//                else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())) {
+//                    if (LocalTime.parse(pickTime).isBefore(rentalDuringPeriod.getRentalReturnTime())) {
+//                        vehicles.remove(rentalDuringPeriod.getVehicle());
+//                    } else if (LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())) {
+//                        vehicles.remove(rentalDuringPeriod.getVehicle());
+//                    }
+//                } else if (LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+//                    if (LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())) {
+//                        vehicles.remove(rentalDuringPeriod.getVehicle());
+//                    } else if (LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())) {
+//                        vehicles.remove(rentalDuringPeriod.getVehicle());
+//                    }
+//                } else if (LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())) {
+//                    if (LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())) {
+//                        vehicles.remove(rentalDuringPeriod.getVehicle());
+//                    }
+//                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+//                    if (LocalTime.parse(pickTime).isBefore(rentalDuringPeriod.getRentalReturnTime())) {
+//                        vehicles.remove(rentalDuringPeriod.getVehicle());
+//                    }
+//                } else if (LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+//                        &&
+//                        LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+//                    vehicles.remove(rentalDuringPeriod.getVehicle());
+//                }
+            }
+        }
+
+        return vehicleDtoList;
     }
 }

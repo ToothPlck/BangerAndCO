@@ -38,11 +38,12 @@ public class UserController {
     @GetMapping("search/available")
     public String searchAvailable(Model model,
                                   Authentication authentication,
-                                  @RequestParam("pickDate")String pickDate,
-                                  @RequestParam("pickTime")String pickTime,
-                                  @RequestParam("dropDate")String dropDate,
-                                  @RequestParam("dropTime")String dropTime){
-        System.out.println("\n" + pickDate + "\n" + pickTime + "\n" + dropDate + "\n" + dropTime + "\n");
+                                  @RequestParam("pickDate") String pickDate,
+                                  @RequestParam("pickTime") String pickTime,
+                                  @RequestParam("dropDate") String dropDate,
+                                  @RequestParam("dropTime") String dropTime) {
+        model.addAttribute("vehicles", vehicleService.available(pickDate, pickTime, dropDate, dropTime));
+        model.addAttribute("equipments", equipmentService.available(pickDate, pickTime, dropDate, dropTime));
         model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
         model.addAttribute("error", "");
         model.addAttribute("success", "");

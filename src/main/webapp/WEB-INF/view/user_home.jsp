@@ -288,7 +288,7 @@
 
     <p style="display: none" id="returning">${loggedUser.returningCustomer}</p>
     <div>
-        <form id="availabilityForm" action="${pageContext.request.contextPath}/user/search/available" method="get">
+        <form id="availabilityForm" action="${pageContext.request.contextPath}/user/search/available" method="post">
             <div class="modal fade" id="rentalModal" tabindex="-1"
                  aria-labelledby="rentalModal"
                  aria-hidden="true">
@@ -389,6 +389,12 @@
         const endDate = $("#dropOffDate").val();
         const endTime = $("#dropOffTime").val();
 
+
+        console.log(returning);
+        console.log(endTime);
+        console.log(endTime.substring(0, 2));
+        console.log(endTime.substring(0, 2) > 18);
+
         if (startDate === "") {
             event.preventDefault();
             Swal.fire({
@@ -417,14 +423,14 @@
                 text: "Please enter a drop-off to check available vehicles!",
                 icon: "error",
             });
-        } else if (startTime.substring(0,2) < 8) {
+        } else if (startTime.substring(0, 2) < 8) {
             event.preventDefault();
             Swal.fire({
                 title: "Top of the Mornin to ya Lad",
                 text: "Rental pick-up time can be between 8.00am and 6.00pm only!",
                 icon: "error",
             });
-        } else if (startTime.substring(0,2) > 18) {
+        } else if (startTime.substring(0, 2) > 18) {
             event.preventDefault();
             Swal.fire({
                 title: "We got a night owl here",
@@ -447,15 +453,16 @@
                 text: "Minimum rent period is five hours!",
                 icon: "error",
             });
-        } else if (returning === false && endTime.substring(0,2) > 18) {
+        } else if (returning === "false" && endTime.substring(0, 2) > 18) {
+            console.log(returning);
+            console.log(endTime);
             event.preventDefault();
             Swal.fire({
                 title: "Maybe next time",
                 text: "Late returns after 6.00pm are allowed only for returning customers!",
                 icon: "error",
             });
-        }
-        else {
+        } else {
             event.preventDefault();
         }
     })

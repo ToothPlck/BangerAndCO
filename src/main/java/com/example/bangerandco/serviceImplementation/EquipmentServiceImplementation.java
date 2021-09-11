@@ -119,6 +119,11 @@ public class EquipmentServiceImplementation implements EquipmentService {
     }
 
     @Override
+    public List<EquipmentDto> available(String pickDate, String pickTime, String dropDate, String dropTime) {
+        return null;
+    }
+
+    @Override
     public void updateEquipment(long equipmentId, MultipartFile equipmentImage, EquipmentDto equipmentDto) throws Exception {
         try {
             List<Equipment> equipmentsWithIdentifier = equipmentRepo.findByEquipmentIdentifier(equipmentDto.getEquipmentIdentifier());

@@ -18,4 +18,6 @@ public interface EquipmentService {
     void deleteEquipment(long equipmentId);
 
     EquipmentDto updatable(long equipmentId);
+
+    List<EquipmentDto> available(String pickDate, String pickTime, String dropDate, String dropTime);
 }
