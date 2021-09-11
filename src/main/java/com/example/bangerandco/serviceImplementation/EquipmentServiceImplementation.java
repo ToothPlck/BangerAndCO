@@ -1,8 +1,12 @@
 package com.example.bangerandco.serviceImplementation;
 
 import com.example.bangerandco.dto.EquipmentDto;
+import com.example.bangerandco.dto.VehicleDto;
 import com.example.bangerandco.model.Equipment;
+import com.example.bangerandco.model.Rental;
+import com.example.bangerandco.model.Vehicle;
 import com.example.bangerandco.repository.EquipmentRepo;
+import com.example.bangerandco.repository.RentalRepo;
 import com.example.bangerandco.service.EquipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +25,8 @@ public class EquipmentServiceImplementation implements EquipmentService {
 
     @Autowired
     private EquipmentRepo equipmentRepo;
+    @Autowired
+    private RentalRepo rentalRepo;
 
     @Override
     public void save(EquipmentDto equipmentDto, MultipartFile equipmentImage) throws Exception {
@@ -119,11 +127,6 @@ public class EquipmentServiceImplementation implements EquipmentService {
     }
 
     @Override
-    public List<EquipmentDto> available(String pickDate, String pickTime, String dropDate, String dropTime) {
-        return null;
-    }
-
-    @Override
     public void updateEquipment(long equipmentId, MultipartFile equipmentImage, EquipmentDto equipmentDto) throws Exception {
         try {
             List<Equipment> equipmentsWithIdentifier = equipmentRepo.findByEquipmentIdentifier(equipmentDto.getEquipmentIdentifier());
@@ -165,4 +168,119 @@ public class EquipmentServiceImplementation implements EquipmentService {
     public void deleteEquipment(long equipmentId) {
         //////////////////////////////////////////////
     }
+
+    @Override
+    public List<EquipmentDto> available(String pickDate, String pickTime, String dropDate, String dropTime) {
+        List<EquipmentDto> equipmentDtoList = new ArrayList<>();
+        List<Equipment> allEquipments = equipmentRepo.findAll();
+        List<Equipment> unavailableEquipments = new ArrayList<>();
+        List<Equipment> availableEquipments = new ArrayList<>();
+
+        List<Rental> rentalsDuringPeriod = rentalRepo.findAll();
+        if (rentalsDuringPeriod.size() != 0) {
+            for (Rental rentalDuringPeriod : rentalsDuringPeriod) {
+                if (LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    if (rentalDuringPeriod.getEquipment().size() != 0) {
+                        unavailableEquipments.addAll(rentalDuringPeriod.getEquipment());
+                    }
+                } else if (LocalDate.parse(pickDate).isAfter(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    if (rentalDuringPeriod.getEquipment().size() != 0) {
+                        unavailableEquipments.addAll(rentalDuringPeriod.getEquipment());
+                    }
+                } else if (LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isBefore(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())) {
+                    if (rentalDuringPeriod.getEquipment().size() != 0) {
+                        unavailableEquipments.addAll(rentalDuringPeriod.getEquipment());
+                    }
+                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    if (rentalDuringPeriod.getEquipment().size() != 0) {
+                        unavailableEquipments.addAll(rentalDuringPeriod.getEquipment());
+                    }
+                } else if (LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    if (rentalDuringPeriod.getEquipment().size() != 0) {
+                        unavailableEquipments.addAll(rentalDuringPeriod.getEquipment());
+                    }
+                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    if (rentalDuringPeriod.getEquipment().size() != 0) {
+                        unavailableEquipments.addAll(rentalDuringPeriod.getEquipment());
+                    }
+                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())) {
+                    if (LocalTime.parse(pickTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())
+                            ||
+                            LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())) {
+                        if (rentalDuringPeriod.getEquipment().size() != 0) {
+                            unavailableEquipments.addAll(rentalDuringPeriod.getEquipment());
+                        }
+                    }
+                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    if (LocalTime.parse(pickTime).isBefore(rentalDuringPeriod.getRentalReturnTime())
+                            ||
+                            LocalTime.parse(dropTime).isBefore(rentalDuringPeriod.getRentalReturnTime())) {
+                        if (rentalDuringPeriod.getEquipment().size() != 0) {
+                            unavailableEquipments.addAll(rentalDuringPeriod.getEquipment());
+                        }
+                    }
+                } else if (LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())) {
+                    if (LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalReturnTime())) {
+                        if (rentalDuringPeriod.getEquipment().size() != 0) {
+                            unavailableEquipments.addAll(rentalDuringPeriod.getEquipment());
+                        }
+                    }
+                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    if (rentalDuringPeriod.getEquipment().size() != 0) {
+                        unavailableEquipments.addAll(rentalDuringPeriod.getEquipment());
+                    }
+                }
+            }
+        }
+        if (allEquipments.size() != 0) {
+            for (Equipment equipment : allEquipments) {
+                if (unavailableEquipments.size() != 0) {
+                    if (!unavailableEquipments.contains(equipment)) {
+                        availableEquipments.add(equipment);
+                    }
+                } else {
+                    availableEquipments = allEquipments;
+                }
+            }
+        }
+
+        if (availableEquipments.size() != 0) {
+            for (Equipment availableEquipment : availableEquipments) {
+                EquipmentDto equipmentDto = new EquipmentDto();
+
+                equipmentDto.setEquipmentId(availableEquipment.getEquipmentId());
+                equipmentDto.setEquipmentIdentifier(availableEquipment.getEquipmentIdentifier());
+                equipmentDto.setEquipmentImagePath(availableEquipment.getEquipmentImagePath());
+                equipmentDto.setEquipmentType(availableEquipment.getEquipmentType());
+                equipmentDto.setEquipmentRentPerHour(availableEquipment.getEquipmentRentPerHour());
+                equipmentDto.setAvailable(availableEquipment.isAvailable());
+                equipmentDto.setEquipmentName(availableEquipment.getEquipmentName());
+
+                equipmentDtoList.add(equipmentDto);
+            }
+        }
+
+        return equipmentDtoList;
+    }
+
 }

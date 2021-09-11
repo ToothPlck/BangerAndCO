@@ -44,9 +44,12 @@
                            id="rentalsDropdown"
                            role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            My Rentals
+                            Rentals
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="rentalsDropdown">
+                            <li><a class="dropdown-item" data-bs-toggle="modal"
+                                   data-bs-target="#rentalModal" style="cursor: pointer">Rent now</a>
+                            </li>
                             <li><a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/user/rentals/on-going">On Going</a>
                             </li>
@@ -64,6 +67,10 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="modal"
+                           data-bs-target="#rentalModal" style="cursor: pointer">Rent now</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0 d-flex">
                     <li class="nav-item dropdown">
@@ -77,8 +84,8 @@
                                  style="margin: 0 20px;">${loggedUser.firstName}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="accountDropdown">
-                            <li><a class="dropdown-item"
-                                   href="${pageContext.request.contextPath}/user/account/view">View Account</a>
+                            <li><a class="dropdown-item" data-bs-toggle="modal"
+                                   data-bs-target="#accountModal" style="cursor: pointer">View Account</a>
                             </li>
                             <hr class="dropdown-divider">
                             <li><a class="dropdown-item"
@@ -286,6 +293,91 @@
         </form:form>
     </div>
 
+    <div>
+        <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="accountModalLabel">View account</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <img class="border-1 mx-auto d-block"
+                                 src="${pageContext.request.contextPath}/images/${loggedUser.userImagePath}"
+                                 alt="" width="200" height="200">
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="userFirstname"
+                                   value="${loggedUser.firstName}" disabled>
+                            <label for="userFirstname">Firstname</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="userLastname"
+                                   value="${loggedUser.lastName}" disabled>
+                            <label for="userLastname">Lastname</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="userEmail"
+                                   value="${loggedUser.email}" disabled>
+                            <label for="userEmail">Email</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="userContact"
+                                   value="${loggedUser.contact}" disabled>
+                            <label for="userContact">Contact</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="userLicense"
+                                   value="${loggedUser.driversLicenseNumber}" disabled>
+                            <label for="userLicense">License Number</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="userDob"
+                                   value="${loggedUser.dateOfBirth}" disabled>
+                            <label for="userDob">Date of Birth</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="userCreated"
+                                   value="${loggedUser.createdDate}" disabled>
+                            <label for="userCreated">Joined</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="userUpdated"
+                                   value="${loggedUser.updatedDate}" disabled>
+                            <label for="userUpdated">Last updated</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" placeholder="License"
+                                   id="licenseImage" disabled/>
+                            <label for="licenseImage">License : </label>
+                            <br>
+                            <img class="rounded-3 mx-auto d-block"
+                                 src="${pageContext.request.contextPath}/images/${loggedUser.licenseImagePath}"
+                                 alt="" width="450" height="450">
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" placeholder="alternate"
+                                   id="altImage" disabled/>
+                            <label for="altImage">Alternate image : </label>
+                            <br>
+                            <img class="rounded-3 mx-auto d-block"
+                                 src="${pageContext.request.contextPath}/images/${loggedUser.alternateImagePath}"
+                                 alt="" width="450" height="450">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Update account</button>
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <p style="display: none" id="returning">${loggedUser.returningCustomer}</p>
     <div>
         <form id="availabilityForm" action="${pageContext.request.contextPath}/user/search/available" method="post">
@@ -462,10 +554,7 @@
                 text: "Late returns after 6.00pm are allowed only for returning customers!",
                 icon: "error",
             });
-        } else {
-            event.preventDefault();
         }
-    })
-    ;
+    });
 
 </script>

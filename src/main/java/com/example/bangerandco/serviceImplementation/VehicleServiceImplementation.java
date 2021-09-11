@@ -181,45 +181,91 @@ public class VehicleServiceImplementation implements VehicleService {
     @Override
     public List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime) {
         List<VehicleDto> vehicleDtoList = new ArrayList<>();
-        List<Vehicle> vehicles = vehicleRepo.findAll();
+        List<Vehicle> allVehicles = vehicleRepo.findAll();
+        List<Vehicle> unavailableVehicles = new ArrayList<>();
+        List<Vehicle> availableVehicles = new ArrayList<>();
 
         List<Rental> rentalsDuringPeriod = rentalRepo.findAll();
         if (rentalsDuringPeriod.size() != 0) {
             for (Rental rentalDuringPeriod : rentalsDuringPeriod) {
-                if (LocalDate.parse(pickDate).isAfter(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                if (LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    unavailableVehicles.add(rentalDuringPeriod.getVehicle());
+                } else if (LocalDate.parse(pickDate).isAfter(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
                         &&
                         LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
-                    vehicles.remove(rentalDuringPeriod.getVehicle());
+                    unavailableVehicles.add(rentalDuringPeriod.getVehicle());
                 } else if (LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
                         &&
-                        LocalDate.parse(dropDate).isBefore(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
-                    vehicles.remove(rentalDuringPeriod.getVehicle());
+                        LocalDate.parse(dropDate).isBefore(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())) {
+                    unavailableVehicles.add(rentalDuringPeriod.getVehicle());
+                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    unavailableVehicles.add(rentalDuringPeriod.getVehicle());
+                } else if (LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    unavailableVehicles.add(rentalDuringPeriod.getVehicle());
+                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    unavailableVehicles.add(rentalDuringPeriod.getVehicle());
+                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())) {
+                    if (LocalTime.parse(pickTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())
+                            ||
+                            LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())) {
+                        unavailableVehicles.add(rentalDuringPeriod.getVehicle());
+                    }
+                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    if (LocalTime.parse(pickTime).isBefore(rentalDuringPeriod.getRentalReturnTime())
+                            ||
+                            LocalTime.parse(dropTime).isBefore(rentalDuringPeriod.getRentalReturnTime())) {
+                        unavailableVehicles.add(rentalDuringPeriod.getVehicle());
+                    }
+                } else if (LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())) {
+                    if (LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalReturnTime())) {
+                        unavailableVehicles.add(rentalDuringPeriod.getVehicle());
+                    }
+                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())
+                        &&
+                        LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
+                    unavailableVehicles.add(rentalDuringPeriod.getVehicle());
                 }
-//                else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())) {
-//                    if (LocalTime.parse(pickTime).isBefore(rentalDuringPeriod.getRentalReturnTime())) {
-//                        vehicles.remove(rentalDuringPeriod.getVehicle());
-//                    } else if (LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())) {
-//                        vehicles.remove(rentalDuringPeriod.getVehicle());
-//                    }
-//                } else if (LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
-//                    if (LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())) {
-//                        vehicles.remove(rentalDuringPeriod.getVehicle());
-//                    } else if (LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())) {
-//                        vehicles.remove(rentalDuringPeriod.getVehicle());
-//                    }
-//                } else if (LocalDate.parse(dropDate).isEqual(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())) {
-//                    if (LocalTime.parse(dropTime).isAfter(rentalDuringPeriod.getRentalCollectionTime())) {
-//                        vehicles.remove(rentalDuringPeriod.getVehicle());
-//                    }
-//                } else if (LocalDate.parse(pickDate).isEqual(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
-//                    if (LocalTime.parse(pickTime).isBefore(rentalDuringPeriod.getRentalReturnTime())) {
-//                        vehicles.remove(rentalDuringPeriod.getVehicle());
-//                    }
-//                } else if (LocalDate.parse(pickDate).isBefore(rentalDuringPeriod.getRentalCollectionDate().toLocalDate())
-//                        &&
-//                        LocalDate.parse(dropDate).isAfter(rentalDuringPeriod.getRentalReturnDate().toLocalDate())) {
-//                    vehicles.remove(rentalDuringPeriod.getVehicle());
-//                }
+            }
+        }
+        if (allVehicles.size() != 0) {
+            for (Vehicle vehicle : allVehicles) {
+                if (unavailableVehicles.size() != 0) {
+                    if (!unavailableVehicles.contains(vehicle)) {
+                        availableVehicles.add(vehicle);
+                    }
+                } else {
+                    availableVehicles = allVehicles;
+                }
+            }
+        }
+
+        if (availableVehicles.size() != 0) {
+            for (Vehicle availableVehicle : availableVehicles) {
+                VehicleDto vehicleDto = new VehicleDto();
+
+                vehicleDto.setVehicleId(availableVehicle.getVehicleId());
+                vehicleDto.setEngineType(availableVehicle.getEngineType());
+                vehicleDto.setModel(availableVehicle.getModel());
+                vehicleDto.setRentPerHour(availableVehicle.getRentPerHour());
+                vehicleDto.setTransmissionType(availableVehicle.getTransmissionType());
+                vehicleDto.setVehicleImagePath(availableVehicle.getVehicleImagePath());
+                vehicleDto.setVehicleType(availableVehicle.getVehicleType());
+
+                vehicleDtoList.add(vehicleDto);
             }
         }
 
