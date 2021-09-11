@@ -22,4 +22,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     @Query("from User u where u.isBlacklisted=true ")
     List<User> findBlacklistedUsers();
+
+    @Query("from User u where u.email=:email")
+    List<User> findUsersByEmail(String email);
 }

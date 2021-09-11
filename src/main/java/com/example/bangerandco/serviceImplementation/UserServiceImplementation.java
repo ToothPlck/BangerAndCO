@@ -284,16 +284,69 @@ public class UserServiceImplementation implements UserService {
         return userDto;
     }
 
-//    @Override
-//    public UserDto userInfo(String name) {
-//        UserDto userDto = new UserDto();
-//
-//        User user = userRepo.findUserByEmail(name);
-//
-//        userDto.setUserId(user.getUserId());
-//        userDto.setEmail(user.getEmail());
-//        userDto.setUserImagePath(user.getUserImagePath());
-//
-//        return userDto;
-//    }
+    @Override
+    public void updateAccount(UserDto userDto, MultipartFile userImage, MultipartFile licenseImage, MultipartFile alternateImage) throws Exception {
+        List<User> usersWithEmail = userRepo.findUsersByEmail(userDto.getEmail());
+        if (usersWithEmail.size() != 0) {
+            for (User userWithEmail : usersWithEmail) {
+                if (userDto.getUserId() != userWithEmail.getUserId()) {
+                    throw new Exception("The user with the email: " + userDto.getEmail() + " is already registered with BangerAndCo! Please try logging in!");
+                }
+            }
+        }
+
+        User user = userRepo.getById(userDto.getUserId());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setContact(userDto.getContact());
+        user.setEmail(userDto.getEmail());
+
+        if (!userDto.getPassword().equals("")) {
+            user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        }
+
+        if (!userImage.isEmpty()) {
+            String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+            String userImageNameFormat = "user" + user.getUserId() + ".jpg";
+
+            Path deletePath = Paths.get(imagesFolder + user.getUserImagePath());
+            Files.delete(deletePath);
+
+            byte[] userByte = userImage.getBytes();
+            Path userPath = Paths.get(imagesFolder + userImageNameFormat);
+            Files.write(userPath, userByte);
+
+            user.setUserImagePath(userImageNameFormat);
+        }
+
+        if (!licenseImage.isEmpty()) {
+            String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+            String licenseImageNameFormat = "lic" + user.getUserId() + ".jpg";
+
+            Path deletePath = Paths.get(imagesFolder + user.getLicenseImagePath());
+            Files.delete(deletePath);
+
+            byte[] licenseByte = licenseImage.getBytes();
+            Path licensePath = Paths.get(imagesFolder + licenseImageNameFormat);
+            Files.write(licensePath, licenseByte);
+
+            user.setLicenseImagePath(licenseImageNameFormat);
+        }
+
+        if (!alternateImage.isEmpty()) {
+            String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+            String altImageNameFormat = "alt" + user.getUserId() + ".jpg";
+
+            Path deletePath = Paths.get(imagesFolder + user.getAlternateImagePath());
+            Files.delete(deletePath);
+
+            byte[] altByte = alternateImage.getBytes();
+            Path altPath = Paths.get(imagesFolder + altImageNameFormat);
+            Files.write(altPath, altByte);
+
+            user.setAlternateImagePath(altImageNameFormat);
+        }
+
+        userRepo.save(user);
+    }
 }

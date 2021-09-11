@@ -27,4 +27,6 @@ public interface UserService {
     void whitelistUser(long userId) throws Exception;
 
     UserDto getUserDetails(String username);
+
+    void updateAccount(UserDto userDto, MultipartFile userImage, MultipartFile licenseImage, MultipartFile alternateImage) throws Exception;
 }
