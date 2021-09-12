@@ -110,7 +110,91 @@
 </div>
 <div>
     <div>
-
+        <div class="container-sm mt-5">
+            <form:form id="form" method="get" modelAttribute="vehicles">
+                <div class="row my-5 align-items-center justify-content-center">
+                    <c:forEach items="${vehicles}" var="vehicle">
+                        <div class="card text-white bg-dark mb-3"
+                             style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer"
+                             data-bs-toggle="modal"
+                             data-bs-target="#modal${vehicle.vehicleId}">
+                            <img src="/images/${vehicle.vehicleImagePath}" class="card-img-top mt-3 rounded-3" alt=""
+                                 width="200" height="200">
+                            <div class="card-body">
+                                <figure>
+                                    <blockquote class="blockquote card-title text-center">
+                                        <p>${vehicle.model}</p>
+                                    </blockquote>
+                                    <figcaption class="blockquote-footer text-center mt-1">
+                                        <cite>${vehicle.rentPerHour}$/h</cite>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="modal${vehicle.vehicleId}" tabindex="-1"
+                             aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <figure>
+                                            <blockquote class="blockquote">
+                                                <p>${vehicle.model}</p>
+                                            </blockquote>
+                                            <figcaption class="blockquote-footer">
+                                                <cite>${vehicle.vehicleType.vehicleType}</cite>
+                                            </figcaption>
+                                        </figure>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <img class="border-1 mx-auto d-block"
+                                                 src="${pageContext.request.contextPath}/images/${vehicle.vehicleImagePath}"
+                                                 alt="" width="200" height="200">
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="vehicleModel"
+                                                   value="${vehicle.model}" disabled>
+                                            <label for="vehicleModel">Model</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="vehicleType"
+                                                   value="${vehicle.vehicleType.vehicleType}" disabled>
+                                            <label for="vehicleType">Category</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="vehicleRent"
+                                                   value="${vehicle.rentPerHour}$" disabled>
+                                            <label for="vehicleRent">Rent per hour</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="vehicleEngine"
+                                                   value="${vehicle.engineType}" disabled>
+                                            <label for="vehicleEngine">Engine</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="vehicleTransmission"
+                                                   value="${vehicle.transmissionType}" disabled>
+                                            <label for="vehicleTransmission">Transmission</label>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-dark" id="rentButton"
+                                                data-bs-dismiss="modal">Rent
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </form:form>
+        </div>
     </div>
     <p style="display: none" id="successMessage">${success}</p>
     <p style="display: none" id="errorMessage">${error}</p>

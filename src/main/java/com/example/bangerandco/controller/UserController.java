@@ -75,6 +75,7 @@ public class UserController {
                                   @RequestParam("pickTime") String pickTime,
                                   @RequestParam("dropDate") String dropDate,
                                   @RequestParam("dropTime") String dropTime) {
+        model.addAttribute("hours", rentalService.periodInHours(pickDate, pickTime, dropDate, dropTime));
         model.addAttribute("vehicles", vehicleService.available(pickDate, pickTime, dropDate, dropTime));
         model.addAttribute("equipments", equipmentService.available(pickDate, pickTime, dropDate, dropTime));
         model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
