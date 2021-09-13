@@ -181,11 +181,20 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-dark" id="rentButton"
-                                                data-bs-dismiss="modal">Rent
+                                        <div class="form-text" style="color: black">
+                                            By continuing, you are agreeing that your account information is accurate
+                                            and up-to date. To view and update your account information, <a
+                                                style="color: #282838; cursor: pointer" class="form-text"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#accountModal">Click here</a>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-warning" id="viewEquipmentsButton"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#equipmentsModal">Add equipments
                                         </button>
-                                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
-                                            Close
+                                        <button type="button" class="btn btn-outline-dark" id="rentButton"
+                                                onclick="rentVehicle('${vehicle.vehicleId}', '${vehicle.rentPerHour}')">
+                                            Rent
                                         </button>
                                     </div>
                                 </div>
@@ -196,8 +205,50 @@
             </form:form>
         </div>
     </div>
+    <div>
+        <div class="modal fade" id="equipmentsModal" tabindex="-1"
+             aria-labelledby="equipmentsModal"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <label style="font-size: 25px; font-weight: bold;">Add-On Equipments</label>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <form:form id="form" method="get" modelAttribute="equipments">
+                        <div class="row my-5 align-items-center justify-content-center">
+                            <c:forEach items="${equipments}" var="equipment">
+                                <p style="display: none" id="toggleEquipmentSelection${equipment.equipmentId}">no</p>
+                                <div class="card text-white bg-dark mb-3" id="selectedEquipment${equipment.equipmentId}"
+                                     onclick="selectEquipment('${equipment.equipmentId}', '${equipment.equipmentRentPerHour}')"
+                                     style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer; border-width: medium; border-color: black;">
+                                    <img src="/images/${equipment.equipmentImagePath}"
+                                         class="card-img-top mt-3 rounded-3" alt=""
+                                         width="200" height="200">
+                                    <div class="card-body">
+                                        <figure>
+                                            <blockquote class="blockquote card-title text-center">
+                                                <p>${equipment.equipmentName} (${equipment.equipmentType})</p>
+                                            </blockquote>
+                                            <figcaption class="blockquote-footer text-center mt-1">
+                                                <cite>${equipment.equipmentRentPerHour}$/h</cite>
+                                            </figcaption>
+                                        </figure>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </form:form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <p style="display: none" id="successMessage">${success}</p>
     <p style="display: none" id="errorMessage">${error}</p>
+    <p style="display: none" id="hours">${hours}</p>
     <div>
         <form id="accountForm" action="${pageContext.request.contextPath}/user/update/account" method="get">
             <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModal" aria-hidden="true">
@@ -487,4 +538,76 @@
             });
         }
     });
+
+    // Rental total calculation
+    let rentalTotal = 0;
+    const numberOfHours = document.getElementById("hours").innerHTML;
+    // Selected equipments
+    const equipments = [];
+    let vehicleId;
+
+    function rentVehicle(id, rentPerHour) {
+
+        const priceForHours = rentPerHour * numberOfHours;
+
+        if (rentalTotal < 1) {
+            Swal.fire({
+                title: "Additional equipments",
+                icon: "question",
+                text: "Rent vehicle without any additional equipments?",
+                showCancelButton: true,
+                confirmButtonText: 'Proceed',
+                cancelButtonText: 'View Equipments',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    rentalTotal += priceForHours;
+                    vehicleId = id;
+                }
+            })
+        }
+
+        if (rentalTotal > 0) {
+            Swal.fire({
+                title: "Confirm",
+                icon: "info",
+                text: "Confirm Booking",
+                showCancelButton: true,
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    rentalTotal += priceForHours;
+                    vehicleId = id;
+                }
+            })
+        }
+    }
+
+    function selectEquipment(id, rentPerHour) {
+
+        const equipmentSelectionToggle = document.getElementById("toggleEquipmentSelection" + id).innerHTML;
+        const priceForHours = rentPerHour * numberOfHours;
+
+        if (equipmentSelectionToggle === "no") {
+            document.getElementById("selectedEquipment" + id).style.borderColor = "green";
+            document.getElementById("selectedEquipment" + id).style.borderWidth = "medium";
+            document.getElementById("toggleEquipmentSelection" + id).innerHTML = "yes";
+
+            equipments.push(id);
+
+            rentalTotal += priceForHours;
+        }
+        if (equipmentSelectionToggle === "yes") {
+            document.getElementById("selectedEquipment" + id).style.borderColor = "black";
+            document.getElementById("selectedEquipment" + id).style.borderWidth = "medium";
+            document.getElementById("toggleEquipmentSelection" + id).innerHTML = "no";
+
+            for (let i = equipments.length - 1; i >= 0; i--) {
+                if (equipments[i] === id) equipments.splice(i, 1);
+            }
+
+            rentalTotal -= priceForHours;
+        }
+    }
+
 </script>
