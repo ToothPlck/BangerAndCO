@@ -131,7 +131,7 @@
                                 </figure>
                             </div>
                         </div>
-                        <div class="modal fade" id="modal${vehicle.vehicleId}" tabindex="-1"
+                        <div class="modal fade" onclick="calculateTotal('${vehicle.vehicleId}', '${vehicle.rentPerHour}')" id="modal${vehicle.vehicleId}" tabindex="-1"
                              aria-labelledby="exampleModalLabel"
                              aria-hidden="true">
                             <div class="modal-dialog">
@@ -181,13 +181,14 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <div class="form-text" style="color: black">
+                                        <div class="form-text">
                                             By continuing, you are agreeing that your account information is accurate
                                             and up-to date. To view and update your account information, <a
-                                                style="color: #282838; cursor: pointer" class="form-text"
+                                                style="cursor: pointer" class="form-text"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#accountModal">Click here</a>
                                         </div>
+                                        <div class="form-text" id="totalDisplay">Total : </div>
                                         <button type="button" class="btn btn-outline-warning" id="viewEquipmentsButton"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#equipmentsModal">Add equipments
@@ -545,6 +546,8 @@
     // Selected equipments
     const equipments = [];
     let vehicleId;
+
+    const displayNetTotal = document.getElementById("totalDisplay").innerHTML;
 
     function rentVehicle(id, rentPerHour) {
 
