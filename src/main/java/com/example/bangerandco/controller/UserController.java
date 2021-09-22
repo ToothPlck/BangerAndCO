@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/user/")
 public class UserController {
@@ -76,11 +78,34 @@ public class UserController {
                                   @RequestParam("dropDate") String dropDate,
                                   @RequestParam("dropTime") String dropTime) {
         model.addAttribute("hours", rentalService.periodInHours(pickDate, pickTime, dropDate, dropTime));
+        model.addAttribute("pickDate", pickDate);
+        model.addAttribute("pickTime", pickTime);
+        model.addAttribute("dropDate", dropDate);
+        model.addAttribute("dropTime", dropTime);
         model.addAttribute("vehicles", vehicleService.available(pickDate, pickTime, dropDate, dropTime));
         model.addAttribute("equipments", equipmentService.available(pickDate, pickTime, dropDate, dropTime));
         model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
         model.addAttribute("error", "");
         model.addAttribute("success", "");
         return "user_view_available";
+    }
+
+    @PostMapping("set/booking")
+    public String setBooking(Model model,
+                             Authentication authentication,
+                             @RequestParam("vehicle") String vehicleId,
+                             @RequestParam("equipments")List<String> equipments,
+                             @RequestParam("hours")String hours,
+                             @RequestParam("setBookingPickupDate") String pickDate,
+                             @RequestParam("setBookingPickupTime") String pickTime,
+                             @RequestParam("setBookingDropOffDate") String dropDate,
+                             @RequestParam("setBookingDropOffTime") String dropTime){
+        try {
+            rentalService.createBooking(authentication.getName(), vehicleId, equipments, hours, pickDate, pickTime, dropDate, dropTime);
+        }
+        catch (Exception exception){
+            System.out.println(exception.getMessage());
+        }
+        return "redirect:/user/home";
     }
 }

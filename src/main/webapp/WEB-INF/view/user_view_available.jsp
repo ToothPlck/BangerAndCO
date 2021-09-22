@@ -131,7 +131,7 @@
                                 </figure>
                             </div>
                         </div>
-                        <div class="modal fade" onclick="calculateTotal('${vehicle.vehicleId}', '${vehicle.rentPerHour}')" id="modal${vehicle.vehicleId}" tabindex="-1"
+                        <div class="modal fade" id="modal${vehicle.vehicleId}" tabindex="-1"
                              aria-labelledby="exampleModalLabel"
                              aria-hidden="true">
                             <div class="modal-dialog">
@@ -188,7 +188,7 @@
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#accountModal">Click here</a>
                                         </div>
-                                        <div class="form-text" id="totalDisplay">Total : </div>
+                                            <%--                                        <div class="form-text" id="totalDisplay">Total : </div>--%>
                                         <button type="button" class="btn btn-outline-warning" id="viewEquipmentsButton"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#equipmentsModal">Add equipments
@@ -223,7 +223,7 @@
                                 <p style="display: none" id="toggleEquipmentSelection${equipment.equipmentId}">no</p>
                                 <div class="card text-white bg-dark mb-3" id="selectedEquipment${equipment.equipmentId}"
                                      onclick="selectEquipment('${equipment.equipmentId}', '${equipment.equipmentRentPerHour}')"
-                                     style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer; border-width: medium; border-color: black;">
+                                     style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer; border-width: thick; border-color: black;">
                                     <img src="/images/${equipment.equipmentImagePath}"
                                          class="card-img-top mt-3 rounded-3" alt=""
                                          width="200" height="200">
@@ -245,11 +245,6 @@
             </div>
         </div>
     </div>
-
-
-    <p style="display: none" id="successMessage">${success}</p>
-    <p style="display: none" id="errorMessage">${error}</p>
-    <p style="display: none" id="hours">${hours}</p>
     <div>
         <form id="accountForm" action="${pageContext.request.contextPath}/user/update/account" method="get">
             <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModal" aria-hidden="true">
@@ -387,6 +382,36 @@
                     </div>
                 </div>
             </div>
+        </form>
+    </div>
+    <div style="display: none">
+        <p id="successMessage">${success}</p>
+        <p id="errorMessage">${error}</p>
+        <p id="hours">${hours}</p>
+
+        <form action="${pageContext.request.contextPath}/user/set/booking" id="setBookingForm" method="post">
+            <label for="setBookingVehicleId"></label>
+            <input name="vehicle" id="setBookingVehicleId" type="text">
+
+            <label for="setBookingHours"></label>
+            <input name="hours" id="setBookingHours" type="text">
+
+            <label for="setBookingEquipments"></label>
+            <input name="equipments" id="setBookingEquipments" type="text">
+
+            <label for="setBookingPickupDate"></label>
+            <input name="setBookingPickupDate" id="setBookingPickupDate" type="text" value="${pickDate}">
+
+            <label for="setBookingPickupTime"></label>
+            <input name="setBookingPickupTime" id="setBookingPickupTime" type="text" value="${pickTime}">
+
+            <label for="setBookingDropOffDate"></label>
+            <input name="setBookingDropOffDate" id="setBookingDropOffDate" type="text" value="${dropDate}">
+
+            <label for="setBookingDropOffTime"></label>
+            <input name="setBookingDropOffTime" id="setBookingDropOffTime" type="text" value="${dropTime}">
+
+            <button type="submit" id="selected">Submit</button>
         </form>
     </div>
 </div>
@@ -540,20 +565,22 @@
         }
     });
 
-    // Rental total calculation
     let rentalTotal = 0;
     const numberOfHours = document.getElementById("hours").innerHTML;
-    // Selected equipments
+
     const equipments = [];
     let vehicleId;
-
-    const displayNetTotal = document.getElementById("totalDisplay").innerHTML;
 
     function rentVehicle(id, rentPerHour) {
 
         const priceForHours = rentPerHour * numberOfHours;
+        const selectedVehicle = document.getElementById('setBookingVehicleId');
+        const selectedHours = document.getElementById('setBookingHours');
+        const selectedEquipments = document.getElementById('setBookingEquipments');
+        const selected = document.getElementById('selected');
 
-        if (rentalTotal < 1) {
+        let displayTotal;
+        if (equipments.length < 1) {
             Swal.fire({
                 title: "Additional equipments",
                 icon: "question",
@@ -563,17 +590,50 @@
                 cancelButtonText: 'View Equipments',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    rentalTotal += priceForHours;
-                    vehicleId = id;
+                    displayTotal = rentalTotal + priceForHours;
+                    Swal.fire({
+                        title: "Confirm",
+                        icon: "info",
+                        html: '<div> Total number of hours : </div>' + numberOfHours +
+                            '<div> <br> Pick up and drop off : </div>' +
+                            pickdate + ' at ' + pickTime + ' --- ' + dropDate + ' at ' + dropTime +
+                            '<div> <br> Vehicle rental total : </div>' + priceForHours +
+                            '<div> <br> Equipments rental total : </div>' + rentalTotal +
+                            '<div> <br> Total payable : </div>' + displayTotal,
+                        showCancelButton: true,
+                        confirmButtonText: 'Proceed',
+                        cancelButtonText: 'Cancel',
+                    }).then((totalResult) => {
+                        if (totalResult.isConfirmed) {
+                            rentalTotal += priceForHours;
+                            vehicleId = id;
+
+                            selectedVehicle.value = vehicleId;
+                            selectedHours.value = numberOfHours;
+                            selectedEquipments.value = equipments;
+
+                            selected.click();
+                        } else {
+                            displayTotal = 0;
+                        }
+                    })
+                } else {
+                    displayTotal = 0;
                 }
             })
         }
 
-        if (rentalTotal > 0) {
+        if (equipments.length > 0) {
+            displayTotal = rentalTotal + priceForHours;
             Swal.fire({
                 title: "Confirm",
                 icon: "info",
-                text: "Confirm Booking",
+                html: '<div> Total number of hours : </div>' + numberOfHours +
+                    '<div> <br> Pick up and drop off : </div>' +
+                    pickdate + ' at ' + pickTime + ' --- ' + dropDate + ' at ' + dropTime +
+                    '<div> <br> Vehicle rental total : </div>' + priceForHours +
+                    '<div> <br> Equipments rental total : </div>' + rentalTotal +
+                    '<div> <br> Total payable : </div>' + displayTotal,
                 showCancelButton: true,
                 confirmButtonText: 'Confirm',
                 cancelButtonText: 'Cancel',
@@ -581,6 +641,14 @@
                 if (result.isConfirmed) {
                     rentalTotal += priceForHours;
                     vehicleId = id;
+
+                    selectedVehicle.value = vehicleId;
+                    selectedHours.value = numberOfHours;
+                    selectedEquipments.value = equipments;
+
+                    selected.click();
+                } else {
+                    displayTotal = 0;
                 }
             })
         }
@@ -592,8 +660,8 @@
         const priceForHours = rentPerHour * numberOfHours;
 
         if (equipmentSelectionToggle === "no") {
-            document.getElementById("selectedEquipment" + id).style.borderColor = "green";
-            document.getElementById("selectedEquipment" + id).style.borderWidth = "medium";
+            document.getElementById("selectedEquipment" + id).style.borderColor = "#82CAAF";
+            document.getElementById("selectedEquipment" + id).style.borderWidth = "thick";
             document.getElementById("toggleEquipmentSelection" + id).innerHTML = "yes";
 
             equipments.push(id);
@@ -602,7 +670,7 @@
         }
         if (equipmentSelectionToggle === "yes") {
             document.getElementById("selectedEquipment" + id).style.borderColor = "black";
-            document.getElementById("selectedEquipment" + id).style.borderWidth = "medium";
+            document.getElementById("selectedEquipment" + id).style.borderWidth = "thick";
             document.getElementById("toggleEquipmentSelection" + id).innerHTML = "no";
 
             for (let i = equipments.length - 1; i >= 0; i--) {

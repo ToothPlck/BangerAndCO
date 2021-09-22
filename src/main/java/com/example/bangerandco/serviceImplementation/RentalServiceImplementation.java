@@ -53,4 +53,17 @@ public class RentalServiceImplementation implements RentalService {
 
         return periodWithoutMinutes + "." + differenceBetweenMinutes;
     }
+
+    @Override
+    public void createBooking(String name, String vehicleId, List<String> equipments, String hours, String pickDate, String pickTime, String dropDate, String dropTime) throws Exception {
+        List<Rental> rentalListInDatabase = rentalRepo.findAll();
+        for (Rental rentalInDatabase : rentalListInDatabase) {
+            if ((rentalInDatabase.getRentalCollectionDate().toLocalDate().isAfter(LocalDate.parse(pickDate)))
+                    ||
+                    (rentalInDatabase.getRentalCollectionDate().toLocalDate().isEqual(LocalDate.parse(pickDate)))) {
+                System.out.println("PICK THIS UP TOMORROW");
+            }
+        }
+    }
+
 }
