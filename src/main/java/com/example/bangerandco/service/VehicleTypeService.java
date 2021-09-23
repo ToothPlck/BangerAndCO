@@ -16,4 +16,6 @@ public interface VehicleTypeService {
     void updateVehicleType(long vehicleTypeId, MultipartFile vehicleTypeImage, VehicleTypeDto vehicleTypeDto) throws Exception;
 
     void deleteVehicleType(long vehicleTypeId);
+
+    List<VehicleTypeDto> getAllNav();
 }

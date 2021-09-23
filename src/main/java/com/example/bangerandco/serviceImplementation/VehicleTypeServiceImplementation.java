@@ -70,6 +70,20 @@ public class VehicleTypeServiceImplementation implements VehicleTypeService {
     }
 
     @Override
+    public List<VehicleTypeDto> getAllNav() {
+        List<VehicleTypeDto> vehicleTypeDtoList = new ArrayList<>();
+
+        for (VehicleType vehicleType : vehicleTypeRepo.findAll()) {
+            VehicleTypeDto vehicleTypeDto = new VehicleTypeDto();
+
+            vehicleTypeDto.setVehicleType(vehicleType.getVehicleType());
+
+            vehicleTypeDtoList.add(vehicleTypeDto);
+        }
+        return vehicleTypeDtoList;
+    }
+
+    @Override
     public VehicleTypeDto updatable(long vehicleTypeId) {
         VehicleTypeDto vehicleTypeDto = new VehicleTypeDto();
         VehicleType vehicleType = vehicleTypeRepo.getById(vehicleTypeId);

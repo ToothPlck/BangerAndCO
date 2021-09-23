@@ -436,6 +436,50 @@ public class AdminController {
         return "admin_view_vehicles";
     }
 
+    @GetMapping("rental/view/all")
+    public String viewAllRentals(Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
+        model.addAttribute("rentals", rentalService.status_all());
+        model.addAttribute("type", "All rentals");
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_rentals";
+    }
+
+    @GetMapping("rental/view/{status}")
+    public String viewRentalByStatus(@PathVariable(value = "status") String status, Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
+        model.addAttribute("rentals", rentalService.status(status));
+        model.addAttribute("type", status);
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_rentals";
+    }
+
+    @GetMapping("rental/{status}/{rentalId}")
+    public String rentalChangeStatus(@PathVariable(value = "status") String status, @PathVariable(value = "rentalId") long rentalId, Model model, Authentication authentication) {
+        try {
+            rentalService.changeStatus(status, rentalId);
+        } catch (Exception exception) {
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
+            model.addAttribute("rentals", rentalService.status_all());
+            model.addAttribute("type", "All rentals");
+            model.addAttribute("error", exception.getMessage());
+            model.addAttribute("success", "");
+            return "admin_view_rentals";
+        }
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
+        model.addAttribute("rentals", rentalService.status_all());
+        model.addAttribute("type", "All rentals");
+        model.addAttribute("error", "");
+        model.addAttribute("success", "Rental updated");
+        return "admin_view_rentals";
+    }
+
     @GetMapping("/view")
     public String view() {
         return "test";

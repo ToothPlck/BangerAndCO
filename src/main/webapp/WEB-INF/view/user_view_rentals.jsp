@@ -19,7 +19,6 @@
           type="text/css"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -52,7 +51,10 @@
                                    data-bs-target="#rentalModal" style="cursor: pointer">Rent now</a>
                             </li>
                             <li><a class="dropdown-item"
-                                   href="${pageContext.request.contextPath}/user/rentals/on-going">On Going</a>
+                                   href="${pageContext.request.contextPath}/user/rentals/all">All</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/user/rentals/onGoing">On Going</a>
                             </li>
                             <li><a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/user/rentals/pending">Pending</a>
@@ -100,149 +102,165 @@
     </nav>
     <nav class="navbar navbar-light" style="background-color: #282838;">
         <div class="container">
-            <label style="font-size: 25px; font-weight: bold; margin: 15px auto;"><a
-                    style="text-decoration: none; color: white;"
-                    href="${pageContext.request.contextPath}/user/home">
-                <i class="bi bi-arrow-bar-left"></i> Place booking
-            </a></label>
+            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Bookings</label>
         </div>
     </nav>
 </div>
 <div>
-    <div>
-        <div class="container-sm mt-5">
-            <form:form id="form" method="get" modelAttribute="vehicles">
-                <div class="row my-5 align-items-center justify-content-center">
-                    <c:forEach items="${vehicles}" var="vehicle">
-                        <div class="card text-white bg-dark mb-3"
-                             style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer"
-                             data-bs-toggle="modal"
-                             data-bs-target="#modal${vehicle.vehicleId}">
-                            <img src="/images/${vehicle.vehicleImagePath}" class="card-img-top mt-3 rounded-3" alt=""
-                                 width="200" height="200">
-                            <div class="card-body">
-                                <figure>
-                                    <blockquote class="blockquote card-title text-center">
-                                        <p>${vehicle.model}</p>
-                                    </blockquote>
-                                    <figcaption class="blockquote-footer text-center mt-1">
-                                        <cite>${vehicle.rentPerHour}$/h</cite>
-                                    </figcaption>
-                                </figure>
-                            </div>
-                        </div>
-                        <div class="modal fade" id="modal${vehicle.vehicleId}" tabindex="-1"
-                             aria-labelledby="exampleModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <figure>
-                                            <blockquote class="blockquote">
-                                                <p>${vehicle.model}</p>
-                                            </blockquote>
-                                            <figcaption class="blockquote-footer">
-                                                <cite>${vehicle.vehicleType.vehicleType}</cite>
-                                            </figcaption>
-                                        </figure>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <img class="border-1 mx-auto d-block"
-                                                 src="${pageContext.request.contextPath}/images/${vehicle.vehicleImagePath}"
-                                                 alt="" width="200" height="200">
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="vehicleModel"
-                                                   value="${vehicle.model}" disabled>
-                                            <label for="vehicleModel">Model</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="vehicleType"
-                                                   value="${vehicle.vehicleType.vehicleType}" disabled>
-                                            <label for="vehicleType">Category</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="vehicleRent"
-                                                   value="${vehicle.rentPerHour}$" disabled>
-                                            <label for="vehicleRent">Rent per hour</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="vehicleEngine"
-                                                   value="${vehicle.engineType}" disabled>
-                                            <label for="vehicleEngine">Engine</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="vehicleTransmission"
-                                                   value="${vehicle.transmissionType}" disabled>
-                                            <label for="vehicleTransmission">Transmission</label>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <div class="form-text">
-                                            By continuing, you are agreeing that your account information is accurate
-                                            and up-to date. To view and update your account information, <a
-                                                style="cursor: pointer" class="form-text"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#accountModal">Click here</a>
-                                        </div>
-                                        <button type="button" class="btn btn-outline-warning" id="viewEquipmentsButton"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#equipmentsModal">Add equipments
-                                        </button>
-                                        <button type="button" class="btn btn-outline-dark" id="rentButton"
-                                                onclick="rentVehicle('${vehicle.vehicleId}', '${vehicle.rentPerHour}')">
-                                            Rent
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </c:forEach>
+    <div class="container-sm mt-5">
+        <form:form id="bookingsForm" modelAttribute="bookings" method="get">
+            <div class="row my-5 align-items-center justify-content-center">
+                <div class="text-center">
+                    <p class="display-6">${type}</p>
                 </div>
-            </form:form>
-        </div>
-    </div>
-    <div>
-        <div class="modal fade" id="equipmentsModal" tabindex="-1"
-             aria-labelledby="equipmentsModal"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <label style="font-size: 25px; font-weight: bold;">Add-On Equipments</label>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                <c:forEach items="${bookings}" var="booking">
+                    <div class="card text-white bg-dark mb-3" id="view${booking.rentalId}"
+                         style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer" data-bs-toggle="modal"
+                         data-bs-target="#modal${booking.rentalId}">
+                        <img src="/images/${booking.vehicle.vehicleImagePath}" class="card-img-top mt-3 rounded-3"
+                             alt=""
+                             width="200" height="200">
+                        <div class="card-body">
+                            <figure>
+                                <blockquote class="blockquote card-title text-center">
+                                    <p>${booking.vehicle.model}</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer text-center mt-1">
+                                    <cite>${booking.status}</cite>
+                                </figcaption>
+                            </figure>
+                        </div>
                     </div>
-                    <form:form id="form" method="get" modelAttribute="equipments">
-                        <div class="row my-5 align-items-center justify-content-center">
-                            <c:forEach items="${equipments}" var="equipment">
-                                <p style="display: none" id="toggleEquipmentSelection${equipment.equipmentId}">no</p>
-                                <div class="card text-white bg-dark mb-3" id="selectedEquipment${equipment.equipmentId}"
-                                     onclick="selectEquipment('${equipment.equipmentId}', '${equipment.equipmentRentPerHour}')"
-                                     style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer; border-width: thick; border-color: black;">
-                                    <img src="/images/${equipment.equipmentImagePath}"
-                                         class="card-img-top mt-3 rounded-3" alt=""
-                                         width="200" height="200">
-                                    <div class="card-body">
-                                        <figure>
-                                            <blockquote class="blockquote card-title text-center">
-                                                <p>${equipment.equipmentName} (${equipment.equipmentType})</p>
-                                            </blockquote>
-                                            <figcaption class="blockquote-footer text-center mt-1">
-                                                <cite>${equipment.equipmentRentPerHour}$/h</cite>
-                                            </figcaption>
-                                        </figure>
+                    <div class="modal fade" id="modal${booking.rentalId}" tabindex="-1"
+                         aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <figure>
+                                        <blockquote class="blockquote">
+                                            <p>${booking.vehicle.model}</p>
+                                        </blockquote>
+                                        <figcaption class="blockquote-footer">
+                                            <cite>${booking.status}</cite>
+                                        </figcaption>
+                                    </figure>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <img class="border-1 mx-auto d-block"
+                                             src="${pageContext.request.contextPath}/images/${booking.vehicle.vehicleImagePath}"
+                                             alt="" width="200" height="200">
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control"
+                                               id="bookingVehicleModel${booking.rentalId}"
+                                               value="${booking.vehicle.model}" disabled>
+                                        <label for="bookingVehicleModel${booking.rentalId}">Vehicle model</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="bookingTotal${booking.rentalId}"
+                                               value="${booking.total}" disabled>
+                                        <label for="bookingTotal${booking.rentalId}">Total amount</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control"
+                                               id="bookingCreatedDate${booking.rentalId}"
+                                               value="${booking.createdDate}" disabled>
+                                        <label for="bookingCreatedDate${booking.rentalId}">Requested date</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control"
+                                               id="bookingCollectionDate${booking.rentalId}"
+                                               value="${booking.rentalCollectionDate}" disabled>
+                                        <label for="bookingCollectionDate${booking.rentalId}">Collection date</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control"
+                                               id="bookingCollectionTime${booking.rentalId}"
+                                               value="${booking.rentalCollectionTime}" disabled>
+                                        <label for="bookingCollectionTime${booking.rentalId}">Collection time</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control"
+                                               id="bookingReturnDate${booking.rentalId}"
+                                               value="${booking.rentalReturnDate}" disabled>
+                                        <label for="bookingReturnDate${booking.rentalId}">Return date</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control"
+                                               id="bookingReturnTime${booking.rentalId}"
+                                               value="${booking.rentalReturnTime}" disabled>
+                                        <label for="bookingReturnTime${booking.rentalId}">Return time</label>
                                     </div>
                                 </div>
-                            </c:forEach>
+                                <div class="modal-footer">
+                                    <button type="button" style="display: none"
+                                            class="btn btn-outline-warning"
+                                            onclick="cancelFunction('${booking.rentalId}')"
+                                            id="${booking.rentalId} cancel">Cancel booking
+                                    </button>
+                                        <%--                                    <button type="button" class="btn btn-outline-info" id="${booking.rentalId} update"--%>
+                                        <%--                                            data-bs-dismiss="modal" data-bs-toggle="modal"--%>
+                                        <%--                                            data-bs-target="#rentalModal">Rent--%>
+                                        <%--                                    </button>--%>
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <p id="status${booking.rentalId}"
+                                       style="display: none">${booking.status}</p>
+
+                                    <script>
+                                        document.getElementById("view${booking.rentalId}").onclick = function () {
+
+                                            const status = document.getElementById("status${booking.rentalId}").innerHTML;
+                                            // const returning = document.getElementById("returning").innerHTML;
+
+                                            if (status === "pending") {
+                                                document.getElementById("${booking.rentalId} cancel").style.display = "block";
+                                                <%--document.getElementById("${booking.rentalId} update").style.display = "block";--%>
+                                            }
+                                            if (status === "approved") {
+                                                document.getElementById("${booking.rentalId} cancel").style.display = "block";
+                                                <%--document.getElementById("${booking.rentalId} update").style.display = "block";--%>
+                                            }
+                                            <%--if (status === "onGoing" && returning === "true") {--%>
+                                            <%--    document.getElementById("${booking.rentalId} update").style.display = "block";--%>
+                                            <%--}--%>
+
+                                        }
+
+                                        function cancelFunction(rentalId) {
+                                            Swal.fire({
+                                                icon: 'question',
+                                                title: 'Confirm',
+                                                text: 'Please confirm cancellation of the rental!',
+                                                showCancelButton: true,
+                                                confirmButtonText: `Confirm!`,
+                                                cancelButtonText: 'Cancel!',
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    window.location.href = '/user/rental/cancel/' + rentalId;
+                                                    Swal.fire({
+                                                        title: 'Rejecting...',
+                                                        html: 'Hold on a few seconds while we cancel the rental!',
+                                                        timer: 10000,
+                                                        timerProgressBar: false,
+                                                    });
+                                                }
+                                            })
+                                        }
+                                    </script>
+
+                                </div>
+                            </div>
                         </div>
-                    </form:form>
-                </div>
+                    </div>
+                </c:forEach>
             </div>
-        </div>
+        </form:form>
     </div>
     <div>
         <form id="accountForm" action="${pageContext.request.contextPath}/user/update/account" method="get">
@@ -335,6 +353,7 @@
             </div>
         </form>
     </div>
+
     <p style="display: none" id="returning">${loggedUser.returningCustomer}</p>
     <div>
         <form id="availabilityForm" action="${pageContext.request.contextPath}/user/search/available" method="post">
@@ -383,65 +402,10 @@
             </div>
         </form>
     </div>
-    <div style="display: none">
-        <p id="successMessage">${success}</p>
-        <p id="errorMessage">${error}</p>
-        <p id="hours">${hours}</p>
-
-        <form action="${pageContext.request.contextPath}/user/set/booking" id="setBookingForm" method="post">
-            <label for="setBookingVehicleId"></label>
-            <input name="vehicle" id="setBookingVehicleId" type="text">
-
-            <label for="setBookingHours"></label>
-            <input name="hours" id="setBookingHours" type="text">
-
-            <label for="setBookingEquipments"></label>
-            <input name="equipments" id="setBookingEquipments" type="text">
-
-            <label for="setBookingTotal"></label>
-            <input name="bookingTotal" id="setBookingTotal" type="text">
-
-            <label for="setBookingPickupDate"></label>
-            <input name="setBookingPickupDate" id="setBookingPickupDate" type="text" value="${pickDate}">
-
-            <label for="setBookingPickupTime"></label>
-            <input name="setBookingPickupTime" id="setBookingPickupTime" type="text" value="${pickTime}">
-
-            <label for="setBookingDropOffDate"></label>
-            <input name="setBookingDropOffDate" id="setBookingDropOffDate" type="text" value="${dropDate}">
-
-            <label for="setBookingDropOffTime"></label>
-            <input name="setBookingDropOffTime" id="setBookingDropOffTime" type="text" value="${dropTime}">
-
-            <button type="submit" id="selected">Submit</button>
-        </form>
-    </div>
 </div>
 </body>
 </html>
 <script>
-    window.onload = function () {
-        const errorMessage = document.getElementById("errorMessage").innerHTML;
-        const successMessage = document.getElementById("successMessage").innerHTML;
-
-        if (errorMessage !== "") {
-            Swal.fire({
-                title: "Error!!!",
-                text: errorMessage,
-                icon: "error",
-            });
-        }
-        if (successMessage !== "") {
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: successMessage,
-                showConfirmButton: false,
-                timer: 3000
-            });
-        }
-    }
-
     $(function () {
         const pickUpDate = $("#pickupDate");
         const dropOffDate = $("#dropOffDate");
@@ -483,8 +447,10 @@
 
     const availabilityForm = document.getElementById('availabilityForm');
 
+
     availabilityForm.addEventListener('submit', function (event) {
         const returning = document.getElementById("returning").innerHTML;
+
 
         const startDate = $("#pickupDate").val();
         const startTime = $("#pickupTime").val();
@@ -566,128 +532,5 @@
             });
         }
     });
-
-    let rentalTotal = 0;
-    const numberOfHours = document.getElementById("hours").innerHTML;
-
-    const equipments = [];
-    let vehicleId;
-
-    function rentVehicle(id, rentPerHour) {
-
-        const priceForHours = rentPerHour * numberOfHours;
-        const selectedVehicle = document.getElementById('setBookingVehicleId');
-        const selectedHours = document.getElementById('setBookingHours');
-        const selectedEquipments = document.getElementById('setBookingEquipments');
-        const selectedTotal = document.getElementById('setBookingTotal');
-        const selected = document.getElementById('selected');
-        const pickDate = $("#setBookingPickupDate").val();
-        const pickTime = $("#setBookingPickupTime").val();
-        const dropDate = $("#setBookingDropOffDate").val();
-        const dropTime = $("#setBookingDropOffTime").val();
-
-        let displayTotal;
-        if (equipments.length < 1) {
-            Swal.fire({
-                title: "Additional equipments",
-                icon: "question",
-                text: "Rent vehicle without any additional equipments?",
-                showCancelButton: true,
-                confirmButtonText: 'Proceed',
-                cancelButtonText: 'View Equipments',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    displayTotal = rentalTotal + priceForHours;
-                    Swal.fire({
-                        title: "Confirm",
-                        icon: "info",
-                        html: '<div> Total number of hours : </div>' + numberOfHours +
-                            '<div> <br> Pick up and drop off : </div>' +
-                            pickDate + ' at ' + pickTime + ' --- ' + dropDate + ' at ' + dropTime +
-                            '<div> <br> Vehicle rental total : </div>' + priceForHours +
-                            '<div> <br> Equipments rental total : </div>' + rentalTotal +
-                            '<div> <br> Total payable : </div>' + displayTotal,
-                        showCancelButton: true,
-                        confirmButtonText: 'Proceed',
-                        cancelButtonText: 'Cancel',
-                    }).then((totalResult) => {
-                        if (totalResult.isConfirmed) {
-                            rentalTotal += priceForHours;
-                            vehicleId = id;
-
-                            selectedVehicle.value = vehicleId;
-                            selectedHours.value = numberOfHours;
-                            selectedEquipments.value = equipments;
-                            selectedTotal.value = rentalTotal;
-
-                            selected.click();
-                        } else {
-                            displayTotal = 0;
-                        }
-                    })
-                } else {
-                    displayTotal = 0;
-                }
-            })
-        }
-
-        if (equipments.length > 0) {
-            displayTotal = rentalTotal + priceForHours;
-            Swal.fire({
-                title: "Confirm",
-                icon: "info",
-                html: '<div> Total number of hours : </div>' + numberOfHours +
-                    '<div> <br> Pick up and drop off : </div>' +
-                    pickDate + ' at ' + pickTime + ' --- ' + dropDate + ' at ' + dropTime +
-                    '<div> <br> Vehicle rental total : </div>' + priceForHours +
-                    '<div> <br> Equipments rental total : </div>' + rentalTotal +
-                    '<div> <br> Total payable : </div>' + displayTotal,
-                showCancelButton: true,
-                confirmButtonText: 'Confirm',
-                cancelButtonText: 'Cancel',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    rentalTotal += priceForHours;
-                    vehicleId = id;
-
-                    selectedVehicle.value = vehicleId;
-                    selectedHours.value = numberOfHours;
-                    selectedEquipments.value = equipments;
-                    selectedTotal.value = rentalTotal;
-
-                    selected.click();
-                } else {
-                    displayTotal = 0;
-                }
-            })
-        }
-    }
-
-    function selectEquipment(id, rentPerHour) {
-
-        const equipmentSelectionToggle = document.getElementById("toggleEquipmentSelection" + id).innerHTML;
-        const priceForHours = rentPerHour * numberOfHours;
-
-        if (equipmentSelectionToggle === "no") {
-            document.getElementById("selectedEquipment" + id).style.borderColor = "#82CAAF";
-            document.getElementById("selectedEquipment" + id).style.borderWidth = "thick";
-            document.getElementById("toggleEquipmentSelection" + id).innerHTML = "yes";
-
-            equipments.push(id);
-
-            rentalTotal += priceForHours;
-        }
-        if (equipmentSelectionToggle === "yes") {
-            document.getElementById("selectedEquipment" + id).style.borderColor = "black";
-            document.getElementById("selectedEquipment" + id).style.borderWidth = "thick";
-            document.getElementById("toggleEquipmentSelection" + id).innerHTML = "no";
-
-            for (let i = equipments.length - 1; i >= 0; i--) {
-                if (equipments[i] === id) equipments.splice(i, 1);
-            }
-
-            rentalTotal -= priceForHours;
-        }
-    }
 
 </script>

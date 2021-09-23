@@ -1,8 +1,12 @@
 package com.example.bangerandco.serviceImplementation;
 
 import com.example.bangerandco.dto.RentalDto;
+import com.example.bangerandco.model.Equipment;
 import com.example.bangerandco.model.Rental;
+import com.example.bangerandco.repository.EquipmentRepo;
 import com.example.bangerandco.repository.RentalRepo;
+import com.example.bangerandco.repository.UserRepo;
+import com.example.bangerandco.repository.VehicleRepo;
 import com.example.bangerandco.service.RentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,12 @@ public class RentalServiceImplementation implements RentalService {
 
     @Autowired
     private RentalRepo rentalRepo;
+    @Autowired
+    private VehicleRepo vehicleRepo;
+    @Autowired
+    private EquipmentRepo equipmentRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     @Override
     public List<RentalDto> userOnGoingRentals(String email) {
@@ -45,25 +55,365 @@ public class RentalServiceImplementation implements RentalService {
 
         LocalTime startTime = LocalTime.parse(pickTime);
         LocalTime endTime = LocalTime.parse(dropTime);
-        long differenceBetweenHours = ChronoUnit.HOURS.between(startTime, endTime);
+        long differenceBetweenHours = ChronoUnit.MINUTES.between(startTime, endTime);
         long differenceBetweenMinutes = ChronoUnit.MINUTES.between(startTime, endTime) % 60;
 
-        long total = (differenceBetweenDates * 24) + differenceBetweenHours;
-        String periodWithoutMinutes = String.valueOf(total);
+        double totalInMinutes = ((differenceBetweenDates * 24) * 60) + differenceBetweenHours + differenceBetweenMinutes;
+        double totalInHours = totalInMinutes / 60;
 
-        return periodWithoutMinutes + "." + differenceBetweenMinutes;
+        return String.valueOf(totalInHours);
     }
 
     @Override
-    public void createBooking(String name, String vehicleId, List<String> equipments, String hours, String pickDate, String pickTime, String dropDate, String dropTime) throws Exception {
+    public void createBooking(String user, String vehicleId, List<String> equipments, String hours, String pickDate, String pickTime, String dropDate, String dropTime, String total) throws Exception {
+        long selectedVehicleId = Long.parseLong(vehicleId);
         List<Rental> rentalListInDatabase = rentalRepo.findAll();
+
+
         for (Rental rentalInDatabase : rentalListInDatabase) {
-            if ((rentalInDatabase.getRentalCollectionDate().toLocalDate().isAfter(LocalDate.parse(pickDate)))
-                    ||
-                    (rentalInDatabase.getRentalCollectionDate().toLocalDate().isEqual(LocalDate.parse(pickDate)))) {
-                System.out.println("PICK THIS UP TOMORROW");
+
+            //double check vehicle and equipments availability
+            if (LocalDate.parse(pickDate).isBefore(rentalInDatabase.getRentalCollectionDate().toLocalDate())
+                    &&
+                    LocalDate.parse(dropDate).isAfter(rentalInDatabase.getRentalReturnDate().toLocalDate())) {
+                if (selectedVehicleId == rentalInDatabase.getVehicle().getVehicleId())
+                    throw new Exception("The selected vehicle has become unavailable at the last moment!");
+                if (rentalInDatabase.getEquipment().size() != 0) {
+                    for (String selectedEquipment : equipments) {
+                        long selectedEquipmentId = Long.parseLong(selectedEquipment);
+                        for (Equipment rentalInDatabaseEquipment : rentalInDatabase.getEquipment()) {
+                            if (selectedEquipmentId == rentalInDatabaseEquipment.getEquipmentId())
+                                throw new Exception("The following equipment : " + rentalInDatabaseEquipment.getEquipmentName() + " has become unavailable at the last moment!");
+                        }
+                    }
+                }
+            } else if (LocalDate.parse(pickDate).isAfter(rentalInDatabase.getRentalCollectionDate().toLocalDate())
+                    &&
+                    LocalDate.parse(pickDate).isBefore(rentalInDatabase.getRentalReturnDate().toLocalDate())) {
+                if (selectedVehicleId == rentalInDatabase.getVehicle().getVehicleId())
+                    throw new Exception("The selected vehicle has become unavailable at the last moment!");
+                if (rentalInDatabase.getEquipment().size() != 0) {
+                    for (String selectedEquipment : equipments) {
+                        long selectedEquipmentId = Long.parseLong(selectedEquipment);
+                        for (Equipment rentalInDatabaseEquipment : rentalInDatabase.getEquipment()) {
+                            if (selectedEquipmentId == rentalInDatabaseEquipment.getEquipmentId())
+                                throw new Exception("The following equipment : " + rentalInDatabaseEquipment.getEquipmentName() + " has become unavailable at the last moment!");
+                        }
+                    }
+                }
+            } else if (LocalDate.parse(dropDate).isAfter(rentalInDatabase.getRentalCollectionDate().toLocalDate())
+                    &&
+                    LocalDate.parse(dropDate).isBefore(rentalInDatabase.getRentalCollectionDate().toLocalDate())) {
+                if (selectedVehicleId == rentalInDatabase.getVehicle().getVehicleId())
+                    throw new Exception("The selected vehicle has become unavailable at the last moment!");
+                if (rentalInDatabase.getEquipment().size() != 0) {
+                    for (String selectedEquipment : equipments) {
+                        long selectedEquipmentId = Long.parseLong(selectedEquipment);
+                        for (Equipment rentalInDatabaseEquipment : rentalInDatabase.getEquipment()) {
+                            if (selectedEquipmentId == rentalInDatabaseEquipment.getEquipmentId())
+                                throw new Exception("The following equipment : " + rentalInDatabaseEquipment.getEquipmentName() + " has become unavailable at the last moment!");
+                        }
+                    }
+                }
+            } else if (LocalDate.parse(pickDate).isEqual(rentalInDatabase.getRentalCollectionDate().toLocalDate())
+                    &&
+                    LocalDate.parse(dropDate).isAfter(rentalInDatabase.getRentalReturnDate().toLocalDate())) {
+                if (selectedVehicleId == rentalInDatabase.getVehicle().getVehicleId())
+                    throw new Exception("The selected vehicle has become unavailable at the last moment!");
+                if (rentalInDatabase.getEquipment().size() != 0) {
+                    for (String selectedEquipment : equipments) {
+                        long selectedEquipmentId = Long.parseLong(selectedEquipment);
+                        for (Equipment rentalInDatabaseEquipment : rentalInDatabase.getEquipment()) {
+                            if (selectedEquipmentId == rentalInDatabaseEquipment.getEquipmentId())
+                                throw new Exception("The following equipment : " + rentalInDatabaseEquipment.getEquipmentName() + " has become unavailable at the last moment!");
+                        }
+                    }
+                }
+            } else if (LocalDate.parse(pickDate).isBefore(rentalInDatabase.getRentalCollectionDate().toLocalDate())
+                    &&
+                    LocalDate.parse(dropDate).isEqual(rentalInDatabase.getRentalReturnDate().toLocalDate())) {
+                if (selectedVehicleId == rentalInDatabase.getVehicle().getVehicleId())
+                    throw new Exception("The selected vehicle has become unavailable at the last moment!");
+                if (rentalInDatabase.getEquipment().size() != 0) {
+                    for (String selectedEquipment : equipments) {
+                        long selectedEquipmentId = Long.parseLong(selectedEquipment);
+                        for (Equipment rentalInDatabaseEquipment : rentalInDatabase.getEquipment()) {
+                            if (selectedEquipmentId == rentalInDatabaseEquipment.getEquipmentId())
+                                throw new Exception("The following equipment : " + rentalInDatabaseEquipment.getEquipmentName() + " has become unavailable at the last moment!");
+                        }
+                    }
+                }
+            } else if (LocalDate.parse(pickDate).isEqual(rentalInDatabase.getRentalCollectionDate().toLocalDate())
+                    &&
+                    LocalDate.parse(dropDate).isEqual(rentalInDatabase.getRentalReturnDate().toLocalDate())) {
+                if (selectedVehicleId == rentalInDatabase.getVehicle().getVehicleId())
+                    throw new Exception("The selected vehicle has become unavailable at the last moment!");
+                if (rentalInDatabase.getEquipment().size() != 0) {
+                    for (String selectedEquipment : equipments) {
+                        long selectedEquipmentId = Long.parseLong(selectedEquipment);
+                        for (Equipment rentalInDatabaseEquipment : rentalInDatabase.getEquipment()) {
+                            if (selectedEquipmentId == rentalInDatabaseEquipment.getEquipmentId())
+                                throw new Exception("The following equipment : " + rentalInDatabaseEquipment.getEquipmentName() + " has become unavailable at the last moment!");
+                        }
+                    }
+                }
+            } else if (LocalDate.parse(pickDate).isEqual(rentalInDatabase.getRentalCollectionDate().toLocalDate())
+                    &&
+                    LocalDate.parse(dropDate).isEqual(rentalInDatabase.getRentalCollectionDate().toLocalDate())) {
+                if (LocalTime.parse(pickTime).isAfter(rentalInDatabase.getRentalCollectionTime())
+                        ||
+                        LocalTime.parse(dropTime).isAfter(rentalInDatabase.getRentalCollectionTime())) {
+                    if (selectedVehicleId == rentalInDatabase.getVehicle().getVehicleId())
+                        throw new Exception("The selected vehicle has become unavailable at the last moment!");
+                    if (rentalInDatabase.getEquipment().size() != 0) {
+                        for (String selectedEquipment : equipments) {
+                            long selectedEquipmentId = Long.parseLong(selectedEquipment);
+                            for (Equipment rentalInDatabaseEquipment : rentalInDatabase.getEquipment()) {
+                                if (selectedEquipmentId == rentalInDatabaseEquipment.getEquipmentId())
+                                    throw new Exception("The following equipment : " + rentalInDatabaseEquipment.getEquipmentName() + " has become unavailable at the last moment!");
+                            }
+                        }
+                    }
+                }
+            } else if (LocalDate.parse(pickDate).isEqual(rentalInDatabase.getRentalReturnDate().toLocalDate())
+                    &&
+                    LocalDate.parse(dropDate).isEqual(rentalInDatabase.getRentalReturnDate().toLocalDate())) {
+                if (LocalTime.parse(pickTime).isBefore(rentalInDatabase.getRentalReturnTime())
+                        ||
+                        LocalTime.parse(dropTime).isBefore(rentalInDatabase.getRentalReturnTime())) {
+                    if (selectedVehicleId == rentalInDatabase.getVehicle().getVehicleId())
+                        throw new Exception("The selected vehicle has become unavailable at the last moment!");
+                    if (rentalInDatabase.getEquipment().size() != 0) {
+                        for (String selectedEquipment : equipments) {
+                            long selectedEquipmentId = Long.parseLong(selectedEquipment);
+                            for (Equipment rentalInDatabaseEquipment : rentalInDatabase.getEquipment()) {
+                                if (selectedEquipmentId == rentalInDatabaseEquipment.getEquipmentId())
+                                    throw new Exception("The following equipment : " + rentalInDatabaseEquipment.getEquipmentName() + " has become unavailable at the last moment!");
+                            }
+                        }
+                    }
+                }
+            } else if (LocalDate.parse(pickDate).isBefore(rentalInDatabase.getRentalCollectionDate().toLocalDate())
+                    &&
+                    LocalDate.parse(dropDate).isEqual(rentalInDatabase.getRentalCollectionDate().toLocalDate())) {
+                if (LocalTime.parse(dropTime).isAfter(rentalInDatabase.getRentalReturnTime())) {
+                    if (selectedVehicleId == rentalInDatabase.getVehicle().getVehicleId())
+                        throw new Exception("The selected vehicle has become unavailable at the last moment!");
+                    if (rentalInDatabase.getEquipment().size() != 0) {
+                        for (String selectedEquipment : equipments) {
+                            long selectedEquipmentId = Long.parseLong(selectedEquipment);
+                            for (Equipment rentalInDatabaseEquipment : rentalInDatabase.getEquipment()) {
+                                if (selectedEquipmentId == rentalInDatabaseEquipment.getEquipmentId())
+                                    throw new Exception("The following equipment : " + rentalInDatabaseEquipment.getEquipmentName() + " has become unavailable at the last moment!");
+                            }
+                        }
+                    }
+                }
+            } else if (LocalDate.parse(pickDate).isEqual(rentalInDatabase.getRentalReturnDate().toLocalDate())
+                    &&
+                    LocalDate.parse(dropDate).isAfter(rentalInDatabase.getRentalReturnDate().toLocalDate())) {
+                if (selectedVehicleId == rentalInDatabase.getVehicle().getVehicleId())
+                    throw new Exception("The selected vehicle has become unavailable at the last moment!");
+                if (rentalInDatabase.getEquipment().size() != 0) {
+                    for (String selectedEquipment : equipments) {
+                        long selectedEquipmentId = Long.parseLong(selectedEquipment);
+                        for (Equipment rentalInDatabaseEquipment : rentalInDatabase.getEquipment()) {
+                            if (selectedEquipmentId == rentalInDatabaseEquipment.getEquipmentId())
+                                throw new Exception("The following equipment : " + rentalInDatabaseEquipment.getEquipmentName() + " has become unavailable at the last moment!");
+                        }
+                    }
+                }
             }
+        }
+
+
+        //Double check pickup and drop difference
+        double periodInHours = Double.parseDouble(periodInHours(pickDate, pickTime, dropDate, dropTime));
+        if (periodInHours > 336)
+            throw new Exception("The maximum rental period is two weeks!");
+        if (periodInHours < 5) {
+            throw new Exception("The minimum rental period is five hours!");
+        }
+
+        //place booking
+        try {
+            Rental rental = new Rental();
+            List<Equipment> equipmentList = new ArrayList<>();
+
+            rental.setCreatedDate(Date.valueOf(LocalDate.now()));
+            rental.setRentalCollectionDate(Date.valueOf(pickDate));
+            rental.setRentalCollectionTime(LocalTime.parse(pickTime));
+            rental.setRentalReturnDate(Date.valueOf(dropDate));
+            rental.setRentalReturnTime(LocalTime.parse(dropTime));
+            rental.setStatus("pending");
+            rental.setTotal(total);
+            rental.setUser(userRepo.findUserByEmail(user));
+            rental.setVehicle(vehicleRepo.getById(Long.parseLong(vehicleId)));
+
+            for (String selectedEquipment : equipments) {
+                equipmentList.add(equipmentRepo.getById(Long.parseLong(selectedEquipment)));
+            }
+            rental.setEquipment(equipmentList);
+
+            rentalRepo.save(rental);
+
+        } catch (Exception exception) {
+            throw new Exception("An unexpected error occurred while creating the booking! Error : " + exception.getMessage());
         }
     }
 
+    @Override
+    public List<RentalDto> status_all() {
+        List<RentalDto> rentalDtoList = new ArrayList<>();
+
+        for (Rental rental : rentalRepo.findAll()) {
+            RentalDto rentalDto = new RentalDto();
+
+            rentalDto.setRentalId(rental.getRentalId());
+            rentalDto.setCreatedDate(rental.getCreatedDate());
+            rentalDto.setRentalCollectionDate(rental.getRentalCollectionDate().toString());
+            rentalDto.setRentalCollectionTime(rental.getRentalCollectionTime().toString());
+            rentalDto.setRentalReturnDate(rental.getRentalReturnDate().toString());
+            rentalDto.setRentalReturnTime(rental.getRentalReturnTime().toString());
+            rentalDto.setStatus(rental.getStatus());
+            rentalDto.setTotal(rental.getTotal());
+            rentalDto.setUser(rental.getUser());
+            rentalDto.setVehicle(rental.getVehicle());
+            rentalDto.setEquipment(rental.getEquipment());
+
+            rentalDtoList.add(rentalDto);
+        }
+        return rentalDtoList;
+    }
+
+    @Override
+    public List<RentalDto> status(String status) {
+        List<RentalDto> rentalDtoList = new ArrayList<>();
+
+        for (Rental rental : rentalRepo.findAllByStatus(status)) {
+            RentalDto rentalDto = new RentalDto();
+
+            rentalDto.setRentalId(rental.getRentalId());
+            rentalDto.setCreatedDate(rental.getCreatedDate());
+            rentalDto.setRentalCollectionDate(rental.getRentalCollectionDate().toString());
+            rentalDto.setRentalCollectionTime(rental.getRentalCollectionTime().toString());
+            rentalDto.setRentalReturnDate(rental.getRentalReturnDate().toString());
+            rentalDto.setRentalReturnTime(rental.getRentalReturnTime().toString());
+            rentalDto.setStatus(rental.getStatus());
+            rentalDto.setTotal(rental.getTotal());
+            rentalDto.setUser(rental.getUser());
+            rentalDto.setVehicle(rental.getVehicle());
+            rentalDto.setEquipment(rental.getEquipment());
+
+            rentalDtoList.add(rentalDto);
+        }
+        return rentalDtoList;
+    }
+
+    @Override
+    public void changeStatus(String status, long rentalId) {
+        Rental rental = rentalRepo.getById(rentalId);
+        rental.setStatus(status);
+
+        rentalRepo.save(rental);
+    }
+
+    @Override
+    public List<RentalDto> userAllRentals(String name) {
+        List<RentalDto> rentalDtoList = new ArrayList<>();
+
+        for (Rental rental : rentalRepo.findAllByUserEmail(name)) {
+            RentalDto rentalDto = new RentalDto();
+
+            rentalDto.setRentalId(rental.getRentalId());
+            rentalDto.setCreatedDate(rental.getCreatedDate());
+            rentalDto.setRentalCollectionDate(rental.getRentalCollectionDate().toString());
+            rentalDto.setRentalCollectionTime(rental.getRentalCollectionTime().toString());
+            rentalDto.setRentalReturnDate(rental.getRentalReturnDate().toString());
+            rentalDto.setRentalReturnTime(rental.getRentalReturnTime().toString());
+            rentalDto.setStatus(rental.getStatus());
+            rentalDto.setTotal(rental.getTotal());
+            rentalDto.setUser(rental.getUser());
+            rentalDto.setVehicle(rental.getVehicle());
+            rentalDto.setEquipment(rental.getEquipment());
+
+            rentalDtoList.add(rentalDto);
+        }
+        return rentalDtoList;
+    }
+
+    @Override
+    public List<RentalDto> userRentalByStatus(String name, String status) {
+        List<RentalDto> rentalDtoList = new ArrayList<>();
+
+        for (Rental rental : rentalRepo.findAllByStatusAndUserEmail(status, name)) {
+            RentalDto rentalDto = new RentalDto();
+
+            rentalDto.setRentalId(rental.getRentalId());
+            rentalDto.setCreatedDate(rental.getCreatedDate());
+            rentalDto.setRentalCollectionDate(rental.getRentalCollectionDate().toString());
+            rentalDto.setRentalCollectionTime(rental.getRentalCollectionTime().toString());
+            rentalDto.setRentalReturnDate(rental.getRentalReturnDate().toString());
+            rentalDto.setRentalReturnTime(rental.getRentalReturnTime().toString());
+            rentalDto.setStatus(rental.getStatus());
+            rentalDto.setTotal(rental.getTotal());
+            rentalDto.setUser(rental.getUser());
+            rentalDto.setVehicle(rental.getVehicle());
+            rentalDto.setEquipment(rental.getEquipment());
+
+            rentalDtoList.add(rentalDto);
+        }
+        return rentalDtoList;
+    }
+
+    /*
+    * LocalDate startDate = LocalDate.parse(pickDate);
+            LocalDate endDate = LocalDate.parse(dropDate);
+            long differenceBetweenDates = Period.between(startDate, endDate).getDays();
+
+            LocalTime startTime = LocalTime.parse(pickTime);
+            LocalTime endTime = LocalTime.parse(dropTime);
+            long differenceBetweenHours = ChronoUnit.HOURS.between(startTime, endTime);
+            long differenceBetweenMinutes = ChronoUnit.MINUTES.between(startTime, endTime) % 60;
+
+            long total = (differenceBetweenDates * 24) + differenceBetweenHours;
+            String periodWithoutMinutes = String.valueOf(total);
+
+            return periodWithoutMinutes + "." + differenceBetweenMinutes;
+            *
+            * long differenceBetweenHours = ChronoUnit.MINUTES.between(startTime, endTime);
+        long differenceBetweenMinutes = ChronoUnit.MINUTES.between(startTime, endTime) % 60;
+
+        double totalInMinutes = ((differenceBetweenDates * 24) * 60) + differenceBetweenHours + differenceBetweenMinutes;
+        double totalInHours = totalInMinutes / 60;
+
+        return String.valueOf(totalInHours);
+    * */
+    @Override
+    public void cancelRental(long rentalId) throws Exception {
+        Rental rental = rentalRepo.getById(rentalId);
+
+        if (rental.getRentalCollectionDate().toLocalDate().isAfter(LocalDate.now())) {
+            //difference between now and collection time in hours
+            long differenceBetweenDates = Period.between(LocalDate.now(), rental.getRentalCollectionDate().toLocalDate()).getDays();
+            long differenceBetweenHours = ChronoUnit.MINUTES.between(LocalTime.now(), rental.getRentalCollectionTime());
+            long differenceBetweenMinutes = ChronoUnit.MINUTES.between(LocalTime.now(), rental.getRentalCollectionTime()) % 60;
+
+            double totalInMinutes = ((differenceBetweenDates * 24) * 60) + differenceBetweenHours + differenceBetweenMinutes;
+            double difference = totalInMinutes / 60;
+
+
+            if (rental.getStatus().equals("pending")) { //delete if pending
+                rentalRepo.deleteById(rentalId);
+            } else if ((rental.getStatus().equals("approved")) && difference > 24.0) { //delete if approved and collection time is not within 24 hours
+                rentalRepo.deleteById(rentalId);
+            } else if ((rental.getStatus().equals("approved")) && difference < 24.0) { //throw exception if approved and collection time is within 24 hours
+                throw new Exception("The booking cannot be cancelled since the collection time is within the next 24 hours");
+            } else {
+                throw new Exception("The booking cannot be cancelled!");
+            }
+        } else {
+            throw new Exception("The booking cannot be cancelled");
+        }
+    }
 }

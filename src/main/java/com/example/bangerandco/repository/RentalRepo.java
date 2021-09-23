@@ -13,7 +13,9 @@ public interface RentalRepo extends JpaRepository<Rental, Long> {
 
     List<Rental> findAllByUserEmailAndStatus(String email, String status);
 
-    List<Rental> findAllByUserUserId(Long userId);
+    List<Rental> findAllByStatus(String status);
 
-//    List<Rental> findByRentalCollectionDateAfterAndRentalReturnDateBefore(Date returnCollection, Date returnDate);
+    List<Rental> findAllByUserEmail(String email);
+
+    List<Rental> findAllByStatusAndUserEmail(String status, String email);
 }

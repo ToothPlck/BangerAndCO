@@ -16,7 +16,7 @@ public class RentalDto {
     private String rentalReturnDate;
     private String rentalCollectionTime;
     private String rentalReturnTime;
-    private Long total;
+    private String total;
     private String status;
     private Date createdDate;
 
@@ -27,7 +27,7 @@ public class RentalDto {
     public RentalDto() {
     }
 
-    public RentalDto(long rentalId, String rentalCollectionDate, String rentalReturnDate, String rentalCollectionTime, String rentalReturnTime, Long total, String status, Date createdDate, User user, Vehicle vehicle, List<Equipment> equipment) {
+    public RentalDto(long rentalId, String rentalCollectionDate, String rentalReturnDate, String rentalCollectionTime, String rentalReturnTime, String total, String status, Date createdDate, User user, Vehicle vehicle, List<Equipment> equipment) {
         this.rentalId = rentalId;
         this.rentalCollectionDate = rentalCollectionDate;
         this.rentalReturnDate = rentalReturnDate;
@@ -81,11 +81,11 @@ public class RentalDto {
         this.rentalReturnTime = rentalReturnTime;
     }
 
-    public Long getTotal() {
+    public String getTotal() {
         return total;
     }
 
-    public void setTotal(Long total) {
+    public void setTotal(String total) {
         this.total = total;
     }
 

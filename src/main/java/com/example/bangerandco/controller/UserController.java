@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -94,18 +91,58 @@ public class UserController {
     public String setBooking(Model model,
                              Authentication authentication,
                              @RequestParam("vehicle") String vehicleId,
-                             @RequestParam("equipments")List<String> equipments,
-                             @RequestParam("hours")String hours,
+                             @RequestParam("equipments") List<String> equipments,
+                             @RequestParam("hours") String hours,
+                             @RequestParam("bookingTotal") String total,
                              @RequestParam("setBookingPickupDate") String pickDate,
                              @RequestParam("setBookingPickupTime") String pickTime,
                              @RequestParam("setBookingDropOffDate") String dropDate,
-                             @RequestParam("setBookingDropOffTime") String dropTime){
+                             @RequestParam("setBookingDropOffTime") String dropTime) {
         try {
-            rentalService.createBooking(authentication.getName(), vehicleId, equipments, hours, pickDate, pickTime, dropDate, dropTime);
-        }
-        catch (Exception exception){
+            rentalService.createBooking(authentication.getName(), vehicleId, equipments, hours, pickDate, pickTime, dropDate, dropTime, total);
+        } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
         return "redirect:/user/home";
+    }
+
+    @GetMapping("rentals/all")
+    public String viewBookingsAll(Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("bookings", rentalService.userAllRentals(authentication.getName()));
+        model.addAttribute("type", "All bookings");
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "user_view_rentals";
+    }
+
+    @GetMapping("rentals/{status}")
+    public String viewBookingsByStatus(@PathVariable(value = "status") String status, Model model, Authentication authentication) {
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("bookings", rentalService.userRentalByStatus(authentication.getName(), status));
+        model.addAttribute("type", status);
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "user_view_rentals";
+    }
+
+    @GetMapping("rental/cancel/{rentalId}")
+    public String cancelBooking(@PathVariable(value = "rentalId") long rentalId, Model model, Authentication authentication){
+        try{
+            rentalService.cancelRental(rentalId);
+        }catch (Exception exception){
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("bookings", rentalService.userAllRentals(authentication.getName()));
+            model.addAttribute("type", "All bookings");
+            model.addAttribute("error", exception.getMessage());
+            model.addAttribute("success", "");
+            return "user_view_rentals";
+        }
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("bookings", rentalService.userAllRentals(authentication.getName()));
+        model.addAttribute("type", "All bookings");
+        model.addAttribute("error", "");
+        model.addAttribute("success", "Booking cancelled successfully");
+        return "user_view_rentals";
     }
 }
