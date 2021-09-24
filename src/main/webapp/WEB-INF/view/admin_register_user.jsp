@@ -15,6 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
             integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
             crossorigin="anonymous"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet"
+          type="text/css"/>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -171,7 +173,7 @@
     </nav>
     <nav class="navbar navbar-light" style="background-color: #282838;">
         <div class="container">
-            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Register</label>
+            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Register user</label>
         </div>
     </nav>
 </div>
@@ -237,6 +239,68 @@
                 </div>
             </div>
         </form:form>
+    </div>
+    <div>
+        <form id="accountForm" method="get">
+            <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <figure>
+                                <blockquote class="blockquote">
+                                    <p>${loggedUser.firstName} ${loggedUser.lastName}</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    <cite>Administrator</cite>
+                                </figcaption>
+                            </figure>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <img class="rounded-circle mx-auto d-block"
+                                     src="${pageContext.request.contextPath}/images/${loggedUser.userImagePath}"
+                                     alt="" width="200" height="200">
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userFirstname"
+                                       value="${loggedUser.firstName}" disabled>
+                                <label for="userFirstname">Firstname</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userLastname"
+                                       value="${loggedUser.lastName}" disabled>
+                                <label for="userLastname">Lastname</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userEmail"
+                                       value="${loggedUser.email}" disabled>
+                                <label for="userEmail">Email</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userContact"
+                                       value="${loggedUser.contact}" disabled>
+                                <label for="userContact">Contact</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userDob"
+                                       value="${loggedUser.dateOfBirth}" disabled>
+                                <label for="userDob">Date of Birth</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userUpdated"
+                                       value="${loggedUser.updatedDate}" disabled>
+                                <label for="userUpdated">Last updated</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 </body>

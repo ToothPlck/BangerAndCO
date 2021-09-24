@@ -21,7 +21,7 @@
 <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid" style="margin: 10px 100px;">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/login">
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/users/view/active">
                 <img src="${pageContext.request.contextPath}/photos/logo.png" alt="" width="40" height="40"
                      style="margin: 0 20px;">
             </a>
@@ -32,16 +32,12 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/login">Login</a>
-                    </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" aria-current="page" href="#" id="navbarDropdown"
-                           role="button"
+                        <a class="nav-link dropdown-toggle" href="#" id="usersDropDown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             Users
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="usersDropDown">
                             <li><a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/admin/register">Register</a></li>
                             <li>
@@ -56,16 +52,116 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/register">Register</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="vehiclesDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Vehicles
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="vehiclesDropdown">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/vehicleType/add">Add new category</a>
+                            </li>
+                            <li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/vehicleType/view/all">Categories</a>
+                            </li>
+                            <hr class="dropdown-divider">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/vehicle/add">Add new vehicle</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/vehicle/view/all">All Vehicles</a>
+                            </li>
+                            <c:forEach items="${vehicleNav}" var="vehicles">
+                                <li><a class="dropdown-item"
+                                       href="${pageContext.request.contextPath}/admin/vehicle/view/${vehicles.vehicleType}">${vehicles.vehicleType}s</a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="equipmentsDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Equipments
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="equipmentsDropdown">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/equipment/add">Add</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/equipment/view/all">All</a></li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/equipment/view/Satnav">Satnavs</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/equipment/view/Baby seat">Baby
+                                seats</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/equipment/view/Wine chiller">Wine
+                                Chillers</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="rentalsDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Rentals
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="rentalDropdown">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/all">All</a></li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/pending">Pending</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/onGoing">On-Going</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/approved">Approved</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/rejected">Rejected</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/completed">Completed</a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/category">Vehicles</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/admin/competitors">Competitors</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0 d-flex">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/logout">Logout</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="accountDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="${pageContext.request.contextPath}/images/${loggedUser.userImagePath}"
+                                 class="rounded-circle" alt=""
+                                 width="40" height="40"
+                                 style="margin: 0 20px;">${loggedUser.firstName}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="accountDropdown">
+                            <li><a class="dropdown-item" data-bs-toggle="modal"
+                                   data-bs-target="#accountModal" style="cursor: pointer">View Account</a>
+                            </li>
+                            <hr class="dropdown-divider">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/logout">Logout</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -302,6 +398,68 @@
                 </div>
             </div>
         </form:form>
+    </div>
+    <div>
+        <form id="accountForm" method="get">
+            <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <figure>
+                                <blockquote class="blockquote">
+                                    <p>${loggedUser.firstName} ${loggedUser.lastName}</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    <cite>Administrator</cite>
+                                </figcaption>
+                            </figure>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <img class="rounded-circle mx-auto d-block"
+                                     src="${pageContext.request.contextPath}/images/${loggedUser.userImagePath}"
+                                     alt="" width="200" height="200">
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userFirstname"
+                                       value="${loggedUser.firstName}" disabled>
+                                <label for="userFirstname">Firstname</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userLastname"
+                                       value="${loggedUser.lastName}" disabled>
+                                <label for="userLastname">Lastname</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userEmail"
+                                       value="${loggedUser.email}" disabled>
+                                <label for="userEmail">Email</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userContact"
+                                       value="${loggedUser.contact}" disabled>
+                                <label for="userContact">Contact</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userDob"
+                                       value="${loggedUser.dateOfBirth}" disabled>
+                                <label for="userDob">Date of Birth</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userUpdated"
+                                       value="${loggedUser.updatedDate}" disabled>
+                                <label for="userUpdated">Last updated</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 </body>

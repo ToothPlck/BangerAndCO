@@ -72,7 +72,8 @@ public class AdminController {
 
     @GetMapping("users/view/active")
     public String viewUsers(Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("users", userService.getActiveUsers());
         model.addAttribute("type", "Active Users");
         model.addAttribute("error", "");
@@ -282,7 +283,7 @@ public class AdminController {
     public String addVehicleType(Model model, Authentication authentication) {
         model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
         model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("vehicleTypeForm", new VehicleTypeDto());
         model.addAttribute("error", "");
         model.addAttribute("success", "");
         return "admin_add_vehicle_type";
@@ -295,14 +296,14 @@ public class AdminController {
         } catch (Exception exception) {
             model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
             model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("vehicleTypeForm", new VehicleTypeDto());
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_add_vehicle_type";
         }
         model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
         model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("vehicleTypeForm", new VehicleTypeDto());
         model.addAttribute("error", "");
         model.addAttribute("success", "Vehicle type added successfully!");
         return "admin_add_vehicle_type";
