@@ -67,7 +67,7 @@ public class UserServiceImplementation implements UserService {
                 user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
                 user.setRole("user");
                 user.setUpdatedDate(java.sql.Date.valueOf(currentDate()));
-                user.setBangerScore(0);
+                user.setBangerScore(10);
 
                 User registeredUser = userRepo.save(user);
 

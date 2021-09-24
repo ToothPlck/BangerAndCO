@@ -366,29 +366,6 @@ public class RentalServiceImplementation implements RentalService {
         return rentalDtoList;
     }
 
-    /*
-    * LocalDate startDate = LocalDate.parse(pickDate);
-            LocalDate endDate = LocalDate.parse(dropDate);
-            long differenceBetweenDates = Period.between(startDate, endDate).getDays();
-
-            LocalTime startTime = LocalTime.parse(pickTime);
-            LocalTime endTime = LocalTime.parse(dropTime);
-            long differenceBetweenHours = ChronoUnit.HOURS.between(startTime, endTime);
-            long differenceBetweenMinutes = ChronoUnit.MINUTES.between(startTime, endTime) % 60;
-
-            long total = (differenceBetweenDates * 24) + differenceBetweenHours;
-            String periodWithoutMinutes = String.valueOf(total);
-
-            return periodWithoutMinutes + "." + differenceBetweenMinutes;
-            *
-            * long differenceBetweenHours = ChronoUnit.MINUTES.between(startTime, endTime);
-        long differenceBetweenMinutes = ChronoUnit.MINUTES.between(startTime, endTime) % 60;
-
-        double totalInMinutes = ((differenceBetweenDates * 24) * 60) + differenceBetweenHours + differenceBetweenMinutes;
-        double totalInHours = totalInMinutes / 60;
-
-        return String.valueOf(totalInHours);
-    * */
     @Override
     public void cancelRental(long rentalId) throws Exception {
         Rental rental = rentalRepo.getById(rentalId);

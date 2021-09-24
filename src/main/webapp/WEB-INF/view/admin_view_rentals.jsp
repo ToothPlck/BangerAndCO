@@ -138,6 +138,9 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/admin/competitors">Competitors</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0 d-flex">
                     <li class="nav-item dropdown">
@@ -226,7 +229,6 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-outline-warning">Update account</button>
                             <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>

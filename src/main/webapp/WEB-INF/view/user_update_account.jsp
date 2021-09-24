@@ -51,8 +51,12 @@
                             <li><a class="dropdown-item" data-bs-toggle="modal"
                                    data-bs-target="#rentalModal" style="cursor: pointer">Rent now</a>
                             </li>
+                            <hr class="dropdown-divider">
                             <li><a class="dropdown-item"
-                                   href="${pageContext.request.contextPath}/user/rentals/on-going">On Going</a>
+                                   href="${pageContext.request.contextPath}/user/rentals/all">All</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/user/rentals/onGoing">On Going</a>
                             </li>
                             <li><a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/user/rentals/pending">Pending</a>
@@ -446,12 +450,6 @@
         const startTime = $("#pickupTime").val();
         const endDate = $("#dropOffDate").val();
         const endTime = $("#dropOffTime").val();
-
-
-        console.log(returning);
-        console.log(endTime);
-        console.log(endTime.substring(0, 2));
-        console.log(endTime.substring(0, 2) > 18);
 
         if (startDate === "") {
             event.preventDefault();

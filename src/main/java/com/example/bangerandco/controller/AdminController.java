@@ -5,6 +5,7 @@ import com.example.bangerandco.dto.UserDto;
 import com.example.bangerandco.dto.VehicleDto;
 import com.example.bangerandco.dto.VehicleTypeDto;
 import com.example.bangerandco.service.*;
+import com.example.bangerandco.serviceImplementation.WebScraping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -29,12 +30,15 @@ public class AdminController {
     private VehicleTypeService vehicleTypeService;
     @Autowired
     private VehicleService vehicleService;
+    @Autowired
+    private WebScraping webScraping;
 
     //register
     @GetMapping("register")
     public String register(Model model,
                            Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("userForm", new UserDto());
         model.addAttribute("error", "");
         model.addAttribute("success", "");
@@ -51,13 +55,15 @@ public class AdminController {
         try {
             userService.registerUser(userDto, userImage, licenseImage, alternateImage, true);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("userForm", new UserDto());
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_register_user";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("userForm", new UserDto());
         model.addAttribute("error", "");
         model.addAttribute("success", "User Registered Successfully!");
@@ -76,7 +82,8 @@ public class AdminController {
 
     @GetMapping("users/view/pending")
     public String viewUnverifiedUsers(Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("users", userService.getUnverifiedUsers());
         model.addAttribute("type", "Pending Users");
         model.addAttribute("error", "");
@@ -86,7 +93,8 @@ public class AdminController {
 
     @GetMapping("users/view/blacklisted")
     public String viewBlacklistedUsers(Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("users", userService.getBlacklistedUsers());
         model.addAttribute("type", "Blacklisted Users");
         model.addAttribute("error", "");
@@ -99,14 +107,16 @@ public class AdminController {
         try {
             userService.verifyUser(userId);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("users", userService.getUnverifiedUsers());
             model.addAttribute("type", "Pending Users");
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_view_users";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("users", userService.getUnverifiedUsers());
         model.addAttribute("type", "Pending Users");
         model.addAttribute("error", "");
@@ -119,14 +129,16 @@ public class AdminController {
         try {
             userService.blacklistUser(userId);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("users", userService.getActiveUsers());
             model.addAttribute("type", "Active Users");
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_view_users";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("users", userService.getActiveUsers());
         model.addAttribute("type", "Active Users");
         model.addAttribute("error", "");
@@ -139,14 +151,16 @@ public class AdminController {
         try {
             userService.whitelistUser(userId);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("users", userService.getBlacklistedUsers());
             model.addAttribute("type", "Blacklisted Users");
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_view_users";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("users", userService.getBlacklistedUsers());
         model.addAttribute("type", "Blacklisted Users");
         model.addAttribute("error", "");
@@ -157,7 +171,8 @@ public class AdminController {
     @GetMapping("equipment/add")
     public String addEquipment(Model model,
                                Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("equipmentForm", new EquipmentDto());
         model.addAttribute("error", "");
         model.addAttribute("success", "");
@@ -172,13 +187,15 @@ public class AdminController {
         try {
             equipmentService.save(equipmentDto, equipmentImage);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("equipmentForm", new EquipmentDto());
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_add_equipment";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("equipmentForm", new EquipmentDto());
         model.addAttribute("error", "");
         model.addAttribute("success", "Equipment added successfully!");
@@ -187,7 +204,8 @@ public class AdminController {
 
     @GetMapping("equipment/view/all")
     public String viewAllEquipments(Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("equipments", equipmentService.getAll());
         model.addAttribute("type", "All Equipments");
         model.addAttribute("error", "");
@@ -197,7 +215,8 @@ public class AdminController {
 
     @GetMapping("equipment/view/{type}")
     public String viewEquipmentsByType(@PathVariable(value = "type") String type, Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("equipments", equipmentService.getByType(type));
         model.addAttribute("type", type);
         model.addAttribute("error", "");
@@ -207,7 +226,8 @@ public class AdminController {
 
     @GetMapping("equipment/update/{equipmentId}")
     public String updateEquipment(@PathVariable("equipmentId") long equipmentId, Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("equipment", equipmentService.updatable(equipmentId));
         model.addAttribute("error", "");
         model.addAttribute("success", "");
@@ -219,14 +239,16 @@ public class AdminController {
         try {
             equipmentService.updateEquipment(equipmentId, equipmentImage, equipmentDto);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("equipments", equipmentService.getAll());
             model.addAttribute("type", "All Equipments");
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_view_equipments";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("equipments", equipmentService.getAll());
         model.addAttribute("type", "All Equipments");
         model.addAttribute("error", "");
@@ -239,14 +261,16 @@ public class AdminController {
         try {
             equipmentService.deleteEquipment(equipmentId);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("equipments", equipmentService.getAll());
             model.addAttribute("type", "All Equipments");
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_view_equipments";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("equipments", equipmentService.getAll());
         model.addAttribute("type", "All Equipments");
         model.addAttribute("error", "");
@@ -256,7 +280,8 @@ public class AdminController {
 
     @GetMapping("vehicleType/add")
     public String addVehicleType(Model model, Authentication authentication) {
-        model.addAttribute("vehicleTypeForm", new VehicleTypeDto());
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
         model.addAttribute("error", "");
         model.addAttribute("success", "");
@@ -268,13 +293,15 @@ public class AdminController {
         try {
             vehicleTypeService.save(vehicleTypeDto, vehicleTypeImage);
         } catch (Exception exception) {
-            model.addAttribute("vehicleTypeForm", new VehicleTypeDto());
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_add_vehicle_type";
         }
-        model.addAttribute("vehicleTypeForm", new VehicleTypeDto());
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
         model.addAttribute("error", "");
         model.addAttribute("success", "Vehicle type added successfully!");
@@ -283,7 +310,8 @@ public class AdminController {
 
     @GetMapping("vehicleType/view/all")
     public String viewVehicleTypes(Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
         model.addAttribute("error", "");
         model.addAttribute("success", "");
@@ -292,7 +320,8 @@ public class AdminController {
 
     @GetMapping("vehicleType/update/{vehicleTypeId}")
     public String updateVehicleType(@PathVariable("vehicleTypeId") long vehicleTypeId, Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
         model.addAttribute("vehicleType", vehicleTypeService.updatable(vehicleTypeId));
         model.addAttribute("error", "");
@@ -305,13 +334,15 @@ public class AdminController {
         try {
             vehicleTypeService.updateVehicleType(vehicleTypeId, vehicleTypeImage, vehicleTypeDto);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_view_vehicle_type";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
         model.addAttribute("error", "");
         model.addAttribute("success", "Vehicle Type updated successfully");
@@ -323,13 +354,15 @@ public class AdminController {
         try {
             vehicleTypeService.deleteVehicleType(vehicleTypeId);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_view_vehicle_type";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
         model.addAttribute("error", "");
         model.addAttribute("success", "Vehicle Type deleted successfully");
@@ -340,7 +373,8 @@ public class AdminController {
     public String addVehicle(Model model, Authentication authentication) {
         model.addAttribute("vehicleForm", new VehicleDto());
         model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("error", "");
         model.addAttribute("success", "");
         return "admin_add_vehicle";
@@ -353,14 +387,16 @@ public class AdminController {
         } catch (Exception exception) {
             model.addAttribute("vehicleForm", new VehicleDto());
             model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_add_vehicle";
         }
         model.addAttribute("vehicleForm", new VehicleDto());
         model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("error", "");
         model.addAttribute("success", "Vehicle added successfully!");
         return "admin_add_vehicle";
@@ -423,13 +459,15 @@ public class AdminController {
         try {
             vehicleService.deleteVehicle(vehicleId);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("vehicles", vehicleService.category_all());
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_view_vehicles";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("vehicles", vehicleService.category_all());
         model.addAttribute("error", "");
         model.addAttribute("success", "Vehicle deleted successfully");
@@ -480,8 +518,13 @@ public class AdminController {
         return "admin_view_rentals";
     }
 
-    @GetMapping("/view")
-    public String view() {
-        return "test";
+    @GetMapping("competitors")
+    public String scrape(Model model, Authentication authentication) throws Exception {
+        model.addAttribute("scrape", webScraping.scrape());
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
+        model.addAttribute("error", "");
+        model.addAttribute("success", "");
+        return "admin_view_scraping";
     }
 }

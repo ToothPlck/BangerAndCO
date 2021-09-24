@@ -127,10 +127,10 @@ public class UserController {
     }
 
     @GetMapping("rental/cancel/{rentalId}")
-    public String cancelBooking(@PathVariable(value = "rentalId") long rentalId, Model model, Authentication authentication){
-        try{
+    public String cancelBooking(@PathVariable(value = "rentalId") long rentalId, Model model, Authentication authentication) {
+        try {
             rentalService.cancelRental(rentalId);
-        }catch (Exception exception){
+        } catch (Exception exception) {
             model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
             model.addAttribute("bookings", rentalService.userAllRentals(authentication.getName()));
             model.addAttribute("type", "All bookings");

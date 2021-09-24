@@ -55,7 +55,6 @@ public class GuestController {
         return "login";
     }
 
-    //small town cars, small family hatchbacks, large family saloon, large family estate, medium vans
     @GetMapping("category")
     public String category(Model model){
         model.addAttribute("categories", vehicleTypeService.getAll());

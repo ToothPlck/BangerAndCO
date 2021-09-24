@@ -49,7 +49,7 @@
     </nav>
     <nav class="navbar navbar-light" style="background-color: #282838;">
         <div class="container">
-            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Our Fleets</label>
+            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Vehicle categories</label>
         </div>
     </nav>
 </div>
@@ -58,7 +58,7 @@
         <form:form id="form" method="get" modelAttribute="categories">
             <div class="row my-5 align-items-center justify-content-center">
                 <div onclick="viewCategory('all')" class="card text-white bg-dark mb-3"
-                     style="width: 18rem; min-height: 400px; margin: 25px; cursor: pointer">
+                     style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer">
                     <img src="${pageContext.request.contextPath}/photos/login_background.jpg"
                          class="card-img-top" alt="" style="margin-top: 10px;" width="200" height="200">
                     <div class="card-body">
@@ -68,7 +68,7 @@
                 </div>
                 <c:forEach items="${categories}" var="category">
                     <div onclick="viewCategory('${category.vehicleTypeId}')" class="card text-white bg-dark mb-3"
-                         style="width: 18rem; min-height: 400px; margin: 25px; cursor: pointer">
+                         style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer">
                         <img src="${pageContext.request.contextPath}/images/${category.typeImagePath}"
                              class="card-img-top" alt="" style="margin-top: 10px;" width="200" height="200">
                         <div class="card-body">
@@ -77,28 +77,6 @@
                         </div>
                     </div>
                 </c:forEach>
-                    <%--                                    <div class="card" style="width: 18rem; margin: 25px;">--%>
-                    <%--                                        <img src="${pageContext.request.contextPath}/photos/logo.png" class="card-img-top" alt="">--%>
-                    <%--                                        <div class="card-body">--%>
-                    <%--                                            <h5 class="card-title">Card title</h5>--%>
-                    <%--                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk--%>
-                    <%--                                                of--%>
-                    <%--                                                the card's content.</p>--%>
-                    <%--                                            <a href="${pageContext.request.contextPath}/category" class="btn btn-primary">Go--%>
-                    <%--                                                somewhere</a>--%>
-                    <%--                                        </div>--%>
-                    <%--                                        <div class="card-header">--%>
-                    <%--                                            Featured--%>
-                    <%--                                        </div>--%>
-                    <%--                                        <ul class="list-group list-group-flush">--%>
-                    <%--                                            <li class="list-group-item">An item</li>--%>
-                    <%--                                            <li class="list-group-item">A second item</li>--%>
-                    <%--                                            <li class="list-group-item">A third item</li>--%>
-                    <%--                                        </ul>--%>
-                    <%--                                        <div class="card-footer">--%>
-                    <%--                                            Card footer--%>
-                    <%--                                        </div>--%>
-                    <%--                                    </div>--%>
             </div>
         </form:form>
     </div>

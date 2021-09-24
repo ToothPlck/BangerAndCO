@@ -15,6 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
             integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -48,7 +49,11 @@
     </nav>
     <nav class="navbar navbar-light" style="background-color: #282838;">
         <div class="container">
-            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Our Fleets</label>
+            <label style="font-size: 25px; font-weight: bold; margin: 15px auto;"><a
+                    style="text-decoration: none; color: white;"
+                    href="${pageContext.request.contextPath}/category">
+                <i class="bi bi-arrow-bar-left"></i> Our Vehicles
+            </a></label>
         </div>
     </nav>
 </div>
@@ -61,7 +66,7 @@
                          style="width: 18rem; min-height: 400px; margin: 25px; cursor: pointer">
                         <img src="${pageContext.request.contextPath}/images/${category.vehicleImagePath}"
                              class="card-img-top" alt="" style="margin-top: 10px;" width="200" height="200">
-                        <div class="card-body">
+                        <div class="card-body bg-dark">
                             <h5 class="card-title text-center">${category.model}</h5>
                         </div>
                         <ul class="list-group list-group-flush" style="margin-bottom: 10px;">

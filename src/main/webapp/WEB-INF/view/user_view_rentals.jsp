@@ -50,6 +50,7 @@
                             <li><a class="dropdown-item" data-bs-toggle="modal"
                                    data-bs-target="#rentalModal" style="cursor: pointer">Rent now</a>
                             </li>
+                            <hr class="dropdown-divider">
                             <li><a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/user/rentals/all">All</a>
                             </li>

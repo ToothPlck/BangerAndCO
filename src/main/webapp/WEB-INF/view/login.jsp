@@ -62,16 +62,16 @@
     <div class="container" style="position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-15%, -40%);">
+  transform: translate(-15%, -20%);">
         <form:form id="form" method="post" action="${contextPath}/login">
             <div class="col-lg-4 col-md-4 col-sm-4 container justify-content-center">
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input class="form-control" autofocus="autofocus" name="email" type="text"/>
+                <div class="form-floating mb-3">
+                    <input class="form-control" autofocus="autofocus" name="email" type="text" id="email"/>
+                    <label for="email">Email</label>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input name="password" type="password" class="form-control"/>
+                <div class="form-floating mb-3">
+                    <input class="form-control" name="password" type="password" id="password"/>
+                    <label for="password">Password</label>
                 </div>
                 <div class="mb-3">
                     <button type="submit" class="form-control"

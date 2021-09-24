@@ -50,8 +50,12 @@
                             <li><a class="dropdown-item" data-bs-toggle="modal"
                                    data-bs-target="#rentalModal" style="cursor: pointer">Rent now</a>
                             </li>
+                            <hr class="dropdown-divider">
                             <li><a class="dropdown-item"
-                                   href="${pageContext.request.contextPath}/user/rentals/on-going">On Going</a>
+                                   href="${pageContext.request.contextPath}/user/rentals/all">All</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/user/rentals/onGoing">On Going</a>
                             </li>
                             <li><a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/user/rentals/pending">Pending</a>
@@ -132,7 +136,7 @@
                 <c:forEach items="${vehicles}" var="vehicle">
                     <div class="card text-white bg-dark mb-3"
                          style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer" data-bs-toggle="modal"
-                         data-bs-target="#modal${vehicle.vehicleId}">
+                         data-bs-target="#modal${vehicle.vehicleId}" id="card${vehicle.vehicleId}">
                         <img src="/images/${vehicle.vehicleImagePath}" class="card-img-top mt-3 rounded-3" alt=""
                              width="200" height="200">
                         <div class="card-body">
@@ -196,14 +200,27 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-dark" id="rentButton"
+                                    <div class="form-text" id="note${vehicle.vehicleId}">
+                                        Note - Small town cars available only for users above age 25.
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary" id="rentButton"
                                             data-bs-dismiss="modal" data-bs-toggle="modal"
-                                            data-bs-target="#rentalModal">Rent
+                                            data-bs-target="#rentalModal">View availability
                                     </button>
-                                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                         Close
                                     </button>
                                 </div>
+                                <p style="display: none"
+                                   id="vehicleTypeNote${vehicle.vehicleId}">${vehicle.vehicleType.vehicleType}</p>
+                                <script>
+                                    document.getElementById("card${vehicle.vehicleId}").onclick = function () {
+                                        const vehicleTypeNote = document.getElementById("vehicleTypeNote${vehicle.vehicleId}").innerHTML;
+                                        if (vehicleTypeNote === "Small Town Car") {
+                                            document.getElementById("note${vehicle.vehicleId}").style.display = "none";
+                                        }
+                                    }
+                                </script>
                             </div>
                         </div>
                     </div>
@@ -223,7 +240,7 @@
                 <c:forEach items="${equipments}" var="equipment">
                     <div class="card text-white bg-dark mb-3"
                          style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer" data-bs-toggle="modal"
-                         data-bs-target="#modal${equipment.equipmentId}">
+                         data-bs-target="#modalEq${equipment.equipmentId}">
                         <img src="/images/${equipment.equipmentImagePath}" class="card-img-top mt-3 rounded-3" alt=""
                              width="200" height="200">
                         <div class="card-body">
@@ -237,7 +254,7 @@
                             </figure>
                         </div>
                     </div>
-                    <div class="modal fade" id="modal${equipment.equipmentId}" tabindex="-1"
+                    <div class="modal fade" id="modalEq${equipment.equipmentId}" tabindex="-1"
                          aria-labelledby="exampleModalLabel"
                          aria-hidden="true">
                         <div class="modal-dialog">
@@ -277,11 +294,14 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-dark" id="rentButton2"
+                                    <div class="form-text">
+                                        Equipments can be rented as additional items when renting a vehicle.
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary" id="rentButton2"
                                             data-bs-dismiss="modal" data-bs-toggle="modal"
-                                            data-bs-target="#rentalModal">Rent
+                                            data-bs-target="#rentalModal">View Availability
                                     </button>
-                                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                         Close
                                     </button>
                                 </div>
@@ -451,7 +471,7 @@
                 const endingDate = new Date(selectedDate);
                 const total = Math.abs(endingDate - startingDate) / 1000;
                 const difference = Math.floor(total / (60 * 60 * 24));
-                let range = difference + 12;
+                let range = difference + 14;
                 dropOffDate.datepicker("option", "minDate", selectedDate);
                 dropOffDate.datepicker("option", "maxDate", range);
             }
