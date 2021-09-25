@@ -78,7 +78,7 @@
                             </li>
                             <c:forEach items="${vehicleNav}" var="vehicles">
                                 <li><a class="dropdown-item"
-                                       href="${pageContext.request.contextPath}/admin/vehicle/view/${vehicles.vehicleType}">${vehicles.vehicleType}s</a>
+                                       href="${pageContext.request.contextPath}/admin/vehicle/view/${vehicles.vehicleTypeId}">${vehicles.vehicleType}s</a>
                                 </li>
                             </c:forEach>
                         </ul>
@@ -252,6 +252,7 @@
                                 <th>Amount</th>
                                 <th>Vehicle</th>
                                 <th>No. of equipments</th>
+                                <th>Status</th>
                                 <th>View</th>
                             </tr>
                             </thead>
@@ -263,6 +264,7 @@
                                     <td>${rental.total}</td>
                                     <td>${rental.vehicle.model}</td>
                                     <td>${rental.equipment.size()}</td>
+                                    <td>${rental.status}</td>
                                     <td><a type="button" id="view${rental.rentalId}" class="btn btn-outline-light"
                                            data-bs-toggle="modal"
                                            data-bs-target="#modal${rental.rentalId}">View</a>

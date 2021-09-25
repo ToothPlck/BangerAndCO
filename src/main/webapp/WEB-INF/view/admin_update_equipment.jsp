@@ -16,13 +16,15 @@
             integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid" style="margin: 10px 100px;">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/login">
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/users/view/active">
                 <img src="${pageContext.request.contextPath}/photos/logo.png" alt="" width="40" height="40"
                      style="margin: 0 20px;">
             </a>
@@ -33,9 +35,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/login">Login</a>
-                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="usersDropDown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
@@ -57,7 +56,39 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" aria-current="page" href="#" id="equipmentsDropdown"
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="vehiclesDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Vehicles
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="vehiclesDropdown">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/vehicleType/add">Add new category</a>
+                            </li>
+                            <li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/vehicleType/view/all">Categories</a>
+                            </li>
+                            <hr class="dropdown-divider">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/vehicle/add">Add new vehicle</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/vehicle/view/all">All Vehicles</a>
+                            </li>
+                            <c:forEach items="${vehicleNav}" var="vehicles">
+                                <li><a class="dropdown-item"
+                                       href="${pageContext.request.contextPath}/admin/vehicle/view/${vehicles.vehicleTypeId}">${vehicles.vehicleType}s</a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="equipmentsDropdown"
                            role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             Equipments
@@ -83,16 +114,57 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/register">Register</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="rentalsDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Rentals
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="rentalDropdown">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/all">All</a></li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/pending">Pending</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/onGoing">On-Going</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/approved">Approved</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/rejected">Rejected</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/completed">Completed</a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/category">Vehicles</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/admin/competitors">Competitors</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0 d-flex">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/logout">Logout</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="accountDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="${pageContext.request.contextPath}/images/${loggedUser.userImagePath}"
+                                 class="rounded-circle" alt=""
+                                 width="40" height="40"
+                                 style="margin: 0 20px;">${loggedUser.firstName}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="accountDropdown">
+                            <li><a class="dropdown-item" data-bs-toggle="modal"
+                                   data-bs-target="#accountModal" style="cursor: pointer">View Account</a>
+                            </li>
+                            <hr class="dropdown-divider">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/logout">Logout</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -103,14 +175,14 @@
             <label style="font-size: 25px; font-weight: bold; margin: 15px auto;"><a
                     style="text-decoration: none; color: white;"
                     href="${pageContext.request.contextPath}/admin/equipment/view/all">
-                <i class="bi bi-arrow-bar-left"></i> Update Equipment
+                <i class="bi bi-arrow-bar-left"></i> Update Equipment ${equipment.equipmentIdentifier}
             </a></label>
         </div>
     </nav>
 </div>
 <div>
     <div class="container-sm mt-5">
-        <form:form modelAttribute="equipment" method="post" enctype="multipart/form-data">
+        <form:form id="form" modelAttribute="equipment" method="post" enctype="multipart/form-data">
             <div class="row container justify-content-center">
                 <div class="col-5">
                     <img src="/images/${equipment.equipmentImagePath}" class="rounded m-auto mt-2" alt="..." width="450"
@@ -118,17 +190,16 @@
                 </div>
                 <div class="col-5">
                     <div class="form-floating mb-3">
-                        <form:input path="equipmentName" type="text" class="form-control" id="equipmentName"/>
-                        <label for="equipmentName">Equipment name</label>
+                        <form:input path="equipmentName" type="text" class="form-control" id="name"/>
+                        <label for="name">Equipment name</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <form:input path="equipmentIdentifier" type="text" class="form-control"
-                                    id="equipmentIdentifier"/>
-                        <label for="equipmentIdentifier">Equipment Identifier</label>
+                        <form:input path="equipmentIdentifier" type="text" class="form-control" id="identifier"/>
+                        <label for="identifier">Equipment Identifier</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <form:input path="equipmentRentPerHour" type="text" class="form-control" id="equipmentRent"/>
-                        <label for="equipmentRent">Rent per hour</label>
+                        <form:input path="equipmentRentPerHour" type="text" class="form-control" id="rent"/>
+                        <label for="rent">Rent per hour</label>
                         <div class="form-text">
                             Prices in $
                         </div>
@@ -138,28 +209,158 @@
                             <form:option value="true">Yes</form:option>
                             <form:option value="false">No</form:option>
                         </form:select>
-                        <label for="available">Availability</label>
+                        <label for="available">Available for rentals</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <form:select path="equipmentType" id="type" class="form-select">
+                        <form:select path="equipmentType" id="equipment" class="form-select">
                             <form:option value="${equipment.equipmentType}">${equipment.equipmentType}</form:option>
                             <form:option value="Satnav">Satnav</form:option>
                             <form:option value="Baby seat">Baby seat</form:option>
                             <form:option value="Wine chiller">Wine chiller</form:option>
                         </form:select>
-                        <label for="type">Equipment category</label>
+                        <label for="equipment">Equipment category</label>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="image">Equipment image</label>
-                        <input name="equipmentImage" type="file" class="form-control" id="image"/>
+                        <label class="form-label" for="equipmentImage">Equipment image</label>
+                        <input name="equipmentImage" type="file" class="form-control" id="equipmentImage"/>
                     </div>
                     <div>
                         <button type="submit" class="btn btn-outline-secondary m-auto d-block">Update</button>
+                    </div>
+                    <div>
+                        <p style="display: none" id="successMessage">${success}</p>
+                        <p style="display: none" id="errorMessage">${error}</p>
                     </div>
                 </div>
             </div>
         </form:form>
     </div>
+    <div>
+        <form id="accountForm" method="get">
+            <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <figure>
+                                <blockquote class="blockquote">
+                                    <p>${loggedUser.firstName} ${loggedUser.lastName}</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    <cite>Administrator</cite>
+                                </figcaption>
+                            </figure>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <img class="rounded-circle mx-auto d-block"
+                                     src="${pageContext.request.contextPath}/images/${loggedUser.userImagePath}"
+                                     alt="" width="200" height="200">
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userFirstname"
+                                       value="${loggedUser.firstName}" disabled>
+                                <label for="userFirstname">Firstname</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userLastname"
+                                       value="${loggedUser.lastName}" disabled>
+                                <label for="userLastname">Lastname</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userEmail"
+                                       value="${loggedUser.email}" disabled>
+                                <label for="userEmail">Email</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userContact"
+                                       value="${loggedUser.contact}" disabled>
+                                <label for="userContact">Contact</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userDob"
+                                       value="${loggedUser.dateOfBirth}" disabled>
+                                <label for="userDob">Date of Birth</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userUpdated"
+                                       value="${loggedUser.updatedDate}" disabled>
+                                <label for="userUpdated">Last updated</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>
+<script>
+    window.onload = function () {
+        const errorMessage = document.getElementById("errorMessage").innerHTML;
+        const successMessage = document.getElementById("successMessage").innerHTML;
+
+        if (errorMessage !== "") {
+            Swal.fire({
+                title: "Error occurred while updating the equipment!!!",
+                text: errorMessage,
+                icon: "error",
+            });
+        }
+        if (successMessage !== "") {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: successMessage,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    }
+
+    const form = document.getElementById('form');
+    form.addEventListener('submit', function (event) {
+
+        const name = $("#name").val();
+        const identifier = $("#identifier").val();
+        const rent = $("#rent").val();
+
+        if (name.length < 2 || name.length > 50) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in equipment name!!!",
+                html: '<div> Equipment name cannot be kept empty </div>' +
+                    '<div> <br> Equipment name should contain 2 to 50 characters </div>',
+                icon: "error",
+            });
+        } else if (identifier.length < 2 || identifier.length > 20) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in equipment identifier!!!",
+                html: '<div> Equipment identifier cannot be kept empty </div>' +
+                    '<div> <br> Equipment identifier should contain 2 to 20 characters </div>',
+                icon: "error",
+            });
+        }else if (rent.length < 2 || rent.length > 50) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in equipment rent!!!",
+                html: '<div> Equipment rent cannot be kept empty </div>' +
+                    '<div> <br> Equipment rent should contain 2 to 10 characters </div>',
+                icon: "error",
+            });
+        } else {
+            Swal.fire({
+                title: 'Updating...',
+                html: 'Hold on a few seconds while we update the equipment!',
+                timer: 10000,
+                timerProgressBar: false,
+            });
+        }
+    });
+</script>

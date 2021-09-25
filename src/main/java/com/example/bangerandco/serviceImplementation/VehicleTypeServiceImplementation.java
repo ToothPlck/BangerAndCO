@@ -77,6 +77,7 @@ public class VehicleTypeServiceImplementation implements VehicleTypeService {
             VehicleTypeDto vehicleTypeDto = new VehicleTypeDto();
 
             vehicleTypeDto.setVehicleType(vehicleType.getVehicleType());
+            vehicleTypeDto.setVehicleTypeId(vehicleType.getVehicleTypeId());
 
             vehicleTypeDtoList.add(vehicleTypeDto);
         }

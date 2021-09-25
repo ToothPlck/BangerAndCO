@@ -194,7 +194,7 @@
                         </thead>
                         <tbody>
                         <c:forEach items="${users}" var="user">
-                            <tr>
+                            <tr id="tr${user.userId}">
                                 <td>${user.userId}</td>
                                 <td>${user.firstName}</td>
                                 <td>${user.lastName}</td>
@@ -316,6 +316,7 @@
                                                     if (verified === "false" && blacklisted === "false") {
                                                         document.getElementById("${user.userId} verify").style.display = "block";
                                                         document.getElementById("${user.userId} blacklist").style.display = "block";
+                                                        <%--document.getElementById("tr${user.userId}").className = "table-primary";--%>
                                                     }
                                                     if (verified === "true" && blacklisted === "false") {
                                                         document.getElementById("${user.userId} blacklist").style.display = "block";

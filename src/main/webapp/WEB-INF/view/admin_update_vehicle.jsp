@@ -22,7 +22,7 @@
 <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid" style="margin: 10px 100px;">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/login">
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/users/view/active">
                 <img src="${pageContext.request.contextPath}/photos/logo.png" alt="" width="40" height="40"
                      style="margin: 0 20px;">
             </a>
@@ -33,9 +33,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/login">Login</a>
-                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="usersDropDown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
@@ -80,9 +77,9 @@
                             <li><a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/admin/vehicle/view/all">All Vehicles</a>
                             </li>
-                            <c:forEach items="${vehiclesNav}" var="vehicles">
+                            <c:forEach items="${vehicleNav}" var="vehicles">
                                 <li><a class="dropdown-item"
-                                       href="${pageContext.request.contextPath}/admin/vehicle/view/${vehicles.vehicleType.vehicleTypeId}">${vehicles.vehicleType.vehicleType}s</a>
+                                       href="${pageContext.request.contextPath}/admin/vehicle/view/${vehicles.vehicleTypeId}">${vehicles.vehicleType}s</a>
                                 </li>
                             </c:forEach>
                         </ul>
@@ -115,16 +112,57 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/register">Register</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="rentalsDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Rentals
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="rentalDropdown">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/all">All</a></li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/pending">Pending</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/onGoing">On-Going</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/approved">Approved</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/rejected">Rejected</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/admin/rental/view/completed">Completed</a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/category">Vehicles</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/admin/competitors">Competitors</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0 d-flex">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/logout">Logout</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"
+                           id="accountDropdown"
+                           role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="${pageContext.request.contextPath}/images/${loggedUser.userImagePath}"
+                                 class="rounded-circle" alt=""
+                                 width="40" height="40"
+                                 style="margin: 0 20px;">${loggedUser.firstName}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="accountDropdown">
+                            <li><a class="dropdown-item" data-bs-toggle="modal"
+                                   data-bs-target="#accountModal" style="cursor: pointer">View Account</a>
+                            </li>
+                            <hr class="dropdown-divider">
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/logout">Logout</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -144,44 +182,44 @@
     <div class="container-sm mt-5">
         <form:form modelAttribute="vehicles" method="post" enctype="multipart/form-data">
             <div class="row container justify-content-center">
-                <div class="col-5">
+                <div class="col-5 mt-5">
                     <img src="/images/${vehicles.vehicleImagePath}" class="rounded m-auto mt-2" alt="..." width="450"
                          height="450">
                 </div>
                 <div class="col-5">
                     <div class="form-floating mb-3">
-                        <form:input path="model" type="text" class="form-control" id="vehicleModel"/>
-                        <label for="vehicleModel">Model</label>
+                        <form:input path="model" type="text" class="form-control" id="model"/>
+                        <label for="model">Model</label>
                     </div>
                     <div class="form-floating mb-3">
                         <form:input path="licensePlateNumber" type="text" class="form-control"
-                                    id="vehicleLicense"/>
-                        <label for="vehicleLicense">License Plate Number</label>
+                                    id="licensePlateNumber"/>
+                        <label for="licensePlateNumber">License Plate Number</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <form:input path="rentPerHour" type="text" class="form-control" id="vehicleRent"/>
-                        <label for="vehicleRent">Rent per hour</label>
+                        <form:input path="rentPerHour" type="text" class="form-control" id="rent"/>
+                        <label for="rent">Rent per hour</label>
                         <div class="form-text">
                             Prices in $
                         </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <form:input path="engineType" type="text" class="form-control" id="vehicleEngine"/>
-                        <label for="vehicleEngine">Engine</label>
+                        <form:input path="engineType" type="text" class="form-control" id="engineType"/>
+                        <label for="engineType">Engine</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <form:input path="transmissionType" type="text" class="form-control" id="vehicleTransmission"/>
-                        <label for="vehicleTransmission">Transmission</label>
+                        <form:input path="transmissionType" type="text" class="form-control" id="transmissionType"/>
+                        <label for="transmissionType">Transmission</label>
                     </div>
                     <div class="form-floating mb-3">
                         <form:select path="available" id="available" class="form-select">
                             <form:option value="true">Yes</form:option>
                             <form:option value="false">No</form:option>
                         </form:select>
-                        <label for="available">Availability</label>
+                        <label for="available">Available for rentals</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <form:select path="vehicleType" id="type" class="form-select">
+                        <form:select path="vehicleType" id="vehicleType" class="form-select">
                             <form:option
                                     value="${vehicles.vehicleType.vehicleTypeId}">${vehicles.vehicleType.vehicleType}</form:option>
                             <c:forEach items="${vehicleTypes}" var="vehicleType">
@@ -189,19 +227,168 @@
                                         value="${vehicleType.vehicleTypeId}">${vehicleType.vehicleType}</form:option>
                             </c:forEach>
                         </form:select>
-                        <label for="type">Vehicle Type</label>
+                        <label for="vehicleType">Vehicle Type</label>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="image">Vehicle image</label>
-                        <input name="vehicleImage" type="file" class="form-control" id="image"/>
+                        <label class="form-label" for="vehicleImage">Vehicle image</label>
+                        <input name="vehicleImage" type="file" class="form-control" id="vehicleImage"/>
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-outline-secondary m-auto d-block">Update</button>
+                        <button type="submit" class="btn btn-outline-secondary m-auto d-block">Update Vehicle</button>
+                    </div>
+                    <div>
+                        <p style="display: none" id="successMessage">${success}</p>
+                        <p style="display: none" id="errorMessage">${error}</p>
                     </div>
                 </div>
             </div>
         </form:form>
     </div>
+    <div>
+        <form id="accountForm" method="get">
+            <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <figure>
+                                <blockquote class="blockquote">
+                                    <p>${loggedUser.firstName} ${loggedUser.lastName}</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    <cite>Administrator</cite>
+                                </figcaption>
+                            </figure>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <img class="rounded-circle mx-auto d-block"
+                                     src="${pageContext.request.contextPath}/images/${loggedUser.userImagePath}"
+                                     alt="" width="200" height="200">
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userFirstname"
+                                       value="${loggedUser.firstName}" disabled>
+                                <label for="userFirstname">Firstname</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userLastname"
+                                       value="${loggedUser.lastName}" disabled>
+                                <label for="userLastname">Lastname</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userEmail"
+                                       value="${loggedUser.email}" disabled>
+                                <label for="userEmail">Email</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userContact"
+                                       value="${loggedUser.contact}" disabled>
+                                <label for="userContact">Contact</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userDob"
+                                       value="${loggedUser.dateOfBirth}" disabled>
+                                <label for="userDob">Date of Birth</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userUpdated"
+                                       value="${loggedUser.updatedDate}" disabled>
+                                <label for="userUpdated">Last updated</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>
+<script>
+    window.onload = function () {
+        const errorMessage = document.getElementById("errorMessage").innerHTML;
+        const successMessage = document.getElementById("successMessage").innerHTML;
+
+        if (errorMessage !== "") {
+            Swal.fire({
+                title: "Error occurred while adding the new vehicle!!!",
+                text: errorMessage,
+                icon: "error",
+            });
+        }
+        if (successMessage !== "") {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: successMessage,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    }
+
+    const form = document.getElementById('form');
+
+    form.addEventListener('submit', function (event) {
+
+        const model = $("#model").val();
+        const licenseNumber = $("#licensePlateNumber").val();
+        const engineType = $("#engineType").val();
+        const transmissionType = $("#transmissionType").val();
+        const rent = $("#rent").val();
+
+        if (model.length < 2 || model.length > 50) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in vehicle model!!!",
+                html: '<div> Vehicle model cannot be kept empty </div>' +
+                    '<div> <br> Vehicle model should contain 2 to 50 characters </div>',
+                icon: "error",
+            });
+        } else if (licenseNumber.length < 2 || licenseNumber.length > 50) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in vehicle license plate number!!!",
+                html: '<div> Vehicle license plate number cannot be kept empty </div>' +
+                    '<div> <br> Vehicle license plate number contain 2 to 50 characters </div>',
+                icon: "error",
+            });
+        } else if (engineType.length < 2 || engineType.length > 50) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in vehicle engine type!!!",
+                html: '<div> Vehicle engine type cannot be kept empty </div>' +
+                    '<div> <br> Vehicle engine type number contain 2 to 50 characters </div>',
+                icon: "error",
+            });
+        } else if (transmissionType.length < 2 || transmissionType.length > 50) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in vehicle transmission type!!!",
+                html: '<div> Vehicle transmission type cannot be kept empty </div>' +
+                    '<div> <br> Vehicle transmission type contain 2 to 50 characters </div>',
+                icon: "error",
+            });
+        } else if (rent.length < 2 || rent.length > 50) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in vehicle rent!!!",
+                html: '<div> Vehicle rent per hour cannot be kept empty </div>' +
+                    '<div> <br> Vehicle rent per hour contain 2 to 20 characters </div>',
+                icon: "error",
+            });
+        } else {
+            Swal.fire({
+                title: 'Updating...',
+                html: 'Hold on a few seconds while we update the new vehicle!',
+                timer: 10000,
+                timerProgressBar: false,
+            });
+        }
+    });
+</script>

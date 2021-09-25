@@ -82,7 +82,7 @@
                             </li>
                             <c:forEach items="${vehicleNav}" var="vehicles">
                                 <li><a class="dropdown-item"
-                                       href="${pageContext.request.contextPath}/admin/vehicle/view/${vehicles.vehicleType}">${vehicles.vehicleType}s</a>
+                                       href="${pageContext.request.contextPath}/admin/vehicle/view/${vehicles.vehicleTypeId}">${vehicles.vehicleType}s</a>
                                 </li>
                             </c:forEach>
                         </ul>
@@ -173,8 +173,7 @@
     </nav>
     <nav class="navbar navbar-light" style="background-color: #282838;">
         <div class="container">
-            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Add new vehicle
-                category</label>
+            <label style="font-size: 25px; font-weight: bold; margin: 15px auto; color: white">Add new equipment</label>
         </div>
     </nav>
 </div>
@@ -183,18 +182,19 @@
         <form:form method="post" id="form" enctype="multipart/form-data" modelAttribute="equipmentForm">
             <div class="col-lg-4 col-md-4 col-sm-4 container justify-content-center">
                 <div class="form-floating mt-5 mb-3">
-                    <form:input path="equipmentRentPerHour" id="rent" maxlength="10" class="form-control" type="text"
-                                autofocus="autofocus"/>
-                    <label for="rent">Rent per hour/$</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <form:input path="equipmentName" id="name" maxlength="50" class="form-control" type="text"/>
+                    <form:input path="equipmentName" id="name" maxlength="50" class="form-control" type="text" autofocus="autofocus"/>
                     <label for="name">Equipment name</label>
                 </div>
                 <div class="form-floating mb-3">
                     <form:input path="equipmentIdentifier" id="identifier" maxlength="20" class="form-control"
                                 type="text"/>
                     <label for="Identifier">Equipment identifier</label>
+                    <div class="form-text">Please insert a unique identifier.</div>
+                </div>
+                <div class="form-floating mb-3">
+                    <form:input path="equipmentRentPerHour" id="rent" maxlength="10" class="form-control" type="text"/>
+                    <label for="rent">Rent per hour</label>
+                    <div class="form-text">Prices in $</div>
                 </div>
                 <div class="form-floating mb-3">
                     <form:select class="form-select" path="available" id="available">
@@ -226,6 +226,149 @@
             </div>
         </form:form>
     </div>
+    <div>
+        <form id="accountForm" method="get">
+            <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <figure>
+                                <blockquote class="blockquote">
+                                    <p>${loggedUser.firstName} ${loggedUser.lastName}</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    <cite>Administrator</cite>
+                                </figcaption>
+                            </figure>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <img class="rounded-circle mx-auto d-block"
+                                     src="${pageContext.request.contextPath}/images/${loggedUser.userImagePath}"
+                                     alt="" width="200" height="200">
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userFirstname"
+                                       value="${loggedUser.firstName}" disabled>
+                                <label for="userFirstname">Firstname</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userLastname"
+                                       value="${loggedUser.lastName}" disabled>
+                                <label for="userLastname">Lastname</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userEmail"
+                                       value="${loggedUser.email}" disabled>
+                                <label for="userEmail">Email</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userContact"
+                                       value="${loggedUser.contact}" disabled>
+                                <label for="userContact">Contact</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userDob"
+                                       value="${loggedUser.dateOfBirth}" disabled>
+                                <label for="userDob">Date of Birth</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="userUpdated"
+                                       value="${loggedUser.updatedDate}" disabled>
+                                <label for="userUpdated">Last updated</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>
+<script>
+    window.onload = function () {
+        const errorMessage = document.getElementById("errorMessage").innerHTML;
+        const successMessage = document.getElementById("successMessage").innerHTML;
+
+        if (errorMessage !== "") {
+            Swal.fire({
+                title: "Error occurred while adding the new equipment!!!",
+                text: errorMessage,
+                icon: "error",
+            });
+        }
+        if (successMessage !== "") {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: successMessage,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    }
+
+    const form = document.getElementById('form');
+
+    form.addEventListener('submit', function (event) {
+
+        const name = $("#name").val();
+        const identifier = $("#identifier").val();
+        const rent = $("#rent").val();
+        const equipment = $("#equipment").val();
+        const equipmentImage = $("#equipmentImage").val();
+
+        if (name.length < 2 || name.length > 50) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in equipment name!!!",
+                html: '<div> Equipment name cannot be kept empty </div>' +
+                    '<div> <br> Equipment name should contain 2 to 50 characters </div>',
+                icon: "error",
+            });
+        } else if (identifier.length < 2 || identifier.length > 20) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in equipment identifier!!!",
+                html: '<div> Equipment identifier cannot be kept empty </div>' +
+                    '<div> <br> Equipment identifier should contain 2 to 20 characters </div>',
+                icon: "error",
+            });
+        }else if (rent.length < 2 || rent.length > 50) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in equipment rent!!!",
+                html: '<div> Equipment rent cannot be kept empty </div>' +
+                    '<div> <br> Equipment rent should contain 2 to 10 characters </div>',
+                icon: "error",
+            });
+        } else if (equipment.length < 2 || equipment.length > 50) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in equipment category!!!",
+                html: '<div> Equipment category cannot be kept empty </div>',
+                icon: "error",
+            });
+        } else if (equipmentImage.length < 1) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Error in equipment image!!!",
+                html: '<div> Equipment image cannot be kept empty </div>',
+                icon: "error",
+            });
+        } else {
+            Swal.fire({
+                title: 'Adding...',
+                html: 'Hold on a few seconds while we add the new equipment!',
+                timer: 10000,
+                timerProgressBar: false,
+            });
+        }
+    });
+</script>

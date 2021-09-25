@@ -78,7 +78,7 @@
                             </li>
                             <c:forEach items="${vehicleNav}" var="vehicles">
                                 <li><a class="dropdown-item"
-                                       href="${pageContext.request.contextPath}/admin/vehicle/view/${vehicles.vehicleType}">${vehicles.vehicleType}s</a>
+                                       href="${pageContext.request.contextPath}/admin/vehicle/view/${vehicles.vehicleTypeId}">${vehicles.vehicleType}s</a>
                                 </li>
                             </c:forEach>
                         </ul>

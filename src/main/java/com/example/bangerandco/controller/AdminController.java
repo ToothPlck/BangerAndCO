@@ -405,8 +405,8 @@ public class AdminController {
 
     @GetMapping("vehicle/view/all")
     public String viewAllVehicles(Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
-        model.addAttribute("vehiclesNav", vehicleService.category_all());
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("vehicles", vehicleService.category_all());
         model.addAttribute("error", "");
         model.addAttribute("success", "");
@@ -415,8 +415,8 @@ public class AdminController {
 
     @GetMapping("vehicle/view/{type}")
     public String viewVehiclesByType(@PathVariable(value = "type") long typeId, Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
-        model.addAttribute("vehiclesNav", vehicleService.category_all());
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("vehicles", vehicleService.category_type(typeId));
         model.addAttribute("error", "");
         model.addAttribute("success", "");
@@ -425,8 +425,8 @@ public class AdminController {
 
     @GetMapping("vehicle/update/{vehicleId}")
     public String updateVehicle(@PathVariable("vehicleId") long vehicleId, Model model, Authentication authentication) {
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
-        model.addAttribute("vehiclesNav", vehicleService.category_all());
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
         model.addAttribute("vehicles", vehicleService.updatable(vehicleId));
         model.addAttribute("error", "");
@@ -439,16 +439,16 @@ public class AdminController {
         try {
             vehicleService.updateVehicle(vehicleId, vehicleImage, vehicleDto);
         } catch (Exception exception) {
-            model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
-            model.addAttribute("vehiclesNav", vehicleService.category_all());
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
             model.addAttribute("vehicleTypes", vehicleTypeService.getAll());
             model.addAttribute("vehicles", vehicleService.updatable(vehicleId));
             model.addAttribute("error", exception.getMessage());
             model.addAttribute("success", "");
             return "admin_update_vehicle";
         }
-        model.addAttribute("loggedUser", userService.getUserName(authentication.getName()));
-        model.addAttribute("vehiclesNav", vehicleService.category_all());
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("vehicleNav", vehicleTypeService.getAllNav());
         model.addAttribute("vehicles", vehicleService.category_all());
         model.addAttribute("error", "");
         model.addAttribute("success", "Vehicle updated successfully");
