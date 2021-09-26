@@ -7,6 +7,7 @@ import com.example.bangerandco.dto.VehicleTypeDto;
 import com.example.bangerandco.service.*;
 import com.example.bangerandco.serviceImplementation.WebScraping;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin/")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController {
 
     @Autowired
@@ -455,7 +457,7 @@ public class AdminController {
         return "admin_view_vehicles";
     }
 
-    @PostMapping("vehicle/delete/{vehicleId}")
+    @GetMapping("vehicle/delete/{vehicleId}")
     public String deleteVehicle(@PathVariable(value = "vehicleId") long vehicleId, Model model, Authentication authentication) {
         try {
             vehicleService.deleteVehicle(vehicleId);

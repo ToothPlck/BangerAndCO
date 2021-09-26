@@ -32,6 +32,17 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
+    public UserDto getUserRole(String name) {
+        User user = userRepo.findUserByEmail(name);
+
+        UserDto userDto = new UserDto();
+        userDto.setRole(user.getRole());
+        userDto.setBlacklisted(user.isBlacklisted());
+
+        return userDto;
+    }
+
+    @Override
     public UserDto getUserName(String email) {
         UserDto userDto = new UserDto();
         User user = userRepo.findUserByEmail(email);

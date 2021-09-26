@@ -2,6 +2,7 @@ package com.example.bangerandco.serviceImplementation;
 
 import com.example.bangerandco.dto.RentalDto;
 import com.example.bangerandco.dto.VehicleDto;
+import com.example.bangerandco.model.Equipment;
 import com.example.bangerandco.model.Rental;
 import com.example.bangerandco.model.User;
 import com.example.bangerandco.model.Vehicle;
@@ -181,8 +182,29 @@ public class VehicleServiceImplementation implements VehicleService {
     }
 
     @Override
-    public void deleteVehicle(long vehicleId) {
-        /////////////////////////////////////
+    public void deleteVehicle(long vehicleId) throws Exception {
+        try {
+            Vehicle vehicle = vehicleRepo.getById(vehicleId);
+
+            for (Rental rentalsInDatabase : rentalRepo.findAllByStatusForDeleteEquipment("pending", "approved")) {
+                if (rentalsInDatabase.getVehicle().getVehicleId() == vehicleId) {
+                    if (rentalsInDatabase.getRentalReturnDate().toLocalDate().isAfter(LocalDate.now()))
+                        throw new Exception("The vehicle cannot be deleted due to upcoming bookings which has rented the vehicle!");
+                    if (rentalsInDatabase.getRentalReturnDate().toLocalDate().isEqual(LocalDate.now()))
+                        throw new Exception("The vehicle cannot be deleted due to upcoming bookings which has rented the vehicle!");
+                }
+            }
+            String imagePath = vehicle.getVehicleImagePath();
+            vehicleRepo.deleteById(vehicleId);
+
+            if (!vehicle.getVehicleImagePath().isEmpty()) {
+                String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                Path deletePath = Paths.get(imagesFolder + imagePath);
+                Files.delete(deletePath);
+            }
+        } catch (Exception exception) {
+            throw new Exception(exception.getMessage());
+        }
     }
 
     @Override

@@ -29,4 +29,6 @@ public interface UserService {
     UserDto getUserDetails(String username);
 
     void updateAccount(UserDto userDto, MultipartFile userImage, MultipartFile licenseImage, MultipartFile alternateImage) throws Exception;
+
+    UserDto getUserRole(String name);
 }

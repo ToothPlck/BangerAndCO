@@ -32,4 +32,6 @@ public interface RentalService {
     void updateBooking(long rentalId, List<String> equipments, String total) throws Exception;
 
     void extendBooking(long rentalId, String extendDropDate, String extendDropTime) throws Exception;
+
+    String autoBlacklistUser(String name);
 }

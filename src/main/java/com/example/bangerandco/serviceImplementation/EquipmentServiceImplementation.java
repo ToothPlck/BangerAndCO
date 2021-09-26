@@ -177,11 +177,12 @@ public class EquipmentServiceImplementation implements EquipmentService {
                         throw new Exception("The equipment cannot be deleted due to upcoming bookings which has rented the equipment!");
                 }
             }
+            String imagePath = equipment.getEquipmentImagePath();
             equipmentRepo.deleteById(equipmentId);
 
             if (!equipment.getEquipmentImagePath().isEmpty()) {
                 String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
-                Path deletePath = Paths.get(imagesFolder + equipment.getEquipmentImagePath());
+                Path deletePath = Paths.get(imagesFolder + imagePath);
                 Files.delete(deletePath);
             }
         } catch (Exception exception) {

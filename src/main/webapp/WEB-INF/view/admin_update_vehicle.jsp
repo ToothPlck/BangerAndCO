@@ -233,8 +233,15 @@
                         <label class="form-label" for="vehicleImage">Vehicle image</label>
                         <input name="vehicleImage" type="file" class="form-control" id="vehicleImage"/>
                     </div>
-                    <div>
-                        <button type="submit" class="btn btn-outline-secondary m-auto d-block">Update Vehicle</button>
+                    <div class="text-center align-items-center">
+                        <div>
+                            <button type="submit" class="m-auto btn btn-outline-secondary mb-3">Update Vehicle</button>
+                        </div>
+                        <div>
+                            <button type="button" onclick="deleteFunction('${vehicles.vehicleId}')" id="deleteButton"
+                                    class="m-auto btn btn-outline-danger">Delete vehicle
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <p style="display: none" id="successMessage">${success}</p>
@@ -330,6 +337,27 @@
                 timer: 3000
             });
         }
+    }
+
+    function deleteFunction(vehicleId) {
+        Swal.fire({
+            icon: 'question',
+            title: 'Sure you want to delete this vehicle?',
+            text: 'This action cannot be reversed!',
+            showCancelButton: true,
+            confirmButtonText: `Yes!`,
+            cancelButtonText: 'Nope!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/admin/vehicle/delete/' + vehicleId;
+                Swal.fire({
+                    title: 'Deleting...',
+                    html: 'Hold on a few seconds while we delete the vehicle!',
+                    timer: 10000,
+                    timerProgressBar: false,
+                });
+            }
+        })
     }
 
     const form = document.getElementById('form');

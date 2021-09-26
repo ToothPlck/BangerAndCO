@@ -495,4 +495,26 @@ public class RentalServiceImplementation implements RentalService {
             throw new Exception(exception.getMessage());
         }
     }
+
+    @Override
+    public String autoBlacklistUser(String name) {
+        List<Rental> userRentals = rentalRepo.findAllByStatusAndUserEmail("approved", name);
+        User user = userRepo.findUserByEmail(name);
+
+        if (user.isBlacklisted()) {
+            return "blacklisted";
+        } else if (userRentals.size() > 0) {
+            for (Rental rental : userRentals) {
+                if (rental.getRentalCollectionDate().toLocalDate().isBefore(LocalDate.now())) {
+                    user.setBlacklisted(true);
+                    userRepo.save(user);
+
+                    return "blacklisted";
+                }
+            }
+        } else {
+            return "verified";
+        }
+        return "verified";
+    }
 }

@@ -143,11 +143,12 @@ public class VehicleTypeServiceImplementation implements VehicleTypeService {
             if (vehicleType.getVehicles().size() > 0) {
                 throw new Exception("The category cannot be deleted since there are vehicles under this category");
             } else {
+                String imagePath = vehicleType.getTypeImagePath();
                 vehicleTypeRepo.deleteById(vehicleTypeId);
 
                 if (!vehicleType.getTypeImagePath().isEmpty()) {
                     String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
-                    Path deletePath = Paths.get(imagesFolder + vehicleType.getTypeImagePath());
+                    Path deletePath = Paths.get(imagesFolder + imagePath);
                     Files.delete(deletePath);
                 }
             }

@@ -6,6 +6,7 @@ import com.example.bangerandco.dto.UserDto;
 import com.example.bangerandco.model.Rental;
 import com.example.bangerandco.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/user/")
+@PreAuthorize("hasAuthority('USER')")
 public class UserController {
 
     @Autowired

@@ -89,6 +89,52 @@
             </div>
         </form:form>
     </div>
+    <div>
+        <p style="display: none" id="successMessage">${success}</p>
+        <p style="display: none" id="errorMessage">${error}</p>
+    </div>
 </div>
 </body>
 </html>
+<script>
+    window.onload = function () {
+        const errorMessage = document.getElementById("errorMessage").innerHTML;
+        const successMessage = document.getElementById("successMessage").innerHTML;
+
+        if (errorMessage !== "" && errorMessage !== "black") {
+            Swal.fire({
+                title: "Error occurred while logging in!!!",
+                text: errorMessage,
+                icon: "error",
+            });
+        }
+        if (successMessage !== "") {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: successMessage,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+        if (errorMessage === "black") {
+            Swal.fire({
+                icon: 'error',
+                title: 'User blacklisted',
+                html: '<div> User has been blacklisted and is restricted from receiving services from BangerAndCo</div>' +
+                    '<div> <br> This action may have been caused by the following reasons : </div>' +
+                    '<div> <br> 1. The administrators of Banger manually blacklisting you for violating our term and conditions </div>' +
+                    '<div> <br> 2. Users failure to collect a booked vehicle </div>',
+                showCancelButton: true,
+                confirmButtonText: `Yes!`,
+                cancelButtonText: 'Nope!',
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    window.location.href = '/logout';
+                } else {
+                    window.location.href = '/logout';
+                }
+            })
+        }
+    }
+</script>

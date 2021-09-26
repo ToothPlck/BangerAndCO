@@ -19,12 +19,33 @@ public class GuestController {
     private VehicleTypeService vehicleTypeService;
     @Autowired
     private VehicleService vehicleService;
+    @Autowired
+    private RentalService rentalService;
 
     @GetMapping("login")
-    public String login(Model model) {
-        model.addAttribute("error", "");
-        model.addAttribute("success", "");
+    public String login(Model model, String error) {
+        if (error != null) {
+            model.addAttribute("error", "The username and password did not match! Please try again.");
+        }
         return "login";
+    }
+
+    @GetMapping("direct")
+    public String successLogin(Model model, Authentication authentication) {
+        UserDto user = userService.getUserRole(authentication.getName());
+
+
+        if (user.getRole().equals("admin")) {
+            return "redirect:/admin/competitors";
+        } else {
+            String validUser = rentalService.autoBlacklistUser(authentication.getName());
+            if (validUser.equals("verified")) {
+                return "redirect:/user/home";
+            } else {
+                model.addAttribute("error", "black");
+                return "login";
+            }
+        }
     }
 
     //register
@@ -56,19 +77,19 @@ public class GuestController {
     }
 
     @GetMapping("category")
-    public String category(Model model){
+    public String category(Model model) {
         model.addAttribute("categories", vehicleTypeService.getAll());
         return "guest_category";
     }
 
     @GetMapping("category/all")
-    public String categoryAll(Model model){
+    public String categoryAll(Model model) {
         model.addAttribute("categories", vehicleService.category_all());
         return "guest_category_vehicles";
     }
 
     @GetMapping("category/{typeId}")
-    public String categoryByType(@PathVariable(value = "typeId") Long typeId, Model model){
+    public String categoryByType(@PathVariable(value = "typeId") Long typeId, Model model) {
         model.addAttribute("categories", vehicleService.category_type(typeId));
         return "guest_category_vehicles";
     }
