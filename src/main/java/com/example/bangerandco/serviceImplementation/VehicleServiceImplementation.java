@@ -57,7 +57,8 @@ public class VehicleServiceImplementation implements VehicleService {
                 Vehicle addedVehicle = vehicleRepo.save(vehicle);
 
                 try {
-                    String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                    Path absolutePath = Paths.get(".");
+                    String imagesFolder = absolutePath + "/src/main/webapp/images/";
                     String vehicleImageNameFormat = "veh" + addedVehicle.getVehicleId() + ".jpg";
 
                     byte[] vehicleBytes = vehicleImage.getBytes();
@@ -162,7 +163,8 @@ public class VehicleServiceImplementation implements VehicleService {
             vehicle.setVehicleType(vehicleDto.getVehicleType());
 
             if (!vehicleImage.isEmpty()) {
-                String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                Path absolutePath = Paths.get(".");
+                String imagesFolder = absolutePath + "/src/main/webapp/images/";
                 String vehicleImageNameFormat = "veh" + vehicle.getVehicleId() + ".jpg";
 
                 Path deletePath = Paths.get(imagesFolder + vehicle.getVehicleImagePath());
@@ -198,7 +200,8 @@ public class VehicleServiceImplementation implements VehicleService {
             vehicleRepo.deleteById(vehicleId);
 
             if (!vehicle.getVehicleImagePath().isEmpty()) {
-                String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                Path absolutePath = Paths.get(".");
+                String imagesFolder = absolutePath + "/src/main/webapp/images/";
                 Path deletePath = Paths.get(imagesFolder + imagePath);
                 Files.delete(deletePath);
             }

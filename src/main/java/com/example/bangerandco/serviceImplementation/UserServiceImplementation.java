@@ -1,6 +1,7 @@
 package com.example.bangerandco.serviceImplementation;
 
 import com.example.bangerandco.dto.UserDto;
+import com.example.bangerandco.mailHandler.EmailService;
 import com.example.bangerandco.model.User;
 import com.example.bangerandco.repository.UserRepo;
 import com.example.bangerandco.service.UserService;
@@ -24,6 +25,8 @@ public class UserServiceImplementation implements UserService {
     private UserRepo userRepo;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private EmailService emailService;
 
     private String currentDate() {
         Date date = new Date();
@@ -82,7 +85,10 @@ public class UserServiceImplementation implements UserService {
                 User registeredUser = userRepo.save(user);
 
                 try {
-                    String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                    emailService.registerUser(userDto.getEmail());
+
+                    Path absolutePath = Paths.get(".");
+                    String imagesFolder = absolutePath + "/src/main/webapp/images/";
                     String userImageNameFormat = "user" + registeredUser.getUserId() + ".jpg";
                     String licenseImageNameFormat = "lic" + registeredUser.getUserId() + ".jpg";
                     String alternateImageNameFormat = "alt" + registeredUser.getUserId() + ".jpg";
@@ -244,6 +250,7 @@ public class UserServiceImplementation implements UserService {
             User user = userRepo.getById(userId);
             user.setVerified(true);
             userRepo.save(user);
+            emailService.verifyUser(user);
         } catch (Exception exception) {
             throw new Exception("An exception occurred while verifying the user!");
         }
@@ -255,6 +262,7 @@ public class UserServiceImplementation implements UserService {
             User user = userRepo.getById(userId);
             user.setBlacklisted(true);
             userRepo.save(user);
+            emailService.blacklistUser(user);
         } catch (Exception exception) {
             throw new Exception("An exception occurred while blacklisting the user");
         }
@@ -266,6 +274,7 @@ public class UserServiceImplementation implements UserService {
             User user = userRepo.getById(userId);
             user.setBlacklisted(false);
             userRepo.save(user);
+            emailService.whitelistUser(user);
         } catch (Exception exception) {
             throw new Exception("An exception occurred while whitelisting the user");
         }
@@ -315,8 +324,10 @@ public class UserServiceImplementation implements UserService {
             user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         }
 
+        Path absolutePath = Paths.get(".");
+        String imagesFolder = absolutePath + "/src/main/webapp/images/";
+
         if (!userImage.isEmpty()) {
-            String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
             String userImageNameFormat = "user" + user.getUserId() + ".jpg";
 
             Path deletePath = Paths.get(imagesFolder + user.getUserImagePath());
@@ -330,7 +341,6 @@ public class UserServiceImplementation implements UserService {
         }
 
         if (!licenseImage.isEmpty()) {
-            String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
             String licenseImageNameFormat = "lic" + user.getUserId() + ".jpg";
 
             Path deletePath = Paths.get(imagesFolder + user.getLicenseImagePath());
@@ -344,7 +354,6 @@ public class UserServiceImplementation implements UserService {
         }
 
         if (!alternateImage.isEmpty()) {
-            String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
             String altImageNameFormat = "alt" + user.getUserId() + ".jpg";
 
             Path deletePath = Paths.get(imagesFolder + user.getAlternateImagePath());

@@ -1,6 +1,7 @@
 package com.example.bangerandco.serviceImplementation;
 
 import com.example.bangerandco.dto.RentalDto;
+import com.example.bangerandco.mailHandler.EmailService;
 import com.example.bangerandco.model.Equipment;
 import com.example.bangerandco.model.Rental;
 import com.example.bangerandco.model.User;
@@ -31,6 +32,8 @@ public class RentalServiceImplementation implements RentalService {
     private EquipmentRepo equipmentRepo;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public List<RentalDto> userOnGoingRentals(String email) {
@@ -258,6 +261,8 @@ public class RentalServiceImplementation implements RentalService {
 
             rentalRepo.save(rental);
 
+            emailService.createBooking(userRepo.findUserByEmail(user));
+
         } catch (Exception exception) {
             throw new Exception("An unexpected error occurred while creating the booking! Error : " + exception.getMessage());
         }
@@ -315,16 +320,20 @@ public class RentalServiceImplementation implements RentalService {
     public void changeStatus(String status, long rentalId) {
         Rental rental = rentalRepo.getById(rentalId);
         rental.setStatus(status);
+        User user = new User();
+
 
         if (status.equals("completed")) {
             if (!rental.getUser().isReturningCustomer()) {
-                User user = rental.getUser();
+                user = rental.getUser();
                 user.setReturningCustomer(true);
                 userRepo.save(user);
             }
         }
 
         rentalRepo.save(rental);
+
+        emailService.changeStatus(status, user);
     }
 
     @Override
@@ -393,6 +402,7 @@ public class RentalServiceImplementation implements RentalService {
 
             if (rental.getStatus().equals("pending")) { //delete if pending
                 rentalRepo.deleteById(rentalId);
+                emailService.cancelBooking(rental.getUser().getEmail());
             } else if ((rental.getStatus().equals("approved")) && difference > 24.0) { //delete if approved and collection time is not within 24 hours
                 rentalRepo.deleteById(rentalId);
             } else if ((rental.getStatus().equals("approved")) && difference < 24.0) { //throw exception if approved and collection time is within 24 hours
@@ -446,6 +456,7 @@ public class RentalServiceImplementation implements RentalService {
             rental.setTotal(String.valueOf(newPrice));
 
             rentalRepo.save(rental);
+            emailService.updateBooking(rental.getUser().getEmail());
         } catch (Exception exception) {
             throw new Exception("An error occurred while updating the booking! Please try again.");
         }
@@ -491,6 +502,7 @@ public class RentalServiceImplementation implements RentalService {
             rental.setExtended(true);
 
             rentalRepo.save(rental);
+            emailService.updateBooking(rental.getUser().getEmail());
         } catch (Exception exception) {
             throw new Exception(exception.getMessage());
         }
@@ -508,7 +520,7 @@ public class RentalServiceImplementation implements RentalService {
                 if (rental.getRentalCollectionDate().toLocalDate().isBefore(LocalDate.now())) {
                     user.setBlacklisted(true);
                     userRepo.save(user);
-
+                    emailService.blacklistUser(user);
                     return "blacklisted";
                 }
             }

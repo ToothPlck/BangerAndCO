@@ -48,7 +48,8 @@ public class EquipmentServiceImplementation implements EquipmentService {
                 Equipment addedEquipment = equipmentRepo.save(equipment);
 
                 try {
-                    String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                    Path absolutePath = Paths.get(".");
+                    String imagesFolder = absolutePath + "/src/main/webapp/images/";
                     String equipmentImageNameFormat = "eq" + addedEquipment.getEquipmentId() + ".jpg";
 
                     byte[] equipmentBytes = equipmentImage.getBytes();
@@ -145,7 +146,8 @@ public class EquipmentServiceImplementation implements EquipmentService {
             equipment.setEquipmentIdentifier(equipmentDto.getEquipmentIdentifier());
 
             if (!equipmentImage.isEmpty()) {
-                String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                Path absolutePath = Paths.get(".");
+                String imagesFolder = absolutePath + "/src/main/webapp/images/";
                 String equipmentImageNameFormat = "eq" + equipment.getEquipmentId() + ".jpg";
 
                 Path deletePath = Paths.get(imagesFolder + equipment.getEquipmentImagePath());
@@ -181,7 +183,8 @@ public class EquipmentServiceImplementation implements EquipmentService {
             equipmentRepo.deleteById(equipmentId);
 
             if (!equipment.getEquipmentImagePath().isEmpty()) {
-                String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                Path absolutePath = Paths.get(".");
+                String imagesFolder = absolutePath + "/src/main/webapp/images/";
                 Path deletePath = Paths.get(imagesFolder + imagePath);
                 Files.delete(deletePath);
             }
