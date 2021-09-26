@@ -73,7 +73,10 @@ public class RentalServiceImplementation implements RentalService {
         long selectedVehicleId = Long.parseLong(vehicleId);
         List<Rental> rentalListInDatabase = rentalRepo.findAll();
 
-
+        User user1 = userRepo.findUserByEmail(user);
+        if (!user1.isVerified()) {
+            throw new Exception("The booking cannot be added since the user is not verified!");
+        }
         for (Rental rentalInDatabase : rentalListInDatabase) {
 
             //double check vehicle and equipments availability
