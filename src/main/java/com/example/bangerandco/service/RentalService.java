@@ -1,6 +1,7 @@
 package com.example.bangerandco.service;
 
 import com.example.bangerandco.dto.RentalDto;
+import com.example.bangerandco.model.Rental;
 
 import java.util.List;
 
@@ -23,4 +24,12 @@ public interface RentalService {
     List<RentalDto> userRentalByStatus(String name, String status);
 
     void cancelRental(long rentalId) throws Exception;
+
+    Rental rentalDetails(long rentalId);
+
+    RentalDto getRentalById(long rentalId);
+
+    void updateBooking(long rentalId, List<String> equipments, String total) throws Exception;
+
+    void extendBooking(long rentalId, String extendDropDate, String extendDropTime) throws Exception;
 }

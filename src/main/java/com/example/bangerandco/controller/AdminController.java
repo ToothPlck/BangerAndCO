@@ -257,7 +257,7 @@ public class AdminController {
         return "admin_view_equipments";
     }
 
-    @PostMapping("equipment/delete/{equipmentId}")
+    @GetMapping("equipment/delete/{equipmentId}")
     public String deleteEquipment(@PathVariable(value = "equipmentId") long equipmentId, Model model, Authentication authentication) {
         try {
             equipmentService.deleteEquipment(equipmentId);
@@ -350,7 +350,7 @@ public class AdminController {
         return "admin_view_vehicle_type";
     }
 
-    @PostMapping("vehicleType/delete/{vehicleTypeId}")
+    @GetMapping("vehicleType/delete/{vehicleTypeId}")
     public String deleteVehicleType(@PathVariable(value = "vehicleTypeId") long vehicleTypeId, Model model, Authentication authentication) {
         try {
             vehicleTypeService.deleteVehicleType(vehicleTypeId);

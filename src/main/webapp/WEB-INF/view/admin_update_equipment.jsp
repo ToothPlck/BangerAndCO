@@ -224,8 +224,15 @@
                         <label class="form-label" for="equipmentImage">Equipment image</label>
                         <input name="equipmentImage" type="file" class="form-control" id="equipmentImage"/>
                     </div>
-                    <div>
-                        <button type="submit" class="btn btn-outline-secondary m-auto d-block">Update</button>
+                    <div class="text-center align-items-center">
+                        <div>
+                            <button type="submit" class="m-auto btn btn-outline-secondary mb-3">Update</button>
+                        </div>
+                        <div>
+                            <button type="button" onclick="deleteFunction('${equipment.equipmentId}')" id="deleteButton"
+                                    class="m-auto btn btn-outline-danger">Delete category
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <p style="display: none" id="successMessage">${success}</p>
@@ -323,6 +330,27 @@
         }
     }
 
+    function deleteFunction(equipmentId) {
+        Swal.fire({
+            icon: 'question',
+            title: 'Sure you want to delete this equipment?',
+            text: 'This action cannot be reversed!',
+            showCancelButton: true,
+            confirmButtonText: `Yes!`,
+            cancelButtonText: 'Nope!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/admin/equipment/delete/' + equipmentId;
+                Swal.fire({
+                    title: 'Deleting...',
+                    html: 'Hold on a few seconds while we delete the equipment!',
+                    timer: 10000,
+                    timerProgressBar: false,
+                });
+            }
+        })
+    }
+
     const form = document.getElementById('form');
     form.addEventListener('submit', function (event) {
 
@@ -346,7 +374,7 @@
                     '<div> <br> Equipment identifier should contain 2 to 20 characters </div>',
                 icon: "error",
             });
-        }else if (rent.length < 2 || rent.length > 50) {
+        } else if (rent.length < 2 || rent.length > 50) {
             event.preventDefault();
             Swal.fire({
                 title: "Error in equipment rent!!!",

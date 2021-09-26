@@ -368,22 +368,22 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" style="display: none"
-                                                        class="btn btn-outline-success"
+                                                        class="btn btn-outline-danger"
                                                         onclick="rejectFunction('${rental.rentalId}')"
                                                         id="${rental.rentalId} reject">Reject
                                                 </button>
                                                 <button type="button" style="display: none"
-                                                        class="btn btn-outline-danger"
+                                                        class="btn btn-outline-primary"
                                                         onclick="approveFunction('${rental.rentalId}')"
                                                         id="${rental.rentalId} approve">Approve
                                                 </button>
                                                 <button type="button" style="display: none"
-                                                        class="btn btn-outline-warning"
+                                                        class="btn btn-outline-success"
                                                         onclick="completedFunction('${rental.rentalId}')"
                                                         id="${rental.rentalId} completed">Completed
                                                 </button>
                                                 <button type="button" style="display: none"
-                                                        class="btn btn-outline-warning"
+                                                        class="btn btn-outline-info"
                                                         onclick="pickupFunction('${rental.rentalId}')"
                                                         id="${rental.rentalId} picked">Picked
                                                 </button>

@@ -15,7 +15,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
             integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
             crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet"
+          type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -200,11 +203,16 @@
                         <label class="form-label" for="image">Vehicle Type image</label>
                         <input name="vehicleTypeImage" type="file" class="form-control" id="image"/>
                     </div>
-                    <div>
-                        <button type="submit" class="btn btn-outline-secondary m-auto d-block">Update</button>
-                        <div class="form-text text-center m-auto">
+                    <div class="text-center align-items-center">
+                        <p style="display: none" id="vehicleSize">${vehicleType.vehicles.size()}</p>
+                        <button type="submit" class="m-auto btn btn-outline-secondary d-block">Update</button>
+                        <div class="form-text text-center m-auto mb-3">
                             *Updating will cause the vehicles under this category to update!
                         </div>
+                        <button type="button" id="deleteButton" style="display: none"
+                                onclick="deleteFunction('${vehicleType.vehicleTypeId}')"
+                                class="m-auto btn btn-outline-danger">Delete category
+                        </button>
                     </div>
                 </div>
             </div>
@@ -275,3 +283,33 @@
 </div>
 </body>
 </html>
+<script>
+    window.onload = function () {
+        const vehicleSize = document.getElementById("vehicleSize").innerHTML;
+        console.log(vehicleSize);
+        if (vehicleSize < 1) {
+            document.getElementById("deleteButton").style.display = "block";
+        }
+    }
+
+    function deleteFunction(vehicleTypeId) {
+        Swal.fire({
+            icon: 'question',
+            title: 'Sure you want to delete this category?',
+            text: 'This action cannot be reversed!',
+            showCancelButton: true,
+            confirmButtonText: `Yes!`,
+            cancelButtonText: 'Nope!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/admin/vehicleType/delete/' + vehicleTypeId;
+                Swal.fire({
+                    title: 'Deleting...',
+                    html: 'Hold on a few seconds while we delete the category!',
+                    timer: 10000,
+                    timerProgressBar: false,
+                });
+            }
+        })
+    }
+</script>

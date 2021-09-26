@@ -15,7 +15,7 @@ public interface EquipmentService {
 
     void updateEquipment(long equipmentId, MultipartFile equipmentImage, EquipmentDto equipmentDto) throws Exception;
 
-    void deleteEquipment(long equipmentId);
+    void deleteEquipment(long equipmentId) throws Exception;
 
     EquipmentDto updatable(long equipmentId);
 

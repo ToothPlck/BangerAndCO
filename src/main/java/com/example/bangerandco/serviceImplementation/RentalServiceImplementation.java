@@ -3,6 +3,7 @@ package com.example.bangerandco.serviceImplementation;
 import com.example.bangerandco.dto.RentalDto;
 import com.example.bangerandco.model.Equipment;
 import com.example.bangerandco.model.Rental;
+import com.example.bangerandco.model.User;
 import com.example.bangerandco.repository.EquipmentRepo;
 import com.example.bangerandco.repository.RentalRepo;
 import com.example.bangerandco.repository.UserRepo;
@@ -315,6 +316,14 @@ public class RentalServiceImplementation implements RentalService {
         Rental rental = rentalRepo.getById(rentalId);
         rental.setStatus(status);
 
+        if (status.equals("completed")) {
+            if (!rental.getUser().isReturningCustomer()) {
+                User user = rental.getUser();
+                user.setReturningCustomer(true);
+                userRepo.save(user);
+            }
+        }
+
         rentalRepo.save(rental);
     }
 
@@ -336,6 +345,7 @@ public class RentalServiceImplementation implements RentalService {
             rentalDto.setUser(rental.getUser());
             rentalDto.setVehicle(rental.getVehicle());
             rentalDto.setEquipment(rental.getEquipment());
+            rentalDto.setExtended(rental.isExtended());
 
             rentalDtoList.add(rentalDto);
         }
@@ -360,6 +370,7 @@ public class RentalServiceImplementation implements RentalService {
             rentalDto.setUser(rental.getUser());
             rentalDto.setVehicle(rental.getVehicle());
             rentalDto.setEquipment(rental.getEquipment());
+            rentalDto.setExtended(rental.isExtended());
 
             rentalDtoList.add(rentalDto);
         }
@@ -391,6 +402,97 @@ public class RentalServiceImplementation implements RentalService {
             }
         } else {
             throw new Exception("The booking cannot be cancelled");
+        }
+    }
+
+    @Override
+    public Rental rentalDetails(long rentalId) {
+        return rentalRepo.getById(rentalId);
+    }
+
+    @Override
+    public RentalDto getRentalById(long rentalId) {
+        Rental rental = rentalRepo.getById(rentalId);
+        RentalDto rentalDto = new RentalDto();
+
+        rentalDto.setRentalId(rental.getRentalId());
+        rentalDto.setCreatedDate(rental.getCreatedDate());
+        rentalDto.setRentalCollectionDate(rental.getRentalCollectionDate().toString());
+        rentalDto.setRentalCollectionTime(rental.getRentalCollectionTime().toString());
+        rentalDto.setRentalReturnDate(rental.getRentalReturnDate().toString());
+        rentalDto.setRentalReturnTime(rental.getRentalReturnTime().toString());
+        rentalDto.setStatus(rental.getStatus());
+        rentalDto.setTotal(rental.getTotal());
+        rentalDto.setUser(rental.getUser());
+        rentalDto.setVehicle(rental.getVehicle());
+        rentalDto.setEquipment(rental.getEquipment());
+
+        return rentalDto;
+    }
+
+    @Override
+    public void updateBooking(long rentalId, List<String> equipments, String total) throws Exception {
+        try {
+            Rental rental = rentalRepo.getById(rentalId);
+
+            List<Equipment> rentalEquipments = rental.getEquipment();
+            for (String equipment : equipments) {
+                rentalEquipments.add(equipmentRepo.getById(Long.parseLong(equipment)));
+            }
+
+            double newPrice = Double.parseDouble(rental.getTotal()) + Double.parseDouble(total);
+
+            rental.setEquipment(rentalEquipments);
+            rental.setTotal(String.valueOf(newPrice));
+
+            rentalRepo.save(rental);
+        } catch (Exception exception) {
+            throw new Exception("An error occurred while updating the booking! Please try again.");
+        }
+    }
+
+    @Override
+    public void extendBooking(long rentalId, String extendDropDate, String extendDropTime) throws Exception {
+        try {
+            Rental rental = rentalRepo.getById(rentalId);
+
+            List<Rental> rentalListInDatabase = rentalRepo.findAll();
+
+            for (Rental rentalInDatabase : rentalListInDatabase) {
+                if (rentalInDatabase.getRentalId() != rentalId) {
+                    //check vehicle availability
+                    if (rentalInDatabase.getVehicle().getVehicleId() == rental.getVehicle().getVehicleId()) {
+                        if (rentalInDatabase.getRentalCollectionDate().toLocalDate().isBefore(LocalDate.parse(extendDropDate)))
+                            throw new Exception("The booking cannot be extended due to another booking created for the vehicle within the time period");
+                        else if (rentalInDatabase.getRentalCollectionDate().toLocalDate().isEqual(LocalDate.parse(extendDropDate))) {
+                            if (rentalInDatabase.getRentalCollectionTime().isBefore(LocalTime.parse(extendDropTime)))
+                                throw new Exception("The booking cannot be extended due to another booking created for the vehicle within the time period");
+                        }
+                    }
+                    //check equipments availability
+                    if (rental.getEquipment().size() > 0) {
+                        for (Equipment equipment : rental.getEquipment()) {
+                            if (rentalInDatabase.getEquipment().contains(equipment)) {
+                                if (rentalInDatabase.getRentalCollectionDate().toLocalDate().isBefore(LocalDate.parse(extendDropDate)))
+                                    throw new Exception("The booking cannot be extended due to another booking created for an equipment within the time period");
+                                else if (rentalInDatabase.getRentalCollectionDate().toLocalDate().isEqual(LocalDate.parse(extendDropDate))) {
+                                    if (rentalInDatabase.getRentalCollectionTime().isBefore(LocalTime.parse(extendDropTime)))
+                                        throw new Exception("The booking cannot be extended due to another booking created for an equipment within the time period");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //if extendable
+            rental.setRentalReturnDate(Date.valueOf(extendDropDate));
+            rental.setRentalReturnTime(LocalTime.parse(extendDropTime));
+            rental.setExtended(true);
+
+            rentalRepo.save(rental);
+        } catch (Exception exception) {
+            throw new Exception(exception.getMessage());
         }
     }
 }

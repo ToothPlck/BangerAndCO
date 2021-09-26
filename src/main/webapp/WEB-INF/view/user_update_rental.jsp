@@ -51,8 +51,12 @@
                             <li><a class="dropdown-item" data-bs-toggle="modal"
                                    data-bs-target="#rentalModal" style="cursor: pointer">Rent now</a>
                             </li>
+                            <hr class="dropdown-divider">
                             <li><a class="dropdown-item"
-                                   href="${pageContext.request.contextPath}/user/rentals/on-going">On Going</a>
+                                   href="${pageContext.request.contextPath}/user/rentals/all">All</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${pageContext.request.contextPath}/user/rentals/onGoing">On Going</a>
                             </li>
                             <li><a class="dropdown-item"
                                    href="${pageContext.request.contextPath}/user/rentals/pending">Pending</a>
@@ -102,144 +106,114 @@
         <div class="container">
             <label style="font-size: 25px; font-weight: bold; margin: 15px auto;"><a
                     style="text-decoration: none; color: white;"
-                    href="${pageContext.request.contextPath}/user/home">
-                <i class="bi bi-arrow-bar-left"></i> Place booking
+                    href="${pageContext.request.contextPath}/user/rentals/all">
+                <i class="bi bi-arrow-bar-left"></i> Update Booking
             </a></label>
         </div>
     </nav>
 </div>
 <div>
-    <div>
-        <div class="container-sm mt-5">
-            <form:form id="form" method="get" modelAttribute="vehicles">
-                <div class="row my-5 align-items-center justify-content-center">
-                    <c:forEach items="${vehicles}" var="vehicle">
-                        <div class="card text-white bg-dark mb-3"
-                             style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer"
-                             data-bs-toggle="modal"
-                             data-bs-target="#modal${vehicle.vehicleId}">
-                            <img src="/images/${vehicle.vehicleImagePath}" class="card-img-top mt-3 rounded-3" alt=""
-                                 width="200" height="200">
-                            <div class="card-body">
-                                <figure>
-                                    <blockquote class="blockquote card-title text-center">
-                                        <p>${vehicle.model}</p>
-                                    </blockquote>
-                                    <figcaption class="blockquote-footer text-center mt-1">
-                                        <cite>${vehicle.rentPerHour}$/h</cite>
-                                    </figcaption>
-                                </figure>
-                            </div>
-                        </div>
-                        <div class="modal fade" id="modal${vehicle.vehicleId}" tabindex="-1"
-                             aria-labelledby="exampleModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <figure>
-                                            <blockquote class="blockquote">
-                                                <p>${vehicle.model}</p>
-                                            </blockquote>
-                                            <figcaption class="blockquote-footer">
-                                                <cite>${vehicle.vehicleType.vehicleType}</cite>
-                                            </figcaption>
-                                        </figure>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <img class="border-1 mx-auto d-block"
-                                                 src="${pageContext.request.contextPath}/images/${vehicle.vehicleImagePath}"
-                                                 alt="" width="200" height="200">
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="vehicleModel"
-                                                   value="${vehicle.model}" disabled>
-                                            <label for="vehicleModel">Model</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="vehicleType"
-                                                   value="${vehicle.vehicleType.vehicleType}" disabled>
-                                            <label for="vehicleType">Category</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="vehicleRent"
-                                                   value="${vehicle.rentPerHour}$" disabled>
-                                            <label for="vehicleRent">Rent per hour</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="vehicleEngine"
-                                                   value="${vehicle.engineType}" disabled>
-                                            <label for="vehicleEngine">Engine</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="vehicleTransmission"
-                                                   value="${vehicle.transmissionType}" disabled>
-                                            <label for="vehicleTransmission">Transmission</label>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <div class="form-text">
-                                            By continuing, you are agreeing that your account information is accurate
-                                            and up-to date. To view and update your account information, <a
-                                                style="cursor: pointer" class="form-text"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#accountModal">Click here</a>
-                                        </div>
-                                        <button type="button" class="btn btn-outline-warning" id="viewEquipmentsButton"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#equipmentsModal">Add equipments
-                                        </button>
-                                        <button type="button" class="btn btn-outline-dark" id="rentButton"
-                                                onclick="rentVehicle('${vehicle.vehicleId}', '${vehicle.rentPerHour}')">
-                                            Rent
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <div class="container-sm mt-5">
+        <form:form modelAttribute="rental" method="get">
+            <div class="row container justify-content-center">
+                <div class="col-3">
+                    <img src="/images/${rental.vehicle.vehicleImagePath}" class="rounded m-auto" alt="..."
+                         width="250"
+                         height="250">
+                    <c:forEach items="${rental.equipment}" var="rentalEquipments">
+                        <img src="/images/${rentalEquipments.equipmentImagePath}" class="rounded m-auto mt-2" alt="..."
+                             width="250"
+                             height="250">
                     </c:forEach>
                 </div>
-            </form:form>
-        </div>
-    </div>
-    <div>
-        <div class="modal fade" id="equipmentsModal" tabindex="-1"
-             aria-labelledby="equipmentsModal"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <label style="font-size: 25px; font-weight: bold;">Add-On Equipments</label>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                <div class="col-4">
+                    <div class="form-floating mb-3">
+                        <form:input path="vehicle.model" type="text" class="form-control" id="model" disabled="true"/>
+                        <label for="model">Vehicle model</label>
                     </div>
-                    <form:form id="form" method="get" modelAttribute="equipments">
-                        <div class="row my-5 align-items-center justify-content-center">
-                            <c:forEach items="${equipments}" var="equipment">
-                                <p style="display: none" id="toggleEquipmentSelection${equipment.equipmentId}">no</p>
-                                <div class="card text-white bg-dark mb-3" id="selectedEquipment${equipment.equipmentId}"
-                                     onclick="selectEquipment('${equipment.equipmentId}', '${equipment.equipmentRentPerHour}')"
-                                     style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer; border-width: thick; border-color: black;">
-                                    <img src="/images/${equipment.equipmentImagePath}"
-                                         class="card-img-top mt-3 rounded-3" alt=""
-                                         width="200" height="200">
-                                    <div class="card-body">
-                                        <figure>
-                                            <blockquote class="blockquote card-title text-center">
-                                                <p>${equipment.equipmentName} (${equipment.equipmentType})</p>
-                                            </blockquote>
-                                            <figcaption class="blockquote-footer text-center mt-1">
-                                                <cite>${equipment.equipmentRentPerHour}$/h</cite>
-                                            </figcaption>
-                                        </figure>
-                                    </div>
+                    <div class="form-floating mb-3">
+                        <form:input path="total" type="text" class="form-control"
+                                    id="total" disabled="true"/>
+                        <label for="total">Total price/$</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <form:input path="status" type="text" class="form-control" id="status" disabled="true"/>
+                        <label for="status">Status</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <form:input path="rentalCollectionDate" type="text" class="form-control"
+                                    id="rentalCollectionDate" disabled="true"/>
+                        <label for="rentalCollectionDate">Collection date</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <form:input path="rentalCollectionTime" type="text" class="form-control"
+                                    id="rentalCollectionTime" disabled="true"/>
+                        <label for="rentalCollectionTime">Collection time</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <form:input path="rentalReturnDate" type="text" class="form-control" id="rentalReturnDate"
+                                    disabled="true"/>
+                        <label for="rentalReturnDate">Return date</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <form:input path="rentalReturnTime" type="text" class="form-control" id="rentalReturnTime"
+                                    disabled="true"/>
+                        <label for="rentalReturnTime">Return time</label>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-outline-warning m-auto d-block" id="viewEquipmentsButton"
+                                data-bs-toggle="modal"
+                                data-bs-target="#equipmentsModal">Add new equipments
+                        </button>
+                    </div>
+                    <div style="display: none">
+                        <p id="successMessage">${success}</p>
+                        <p id="errorMessage">${error}</p>
+                        <p id="hours">${hours}</p>
+                    </div>
+                </div>
+            </div>
+        </form:form>
+    </div>
+    <div class="modal fade" id="equipmentsModal" tabindex="-1"
+         aria-labelledby="equipmentsModal"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <label style="font-size: 25px; font-weight: bold;">Add-On Equipments</label>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <form:form id="form" method="get" modelAttribute="equipments">
+                    <div class="row my-5 align-items-center justify-content-center">
+                        <c:forEach items="${equipments}" var="equipment">
+                            <p style="display: none" id="toggleEquipmentSelection${equipment.equipmentId}">no</p>
+                            <div class="card text-white bg-dark mb-3" id="selectedEquipment${equipment.equipmentId}"
+                                 onclick="selectEquipment('${equipment.equipmentId}', '${equipment.equipmentRentPerHour}')"
+                                 style="width: 18rem; min-height: 300px; margin: 25px; cursor: pointer; border-width: thick; border-color: black;">
+                                <img src="/images/${equipment.equipmentImagePath}"
+                                     class="card-img-top mt-3 rounded-3" alt=""
+                                     width="200" height="200">
+                                <div class="card-body">
+                                    <figure>
+                                        <blockquote class="blockquote card-title text-center">
+                                            <p>${equipment.equipmentName} (${equipment.equipmentType})</p>
+                                        </blockquote>
+                                        <figcaption class="blockquote-footer text-center mt-1">
+                                            <cite>${equipment.equipmentRentPerHour}$/h</cite>
+                                        </figcaption>
+                                    </figure>
                                 </div>
-                            </c:forEach>
-                        </div>
-                    </form:form>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </form:form>
+                <div class="modal-footer" style="min-height: 72px;">
+                    <button type="button" class="btn btn-outline-primary" style="display: none" id="addEquipmentsButton"
+                            onclick="rentEquipments()">
+                        Add equipments
+                    </button>
                 </div>
             </div>
         </div>
@@ -384,34 +358,14 @@
         </form>
     </div>
     <div style="display: none">
-        <p id="successMessage">${success}</p>
-        <p id="errorMessage">${error}</p>
-        <p id="hours">${hours}</p>
-
-        <form action="${pageContext.request.contextPath}/user/set/booking" id="setBookingForm" method="post">
-            <label for="setBookingVehicleId"></label>
-            <input name="vehicle" id="setBookingVehicleId" type="text">
-
-            <label for="setBookingHours"></label>
-            <input name="hours" id="setBookingHours" type="text">
+        <form action="${pageContext.request.contextPath}/user/rental/update/${rental.rentalId}" id="setBookingForm"
+              method="post">
 
             <label for="setBookingEquipments"></label>
             <input name="equipments" id="setBookingEquipments" type="text">
 
             <label for="setBookingTotal"></label>
             <input name="bookingTotal" id="setBookingTotal" type="text">
-
-            <label for="setBookingPickupDate"></label>
-            <input name="setBookingPickupDate" id="setBookingPickupDate" type="text" value="${pickDate}">
-
-            <label for="setBookingPickupTime"></label>
-            <input name="setBookingPickupTime" id="setBookingPickupTime" type="text" value="${pickTime}">
-
-            <label for="setBookingDropOffDate"></label>
-            <input name="setBookingDropOffDate" id="setBookingDropOffDate" type="text" value="${dropDate}">
-
-            <label for="setBookingDropOffTime"></label>
-            <input name="setBookingDropOffTime" id="setBookingDropOffTime" type="text" value="${dropTime}">
 
             <button type="submit" id="selected">Submit</button>
         </form>
@@ -472,6 +426,7 @@
                 const endingDate = new Date(selectedDate);
                 const total = Math.abs(endingDate - startingDate) / 1000;
                 const difference = Math.floor(total / (60 * 60 * 24));
+                console.log(difference)
                 let overflow = difference - 12;
                 console.log(overflow);
                 pickUpDate.datepicker("option", "minDate", overflow);
@@ -489,12 +444,6 @@
         const startTime = $("#pickupTime").val();
         const endDate = $("#dropOffDate").val();
         const endTime = $("#dropOffTime").val();
-
-
-        console.log(returning);
-        console.log(endTime);
-        console.log(endTime.substring(0, 2));
-        console.log(endTime.substring(0, 2) > 18);
 
         if (startDate === "") {
             event.preventDefault();
@@ -566,105 +515,38 @@
         }
     });
 
+    const selectedEquipments = document.getElementById('setBookingEquipments');
+    const selectedTotal = document.getElementById('setBookingTotal');
+    const selected = document.getElementById('selected');
     let rentalTotal = 0;
     const numberOfHours = document.getElementById("hours").innerHTML;
-
     const equipments = [];
-    let vehicleId;
 
-    function rentVehicle(id, rentPerHour) {
+    function rentEquipments() {
+        Swal.fire({
+            title: "Confirm",
+            icon: "info",
+            html: '<div> Total number of hours : </div>' + numberOfHours +
+                '<div> <br> Equipments rental total : </div>' + rentalTotal +
+                '<div> <br> Total payable : </div>' + rentalTotal,
+            showCancelButton: true,
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                selectedEquipments.value = equipments;
+                selectedTotal.value = rentalTotal;
 
-        const priceForHours = rentPerHour * numberOfHours;
-        const selectedVehicle = document.getElementById('setBookingVehicleId');
-        const selectedHours = document.getElementById('setBookingHours');
-        const selectedEquipments = document.getElementById('setBookingEquipments');
-        const selectedTotal = document.getElementById('setBookingTotal');
-        const selected = document.getElementById('selected');
-        const pickDate = $("#setBookingPickupDate").val();
-        const pickTime = $("#setBookingPickupTime").val();
-        const dropDate = $("#setBookingDropOffDate").val();
-        const dropTime = $("#setBookingDropOffTime").val();
+                selected.click();
+            }
+        })
 
-        let displayTotal;
-        if (equipments.length < 1) {
-            Swal.fire({
-                title: "Additional equipments",
-                icon: "question",
-                text: "Rent vehicle without any additional equipments?",
-                showCancelButton: true,
-                confirmButtonText: 'Proceed',
-                cancelButtonText: 'View Equipments',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    displayTotal = rentalTotal + priceForHours;
-                    Swal.fire({
-                        title: "Confirm",
-                        icon: "info",
-                        html: '<div> Total number of hours : </div>' + numberOfHours +
-                            '<div> <br> Pick up and drop off : </div>' +
-                            pickDate + ' at ' + pickTime + ' --- ' + dropDate + ' at ' + dropTime +
-                            '<div> <br> Vehicle rental total : </div>' + priceForHours +
-                            '<div> <br> Equipments rental total : </div>' + rentalTotal +
-                            '<div> <br> Total payable : </div>' + displayTotal,
-                        showCancelButton: true,
-                        confirmButtonText: 'Proceed',
-                        cancelButtonText: 'Cancel',
-                    }).then((totalResult) => {
-                        if (totalResult.isConfirmed) {
-                            rentalTotal += priceForHours;
-                            vehicleId = id;
-
-                            selectedVehicle.value = vehicleId;
-                            selectedHours.value = numberOfHours;
-                            selectedEquipments.value = equipments;
-                            selectedTotal.value = rentalTotal;
-
-                            selected.click();
-                        } else {
-                            displayTotal = 0;
-                        }
-                    })
-                } else {
-                    displayTotal = 0;
-                }
-            })
-        }
-
-        if (equipments.length > 0) {
-            displayTotal = rentalTotal + priceForHours;
-            Swal.fire({
-                title: "Confirm",
-                icon: "info",
-                html: '<div> Total number of hours : </div>' + numberOfHours +
-                    '<div> <br> Pick up and drop off : </div>' +
-                    pickDate + ' at ' + pickTime + ' --- ' + dropDate + ' at ' + dropTime +
-                    '<div> <br> Vehicle rental total : </div>' + priceForHours +
-                    '<div> <br> Equipments rental total : </div>' + rentalTotal +
-                    '<div> <br> Total payable : </div>' + displayTotal,
-                showCancelButton: true,
-                confirmButtonText: 'Confirm',
-                cancelButtonText: 'Cancel',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    rentalTotal += priceForHours;
-                    vehicleId = id;
-
-                    selectedVehicle.value = vehicleId;
-                    selectedHours.value = numberOfHours;
-                    selectedEquipments.value = equipments;
-                    selectedTotal.value = rentalTotal;
-
-                    selected.click();
-                } else {
-                    displayTotal = 0;
-                }
-            })
-        }
     }
 
     function selectEquipment(id, rentPerHour) {
 
         const equipmentSelectionToggle = document.getElementById("toggleEquipmentSelection" + id).innerHTML;
+        const addEquipmentsButton = document.getElementById("addEquipmentsButton");
         const priceForHours = rentPerHour * numberOfHours;
 
         if (equipmentSelectionToggle === "no") {
@@ -675,6 +557,7 @@
             equipments.push(id);
 
             rentalTotal += priceForHours;
+            addEquipmentsButton.style.display = "block";
         }
         if (equipmentSelectionToggle === "yes") {
             document.getElementById("selectedEquipment" + id).style.borderColor = "black";
@@ -686,6 +569,9 @@
             }
 
             rentalTotal -= priceForHours;
+            if (rentalTotal === 0) {
+                addEquipmentsButton.style.display = "none";
+            }
         }
     }
 

@@ -18,4 +18,7 @@ public interface RentalRepo extends JpaRepository<Rental, Long> {
     List<Rental> findAllByUserEmail(String email);
 
     List<Rental> findAllByStatusAndUserEmail(String status, String email);
+
+    @Query("from Rental r where r.status=:pending or r.status=:approved")
+    List<Rental> findAllByStatusForDeleteEquipment(String pending, String approved);
 }

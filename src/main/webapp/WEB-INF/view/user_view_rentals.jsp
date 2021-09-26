@@ -203,33 +203,42 @@
                                             onclick="cancelFunction('${booking.rentalId}')"
                                             id="${booking.rentalId} cancel">Cancel booking
                                     </button>
-                                        <%--                                    <button type="button" class="btn btn-outline-info" id="${booking.rentalId} update"--%>
-                                        <%--                                            data-bs-dismiss="modal" data-bs-toggle="modal"--%>
-                                        <%--                                            data-bs-target="#rentalModal">Rent--%>
-                                        <%--                                    </button>--%>
+                                    <button type="button" style="display: none"
+                                            class="btn btn-outline-info"
+                                            onclick="updateFunction('${booking.rentalId}')"
+                                            id="${booking.rentalId} update">Update rental
+                                    </button>
+                                    <a type="button" style="display: none"
+                                       class="btn btn-outline-success" data-bs-toggle="modal"
+                                       data-bs-target="#extendModal"
+                                       onclick="extendBooking('${booking.rentalReturnDate}', '${booking.rentalReturnTime}', '${booking.rentalId}')"
+                                       id="${booking.rentalId} extend">Extend rental
+                                    </a>
                                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                         Close
                                     </button>
                                     <p id="status${booking.rentalId}"
                                        style="display: none">${booking.status}</p>
+                                    <p id="extended${booking.rentalId}"
+                                       style="display: none">${booking.extended}</p>
 
                                     <script>
                                         document.getElementById("view${booking.rentalId}").onclick = function () {
 
                                             const status = document.getElementById("status${booking.rentalId}").innerHTML;
-                                            // const returning = document.getElementById("returning").innerHTML;
+                                            const extended = document.getElementById("extended${booking.rentalId}").innerHTML;
 
                                             if (status === "pending") {
                                                 document.getElementById("${booking.rentalId} cancel").style.display = "block";
-                                                <%--document.getElementById("${booking.rentalId} update").style.display = "block";--%>
+                                                document.getElementById("${booking.rentalId} update").style.display = "block";
                                             }
                                             if (status === "approved") {
                                                 document.getElementById("${booking.rentalId} cancel").style.display = "block";
-                                                <%--document.getElementById("${booking.rentalId} update").style.display = "block";--%>
+                                                document.getElementById("${booking.rentalId} update").style.display = "block";
                                             }
-                                            <%--if (status === "onGoing" && returning === "true") {--%>
-                                            <%--    document.getElementById("${booking.rentalId} update").style.display = "block";--%>
-                                            <%--}--%>
+                                            if (status === "onGoing" && extended === "false") {
+                                                document.getElementById("${booking.rentalId} extend").style.display = "block";
+                                            }
 
                                         }
 
@@ -253,8 +262,28 @@
                                                 }
                                             })
                                         }
-                                    </script>
 
+                                        function updateFunction(rentalId) {
+                                            Swal.fire({
+                                                icon: 'question',
+                                                title: 'Update booking',
+                                                text: 'Add new equipments for the selected booking?',
+                                                showCancelButton: true,
+                                                confirmButtonText: `Update!`,
+                                                cancelButtonText: 'Cancel!',
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    window.location.href = '/user/rental/update/' + rentalId;
+                                                    Swal.fire({
+                                                        title: 'Getting booking details...',
+                                                        html: 'Hold on a few seconds while we find your booking!',
+                                                        timer: 10000,
+                                                        timerProgressBar: false,
+                                                    });
+                                                }
+                                            })
+                                        }
+                                    </script>
                                 </div>
                             </div>
                         </div>
@@ -262,6 +291,46 @@
                 </c:forEach>
             </div>
         </form:form>
+    </div>
+    <div>
+        <form id="extendForm" method="post">
+            <div class="modal fade" id="extendModal" tabindex="-1"
+                 aria-labelledby="extendModal"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-dark text-white">
+                            <h5 class="modal-title" id="extendFormTitle">Extend booking</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body bg-dark">
+                            <div class="input-group mb-3">
+                                <div class="form-floating mb-3">
+                                    <input name="extendDropDate" id="extendDropOffDate" type="text" autocomplete="off"
+                                           class="form-control" style="margin-right: 25px; width: 220px;"/>
+                                    <label for="extendDropOffDate" class="form-label">Drop-off date</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input name="extendDropTime" id="extendDropOffTime" type="time" autocomplete="off"
+                                           class="form-control" style="width: 220px"/>
+                                    <label for="extendDropOffTime" class="form-label">drop-off time</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-dark text-white">
+                            <button type="submit" id="extendFormSubmitButton" style="display: none;">Submit</button>
+                            <button type="button" onclick="extendBookingPost()" class="btn btn-primary">Request extend
+                                booking
+                            </button>
+                            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
     <div>
         <form id="accountForm" action="${pageContext.request.contextPath}/user/update/account" method="get">
@@ -446,23 +515,105 @@
         });
     });
 
-    const availabilityForm = document.getElementById('availabilityForm');
+    let setCurrentReturnDate = new Date();
+    let setCurrentReturnTime;
+    let rentalId;
 
+    function extendBooking(currentReturnDate, currentReturnTime, bookingId) {
+        setCurrentReturnDate = currentReturnDate;
+        setCurrentReturnTime = currentReturnTime;
+        rentalId = bookingId;
+
+        const setMinDate = new Date(currentReturnDate);
+        const setMaxDate = new Date();
+        setMaxDate.setDate(setMinDate.getDate() + 1);
+
+        $("#extendDropOffDate").datepicker({
+            changeMonth: true,
+            numberOfMonths: 1,
+            dateFormat: "yy-mm-dd",
+            defaultDate: setMinDate,
+            minDate: setMinDate,
+            maxDate: setMaxDate
+        }).val()
+    }
+
+    function extendBookingPost() {
+        const extendForm = document.getElementById("extendForm");
+
+        const extendDropOffDate = $("#extendDropOffDate").val();
+        const extendDropOffTime = $("#extendDropOffTime").val();
+        const returning = document.getElementById("returning").innerHTML;
+
+        if (extendDropOffDate === "") {
+            Swal.fire({
+                title: "We may need that back",
+                text: "Please enter a drop-off date to check the vehicles availability!",
+                icon: "error",
+            });
+        } else if (extendDropOffTime === "") {
+            Swal.fire({
+                title: "We ain't got all day yk",
+                text: "Please enter a drop-off time to check the vehicles availability!",
+                icon: "error",
+            });
+        } else if (extendDropOffDate !== setCurrentReturnDate && extendDropOffTime.substring(0, 2) > 16) {
+            Swal.fire({
+                title: "Max limit",
+                text: "Bookings can be extended until 4.00pm only!",
+                icon: "error",
+            });
+        } else if (extendDropOffDate !== setCurrentReturnDate && extendDropOffTime.substring(0, 2) === "16" && extendDropOffTime.substring(3, 5) > 0) {
+            Swal.fire({
+                title: "Max limit",
+                text: "Bookings can be extended until 4.00pm only!",
+                icon: "error",
+            });
+        } else if (extendDropOffDate === setCurrentReturnDate && extendDropOffTime.substring(0, 2) < setCurrentReturnTime.substring(0, 2)) {
+            Swal.fire({
+                title: "Extensions only",
+                text: "Bookings new return time cannot be set before the current return time!",
+                icon: "error",
+            });
+        } else if (extendDropOffDate === setCurrentReturnDate && extendDropOffTime.substring(0, 2) === setCurrentReturnTime.substring(0, 2) && extendDropOffTime.substring(3, 5) < setCurrentReturnTime.substring(3, 5)) {
+            Swal.fire({
+                title: "Extensions only",
+                text: "Bookings new return time cannot be set before the current return time!",
+                icon: "error",
+            });
+        } else if (returning === "false" && extendDropOffTime.substring(0, 2) > 18) {
+            Swal.fire({
+                title: "Garage closes at 6.00p.m.",
+                text: "Late returns after 6.00pm are allowed only for returning customers!",
+                icon: "error",
+            });
+        } else if (returning === "false" && extendDropOffTime.substring(0, 2) === "18" && extendDropOffTime.substring(3, 5) > 0) {
+            Swal.fire({
+                title: "Garage closes at 6.00p.m.",
+                text: "Late returns after 6.00pm are allowed only for returning customers!",
+                icon: "error",
+            });
+        } else if (returning === "false" && extendDropOffTime.substring(0, 2) < 8) {
+            Swal.fire({
+                title: "Garage opens at 8.00a.m.",
+                text: "Late returns after 6.00pm are allowed only for returning customers!",
+                icon: "error",
+            });
+        } else {
+            extendForm.action = '/user/rental/extend/' + rentalId;
+            document.getElementById('extendFormSubmitButton').click();
+        }
+    }
+
+    const availabilityForm = document.getElementById('availabilityForm');
 
     availabilityForm.addEventListener('submit', function (event) {
         const returning = document.getElementById("returning").innerHTML;
-
 
         const startDate = $("#pickupDate").val();
         const startTime = $("#pickupTime").val();
         const endDate = $("#dropOffDate").val();
         const endTime = $("#dropOffTime").val();
-
-
-        console.log(returning);
-        console.log(endTime);
-        console.log(endTime.substring(0, 2));
-        console.log(endTime.substring(0, 2) > 18);
 
         if (startDate === "") {
             event.preventDefault();

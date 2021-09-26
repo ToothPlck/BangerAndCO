@@ -1,6 +1,5 @@
 package com.example.bangerandco.serviceImplementation;
 
-import com.example.bangerandco.dto.RentalDto;
 import com.example.bangerandco.dto.UserDto;
 import com.example.bangerandco.model.User;
 import com.example.bangerandco.repository.UserRepo;

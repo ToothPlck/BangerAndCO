@@ -17,6 +17,7 @@ public class Rental {
     private String total;
     private String status;
     private Date createdDate;
+    private boolean extended;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -37,7 +38,7 @@ public class Rental {
     public Rental() {
     }
 
-    public Rental(long rentalId, Date rentalCollectionDate, Date rentalReturnDate, String total, String status, Date createdDate, LocalTime rentalCollectionTime, LocalTime rentalReturnTime, User user, Vehicle vehicle, List<Equipment> equipment) {
+    public Rental(long rentalId, Date rentalCollectionDate, Date rentalReturnDate, String total, String status, Date createdDate, LocalTime rentalCollectionTime, LocalTime rentalReturnTime, User user, Vehicle vehicle, List<Equipment> equipment, boolean extended) {
         this.rentalId = rentalId;
         this.rentalCollectionDate = rentalCollectionDate;
         this.rentalReturnDate = rentalReturnDate;
@@ -49,6 +50,7 @@ public class Rental {
         this.user = user;
         this.vehicle = vehicle;
         this.equipment = equipment;
+        this.extended = extended;
     }
 
     public long getRentalId() {
@@ -137,5 +139,13 @@ public class Rental {
 
     public void setEquipment(List<Equipment> equipment) {
         this.equipment = equipment;
+    }
+
+    public boolean isExtended() {
+        return extended;
+    }
+
+    public void setExtended(boolean extended) {
+        this.extended = extended;
     }
 }

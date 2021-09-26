@@ -3,8 +3,10 @@ package com.example.bangerandco.serviceImplementation;
 import com.example.bangerandco.dto.RentalDto;
 import com.example.bangerandco.dto.VehicleDto;
 import com.example.bangerandco.model.Rental;
+import com.example.bangerandco.model.User;
 import com.example.bangerandco.model.Vehicle;
 import com.example.bangerandco.repository.RentalRepo;
+import com.example.bangerandco.repository.UserRepo;
 import com.example.bangerandco.repository.VehicleRepo;
 import com.example.bangerandco.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.nio.file.Paths;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +30,8 @@ public class VehicleServiceImplementation implements VehicleService {
     private VehicleRepo vehicleRepo;
     @Autowired
     private RentalRepo rentalRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     @Override
     public void save(VehicleDto vehicleDto, MultipartFile vehicleImage) throws Exception {
@@ -181,7 +186,7 @@ public class VehicleServiceImplementation implements VehicleService {
     }
 
     @Override
-    public List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime) {
+    public List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime, String email) {
         List<VehicleDto> vehicleDtoList = new ArrayList<>();
         List<Vehicle> allVehicles = vehicleRepo.findAll();
         List<Vehicle> unavailableVehicles = new ArrayList<>();
@@ -255,22 +260,49 @@ public class VehicleServiceImplementation implements VehicleService {
             }
         }
 
+        //calculate users age
+        User user = userRepo.findUserByEmail(email);
+        int userAge = userAge(user.getDateOfBirth());
+
         if (availableVehicles.size() != 0) {
             for (Vehicle availableVehicle : availableVehicles) {
-                VehicleDto vehicleDto = new VehicleDto();
+                if (availableVehicle.isAvailable()) {
+                    if (userAge <= 25) {
+                        if (availableVehicle.getVehicleType().getVehicleType().equals("Small Town Car")) {
+                            VehicleDto vehicleDto = new VehicleDto();
 
-                vehicleDto.setVehicleId(availableVehicle.getVehicleId());
-                vehicleDto.setEngineType(availableVehicle.getEngineType());
-                vehicleDto.setModel(availableVehicle.getModel());
-                vehicleDto.setRentPerHour(availableVehicle.getRentPerHour());
-                vehicleDto.setTransmissionType(availableVehicle.getTransmissionType());
-                vehicleDto.setVehicleImagePath(availableVehicle.getVehicleImagePath());
-                vehicleDto.setVehicleType(availableVehicle.getVehicleType());
+                            vehicleDto.setVehicleId(availableVehicle.getVehicleId());
+                            vehicleDto.setEngineType(availableVehicle.getEngineType());
+                            vehicleDto.setModel(availableVehicle.getModel());
+                            vehicleDto.setRentPerHour(availableVehicle.getRentPerHour());
+                            vehicleDto.setTransmissionType(availableVehicle.getTransmissionType());
+                            vehicleDto.setVehicleImagePath(availableVehicle.getVehicleImagePath());
+                            vehicleDto.setVehicleType(availableVehicle.getVehicleType());
 
-                vehicleDtoList.add(vehicleDto);
+                            vehicleDtoList.add(vehicleDto);
+                        }
+                    } else {
+                        VehicleDto vehicleDto = new VehicleDto();
+
+                        vehicleDto.setVehicleId(availableVehicle.getVehicleId());
+                        vehicleDto.setEngineType(availableVehicle.getEngineType());
+                        vehicleDto.setModel(availableVehicle.getModel());
+                        vehicleDto.setRentPerHour(availableVehicle.getRentPerHour());
+                        vehicleDto.setTransmissionType(availableVehicle.getTransmissionType());
+                        vehicleDto.setVehicleImagePath(availableVehicle.getVehicleImagePath());
+                        vehicleDto.setVehicleType(availableVehicle.getVehicleType());
+
+                        vehicleDtoList.add(vehicleDto);
+                    }
+                }
             }
         }
 
         return vehicleDtoList;
     }
+
+    public int userAge(Date dateOfBirth) {
+        return Period.between(dateOfBirth.toLocalDate(), LocalDate.now()).getYears();
+    }
+
 }

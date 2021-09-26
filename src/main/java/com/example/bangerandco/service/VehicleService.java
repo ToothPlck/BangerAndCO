@@ -19,5 +19,5 @@ public interface VehicleService {
 
     void deleteVehicle(long vehicleId);
 
-    List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime);
+    List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime, String email);
 }

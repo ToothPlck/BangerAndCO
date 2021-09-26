@@ -93,6 +93,7 @@ public class VehicleTypeServiceImplementation implements VehicleTypeService {
         vehicleTypeDto.setVehicleTypeId(vehicleType.getVehicleTypeId());
         vehicleTypeDto.setTypeImagePath(vehicleType.getTypeImagePath());
         vehicleTypeDto.setDescription(vehicleType.getDescription());
+        vehicleTypeDto.setVehicles(vehicleType.getVehicles());
 
         return vehicleTypeDto;
     }
@@ -135,7 +136,23 @@ public class VehicleTypeServiceImplementation implements VehicleTypeService {
     }
 
     @Override
-    public void deleteVehicleType(long vehicleTypeId) {
-        //////////////////////////
+    public void deleteVehicleType(long vehicleTypeId) throws Exception {
+        try {
+            VehicleType vehicleType = vehicleTypeRepo.getById(vehicleTypeId);
+
+            if (vehicleType.getVehicles().size() > 0) {
+                throw new Exception("The category cannot be deleted since there are vehicles under this category");
+            } else {
+                vehicleTypeRepo.deleteById(vehicleTypeId);
+
+                if (!vehicleType.getTypeImagePath().isEmpty()) {
+                    String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                    Path deletePath = Paths.get(imagesFolder + vehicleType.getTypeImagePath());
+                    Files.delete(deletePath);
+                }
+            }
+        } catch (Exception exception) {
+            throw new Exception(exception.getMessage());
+        }
     }
 }

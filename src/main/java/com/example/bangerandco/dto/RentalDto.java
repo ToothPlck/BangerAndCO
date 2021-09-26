@@ -19,6 +19,7 @@ public class RentalDto {
     private String total;
     private String status;
     private Date createdDate;
+    private boolean extended;
 
     private User user;
     private Vehicle vehicle;
@@ -27,7 +28,7 @@ public class RentalDto {
     public RentalDto() {
     }
 
-    public RentalDto(long rentalId, String rentalCollectionDate, String rentalReturnDate, String rentalCollectionTime, String rentalReturnTime, String total, String status, Date createdDate, User user, Vehicle vehicle, List<Equipment> equipment) {
+    public RentalDto(long rentalId, String rentalCollectionDate, String rentalReturnDate, String rentalCollectionTime, String rentalReturnTime, String total, String status, Date createdDate, User user, Vehicle vehicle, List<Equipment> equipment, boolean extended) {
         this.rentalId = rentalId;
         this.rentalCollectionDate = rentalCollectionDate;
         this.rentalReturnDate = rentalReturnDate;
@@ -39,6 +40,7 @@ public class RentalDto {
         this.user = user;
         this.vehicle = vehicle;
         this.equipment = equipment;
+        this.extended = extended;
     }
 
     public long getRentalId() {
@@ -127,5 +129,13 @@ public class RentalDto {
 
     public void setEquipment(List<Equipment> equipment) {
         this.equipment = equipment;
+    }
+
+    public boolean isExtended() {
+        return extended;
+    }
+
+    public void setExtended(boolean extended) {
+        this.extended = extended;
     }
 }

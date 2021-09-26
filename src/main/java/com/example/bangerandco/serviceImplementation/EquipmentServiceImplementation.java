@@ -165,8 +165,28 @@ public class EquipmentServiceImplementation implements EquipmentService {
     }
 
     @Override
-    public void deleteEquipment(long equipmentId) {
-        //////////////////////////////////////////////
+    public void deleteEquipment(long equipmentId) throws Exception {
+        try {
+            Equipment equipment = equipmentRepo.getById(equipmentId);
+
+            for (Rental rentalsInDatabase : rentalRepo.findAllByStatusForDeleteEquipment("pending", "approved")) {
+                if (rentalsInDatabase.getEquipment().contains(equipment)) {
+                    if (rentalsInDatabase.getRentalReturnDate().toLocalDate().isAfter(LocalDate.now()))
+                        throw new Exception("The equipment cannot be deleted due to upcoming bookings which has rented the equipment!");
+                    if (rentalsInDatabase.getRentalReturnDate().toLocalDate().isEqual(LocalDate.now()))
+                        throw new Exception("The equipment cannot be deleted due to upcoming bookings which has rented the equipment!");
+                }
+            }
+            equipmentRepo.deleteById(equipmentId);
+
+            if (!equipment.getEquipmentImagePath().isEmpty()) {
+                String imagesFolder = "D:/APIIT/3rd year/EIRLSS-1/BnC/src/main/webapp/images/";
+                Path deletePath = Paths.get(imagesFolder + equipment.getEquipmentImagePath());
+                Files.delete(deletePath);
+            }
+        } catch (Exception exception) {
+            throw new Exception(exception.getMessage());
+        }
     }
 
     @Override
@@ -266,17 +286,19 @@ public class EquipmentServiceImplementation implements EquipmentService {
 
         if (availableEquipments.size() != 0) {
             for (Equipment availableEquipment : availableEquipments) {
-                EquipmentDto equipmentDto = new EquipmentDto();
+                if (availableEquipment.isAvailable()) {
+                    EquipmentDto equipmentDto = new EquipmentDto();
 
-                equipmentDto.setEquipmentId(availableEquipment.getEquipmentId());
-                equipmentDto.setEquipmentIdentifier(availableEquipment.getEquipmentIdentifier());
-                equipmentDto.setEquipmentImagePath(availableEquipment.getEquipmentImagePath());
-                equipmentDto.setEquipmentType(availableEquipment.getEquipmentType());
-                equipmentDto.setEquipmentRentPerHour(availableEquipment.getEquipmentRentPerHour());
-                equipmentDto.setAvailable(availableEquipment.isAvailable());
-                equipmentDto.setEquipmentName(availableEquipment.getEquipmentName());
+                    equipmentDto.setEquipmentId(availableEquipment.getEquipmentId());
+                    equipmentDto.setEquipmentIdentifier(availableEquipment.getEquipmentIdentifier());
+                    equipmentDto.setEquipmentImagePath(availableEquipment.getEquipmentImagePath());
+                    equipmentDto.setEquipmentType(availableEquipment.getEquipmentType());
+                    equipmentDto.setEquipmentRentPerHour(availableEquipment.getEquipmentRentPerHour());
+                    equipmentDto.setAvailable(availableEquipment.isAvailable());
+                    equipmentDto.setEquipmentName(availableEquipment.getEquipmentName());
 
-                equipmentDtoList.add(equipmentDto);
+                    equipmentDtoList.add(equipmentDto);
+                }
             }
         }
 
