@@ -425,6 +425,8 @@
     </div>
 
     <p style="display: none" id="returning">${loggedUser.returningCustomer}</p>
+    <p style="display: none" id="successMessage">${success}</p>
+    <p style="display: none" id="errorMessage">${error}</p>
     <div>
         <form id="availabilityForm" action="${pageContext.request.contextPath}/user/search/available" method="post">
             <div class="modal fade" id="rentalModal" tabindex="-1"
@@ -476,6 +478,28 @@
 </body>
 </html>
 <script>
+    window.onload = function () {
+        const errorMessage = document.getElementById("errorMessage").innerHTML;
+        const successMessage = document.getElementById("successMessage").innerHTML;
+
+        if (errorMessage !== "") {
+            Swal.fire({
+                title: "Error!!!",
+                text: errorMessage,
+                icon: "error",
+            });
+        }
+        if (successMessage !== "") {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: successMessage,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    }
+
     $(function () {
         const pickUpDate = $("#pickupDate");
         const dropOffDate = $("#dropOffDate");
@@ -657,9 +681,16 @@
                 text: "Rental pick-up time can be between 8.00am and 6.00pm only!",
                 icon: "error",
             });
+        } else if (startTime.substring(0, 2) === "18" && startTime.substring(3, 5) > 0) {
+            event.preventDefault();
+            Swal.fire({
+                title: "We got a night owl here",
+                text: "Rental pick-up time can be between 8.00am and 6.00pm only!",
+                icon: "error",
+            });
         } else if (startDate === endDate &&
             ((endTime.substring(0, 2) - startTime.substring(0, 2)) === 5) &&
-            (endTime.substring(3, 5) - startTime.substring(3, 5) < 0)) {
+            (endTime.substring(3, 5) - startTime.substring(3, 5) > 0)) {
             event.preventDefault();
             Swal.fire({
                 title: "Just another hour to go",
@@ -674,8 +705,20 @@
                 icon: "error",
             });
         } else if (returning === "false" && endTime.substring(0, 2) > 18) {
-            console.log(returning);
-            console.log(endTime);
+            event.preventDefault();
+            Swal.fire({
+                title: "Maybe next time",
+                text: "Late returns after 6.00pm are allowed only for returning customers!",
+                icon: "error",
+            });
+        } else if (returning === "false" && endTime.substring(0, 2) === "18" && endTime.substring(3, 5) > 0) {
+            event.preventDefault();
+            Swal.fire({
+                title: "Maybe next time",
+                text: "Late returns after 6.00pm are allowed only for returning customers!",
+                icon: "error",
+            });
+        } else if (returning === "false" && endTime.substring(0, 2) < 8) {
             event.preventDefault();
             Swal.fire({
                 title: "Maybe next time",

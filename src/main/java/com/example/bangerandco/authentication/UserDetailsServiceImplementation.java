@@ -27,8 +27,7 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
         } else {
             ArrayList<GrantedAuthority> grantedAuthorities = new ArrayList<>();
             grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole().toUpperCase(Locale.ROOT)));
-            UserAuthentication userAuthentication = new UserAuthentication(grantedAuthorities, user.getEmail(), user.getPassword(), true, true, true, true);
-            return userAuthentication;
+            return new UserAuthentication(grantedAuthorities, user.getEmail(), user.getPassword(), true, true, true, true);
         }
     }
 }

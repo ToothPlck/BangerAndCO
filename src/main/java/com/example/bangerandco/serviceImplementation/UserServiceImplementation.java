@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,6 +63,8 @@ public class UserServiceImplementation implements UserService {
             throw new Exception("The user with the email: " + userDto.getEmail() + " is already registered with BangerAndCo! Please try logging in!");
         } else if (userRepo.findByDriversLicenseNumber(userDto.getDriversLicenseNumber()) != null) {
             throw new Exception("The user with the license number: " + userDto.getDriversLicenseNumber() + " is already registered with BangerAndCo! Please try logging in!");
+        } else if (LocalDate.parse(userDto.getDateOfBirth()).isAfter(LocalDate.now().minusYears(15))) {
+            throw new Exception("A user needs to be at least 15 years of age to register with Banger!");
         } else {
             try {
                 User user = new User();
@@ -261,6 +264,7 @@ public class UserServiceImplementation implements UserService {
         try {
             User user = userRepo.getById(userId);
             user.setBlacklisted(true);
+            user.setVerified(false);
             userRepo.save(user);
             emailService.blacklistUser(user);
         } catch (Exception exception) {
@@ -273,6 +277,7 @@ public class UserServiceImplementation implements UserService {
         try {
             User user = userRepo.getById(userId);
             user.setBlacklisted(false);
+            user.setVerified(true);
             userRepo.save(user);
             emailService.whitelistUser(user);
         } catch (Exception exception) {
@@ -290,9 +295,11 @@ public class UserServiceImplementation implements UserService {
         userDto.setLastName(user.getLastName());
         userDto.setBangerScore(user.getBangerScore());
         userDto.setEmail(user.getEmail());
-        userDto.setAlternateImagePath(user.getAlternateImagePath());
-        userDto.setLicenseImagePath(user.getLicenseImagePath());
-        userDto.setUserImagePath(user.getUserImagePath());
+        if (user.getUserImagePath() != null && user.getLicenseImagePath() != null && user.getAlternateImagePath() != null) {
+            userDto.setAlternateImagePath(user.getAlternateImagePath());
+            userDto.setLicenseImagePath(user.getLicenseImagePath());
+            userDto.setUserImagePath(user.getUserImagePath());
+        }
         userDto.setContact(user.getContact());
         userDto.setCreatedDate(user.getCreatedDate().toString());
         userDto.setUpdatedDate(user.getUpdatedDate().toString());

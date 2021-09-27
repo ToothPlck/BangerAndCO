@@ -106,9 +106,20 @@ public class UserController {
         try {
             rentalService.createBooking(authentication.getName(), vehicleId, equipments, hours, pickDate, pickTime, dropDate, dropTime, total);
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
+            model.addAttribute("onGoingRentals", rentalService.userOnGoingRentals(authentication.getName()));
+            model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+            model.addAttribute("equipments", equipmentService.getAll());
+            model.addAttribute("vehicles", vehicleService.category_all());
+            model.addAttribute("error", exception.getMessage());
+            model.addAttribute("success", "");
+            return "user_home";
         }
-        return "redirect:/user/home";
+        model.addAttribute("loggedUser", userService.getUserDetails(authentication.getName()));
+        model.addAttribute("bookings", rentalService.userAllRentals(authentication.getName()));
+        model.addAttribute("type", "All bookings");
+        model.addAttribute("error", "");
+        model.addAttribute("success", "Booking added successfully!");
+        return "user_view_rentals";
     }
 
     @GetMapping("rentals/all")
