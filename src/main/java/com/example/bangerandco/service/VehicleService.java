@@ -19,5 +19,5 @@ public interface VehicleService {
 
     void deleteVehicle(long vehicleId) throws Exception;
 
-    List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime, String email);
+    List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime, String email) throws Exception;
 }

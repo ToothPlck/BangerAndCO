@@ -2,10 +2,8 @@ package com.example.bangerandco.serviceImplementation;
 
 import com.example.bangerandco.dto.RentalDto;
 import com.example.bangerandco.dto.VehicleDto;
-import com.example.bangerandco.model.Equipment;
-import com.example.bangerandco.model.Rental;
-import com.example.bangerandco.model.User;
-import com.example.bangerandco.model.Vehicle;
+import com.example.bangerandco.model.*;
+import com.example.bangerandco.repository.InsurerRepo;
 import com.example.bangerandco.repository.RentalRepo;
 import com.example.bangerandco.repository.UserRepo;
 import com.example.bangerandco.repository.VehicleRepo;
@@ -211,11 +209,12 @@ public class VehicleServiceImplementation implements VehicleService {
     }
 
     @Override
-    public List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime, String email) {
+    public List<VehicleDto> available(String pickDate, String pickTime, String dropDate, String dropTime, String email) throws Exception{
         List<VehicleDto> vehicleDtoList = new ArrayList<>();
         List<Vehicle> allVehicles = vehicleRepo.findAll();
         List<Vehicle> unavailableVehicles = new ArrayList<>();
         List<Vehicle> availableVehicles = new ArrayList<>();
+        User user = userRepo.findUserByEmail(email);
 
         List<Rental> rentalsDuringPeriod = rentalRepo.findAll();
         if (rentalsDuringPeriod.size() != 0) {
@@ -286,7 +285,6 @@ public class VehicleServiceImplementation implements VehicleService {
         }
 
         //calculate users age
-        User user = userRepo.findUserByEmail(email);
         int userAge = userAge(user.getDateOfBirth());
 
         if (availableVehicles.size() != 0) {

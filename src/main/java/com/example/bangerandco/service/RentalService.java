@@ -17,7 +17,7 @@ public interface RentalService {
 
     List<RentalDto> status(String status);
 
-    void changeStatus(String status, long rentalId);
+    void changeStatus(String status, long rentalId) throws Exception;
 
     List<RentalDto> userAllRentals(String name);
 

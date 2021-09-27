@@ -3,12 +3,10 @@ package com.example.bangerandco.serviceImplementation;
 import com.example.bangerandco.dto.RentalDto;
 import com.example.bangerandco.mailHandler.EmailService;
 import com.example.bangerandco.model.Equipment;
+import com.example.bangerandco.model.Insurer;
 import com.example.bangerandco.model.Rental;
 import com.example.bangerandco.model.User;
-import com.example.bangerandco.repository.EquipmentRepo;
-import com.example.bangerandco.repository.RentalRepo;
-import com.example.bangerandco.repository.UserRepo;
-import com.example.bangerandco.repository.VehicleRepo;
+import com.example.bangerandco.repository.*;
 import com.example.bangerandco.service.RentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +32,8 @@ public class RentalServiceImplementation implements RentalService {
     private UserRepo userRepo;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private InsurerRepo insurerRepo;
 
     @Override
     public List<RentalDto> userOnGoingRentals(String email) {
@@ -77,6 +77,12 @@ public class RentalServiceImplementation implements RentalService {
         if (!user1.isVerified()) {
             throw new Exception("The booking cannot be added since the user is not verified!");
         }
+        for (Insurer fraud : insurerRepo.findAll()) {
+            if (user1.getDriversLicenseNumber().equals(fraud.getLicense())) {
+                throw new Exception("Booking is restricted to user due to insurance fraud!");
+            }
+        }
+
         for (Rental rentalInDatabase : rentalListInDatabase) {
 
             //double check vehicle and equipments availability
@@ -320,10 +326,19 @@ public class RentalServiceImplementation implements RentalService {
     }
 
     @Override
-    public void changeStatus(String status, long rentalId) {
+    public void changeStatus(String status, long rentalId) throws Exception {
         Rental rental = rentalRepo.getById(rentalId);
         rental.setStatus(status);
         User user = new User();
+
+        if (status.equals("onGoing")) {
+            for (Insurer fraud : insurerRepo.findAll()) {
+                if (rental.getUser().getDriversLicenseNumber().equals(fraud.getLicense())) {
+                    emailService.fraud(rental.getUser().getEmail());
+                    throw new Exception("The user of this rental has made fraudulent claims for car accidents!");
+                }
+            }
+        }
 
 
         if (status.equals("completed")) {

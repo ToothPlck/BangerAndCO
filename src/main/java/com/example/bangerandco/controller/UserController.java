@@ -78,7 +78,7 @@ public class UserController {
                                   @RequestParam("pickDate") String pickDate,
                                   @RequestParam("pickTime") String pickTime,
                                   @RequestParam("dropDate") String dropDate,
-                                  @RequestParam("dropTime") String dropTime) {
+                                  @RequestParam("dropTime") String dropTime) throws Exception {
         model.addAttribute("hours", rentalService.periodInHours(pickDate, pickTime, dropDate, dropTime));
         model.addAttribute("pickDate", pickDate);
         model.addAttribute("pickTime", pickTime);

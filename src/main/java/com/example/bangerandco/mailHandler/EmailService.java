@@ -92,4 +92,14 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void fraud(String email) {
+        message.setFrom("eirlssbangerandco@gmail.com");
+        message.setTo(email);
+        message.setSubject("Booking rejected!");
+        message.setText("Our insurers has issued that there has been fraudulent car accident claims by you! \n" +
+                "Therefore, the booking has been rejected");
+
+        mailSender.send(message);
+    }
 }
